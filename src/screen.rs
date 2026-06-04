@@ -1,0 +1,43 @@
+use wasm_bindgen::JsCast;
+use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, window};
+use crate::rgb::RGB;
+
+pub struct Screen {
+    pub width: u32,
+    pub height: u32,
+    canvas_context: CanvasRenderingContext2d,
+}
+
+impl Screen {
+    pub fn init() -> Self {
+        let document = window()
+            .and_then(|win| win.document())
+            .expect("Could not access the document");
+        let body = document.body().expect("Could not access document.body");
+
+        let canvas_node = document.create_element("canvas")
+            .expect("Failed to create canvas node");
+        body.append_child(canvas_node.as_ref())
+            .expect("Failed to append canvas node");
+
+        let canvas_node = canvas_node.dyn_into::<HtmlCanvasElement>()
+            .expect("Failed to convert canvas into HtmlCanvasElement");
+
+        let canvas_context = canvas_node.get_context("2d")
+            .expect("Failed to get 2D context")
+            .unwrap()
+            .dyn_into::<CanvasRenderingContext2d>()
+            .expect("Failed to get 2D context even MORE");
+
+        Screen {
+            width: canvas_node.width(), 
+            height: canvas_node.height(),
+            canvas_context
+        }
+    }
+
+    pub fn render(&self, x: u32, y: u32, color: RGB) {
+        self.canvas_context.set_fill_style_str(format!("rgb({red},{green},{blue})", red = color.red, green = color.green, blue = color.blue).as_str());
+        self.canvas_context.fill_rect(x as f64, y as f64, 1.0, 1.0);
+    }
+}
