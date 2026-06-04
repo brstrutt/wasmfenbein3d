@@ -22,6 +22,10 @@ fn main() {
         .dyn_into::<CanvasRenderingContext2d>()
         .expect("Failed to get 2D context even MORE");
 
-    canvas_context.set_fill_style_str("#f54f00");
-    canvas_context.fill_rect(10.0, 10.0, 100.0, 50.0);
+    for x in 0..=canvas_node.width() {
+        for y in 0..=canvas_node.height() {
+            canvas_context.set_fill_style_str(format!("rgb({x},{y},0)").as_str());
+            canvas_context.fill_rect(x as f64, y as f64, 1.0, 1.0);
+        }
+    }
 }
