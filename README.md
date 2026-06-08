@@ -9,4 +9,5 @@ To setup the dev environment: use the devcontainer
 
 To build: `trunk build`
 To run a local dev server: `trunk serve`
+To run the unit tests: `cargo test`
 To push live: there is no live site yet, but when there is, merging work into `main` on github should trigger an automatic push to live
