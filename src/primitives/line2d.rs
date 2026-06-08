@@ -1,4 +1,5 @@
 mod intersection;
+mod length;
 
 use crate::primitives::point2d::Point2D;
 
