@@ -1,5 +1,6 @@
 mod rgb;
 mod screen;
+mod primitives;
 use screen::Screen;
 use rgb::RGB;
 
