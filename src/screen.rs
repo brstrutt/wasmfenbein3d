@@ -30,14 +30,28 @@ impl Screen {
             .expect("Failed to get 2D context even MORE");
 
         Screen {
-            width: canvas_node.width(), 
-            height: canvas_node.height(),
+            width,
+            height,
             canvas_context
         }
     }
 
-    pub fn render(&self, x: u32, y: u32, color: RGB) {
+    pub fn render(&self, x: u32, y: u32, color: &RGB) {
         self.canvas_context.set_fill_style_str(format!("rgb({red},{green},{blue})", red = color.red, green = color.green, blue = color.blue).as_str());
         self.canvas_context.fill_rect(x as f64, y as f64, 1.0, 1.0);
+    }
+
+    pub fn render_column(&self, x: u32, mut height: u32, color: &RGB) {
+        if height > self.height {
+            height = self.height;
+        }
+        let center = self.height/2;
+        let half_height = height/2;
+        let top = center - half_height;
+        let bottom = top + height;
+
+        for y in top..=bottom {
+            self.render(x, y, color);
+        }
     }
 }
