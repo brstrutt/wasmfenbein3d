@@ -1,8 +1,8 @@
-use crate::primitives::{line2d::Line2D, point2d::Point2D};
+use crate::primitives::{line2d::_Line2D, point2d::_Point2D};
 
-impl Line2D {
+impl _Line2D {
     // Implementation of a Line intersection point algorithm taken from https://web.archive.org/web/20060911055655/http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
-    pub fn intersection(&self, other: Line2D) -> Option<Point2D> {
+    pub fn _intersection(&self, other: _Line2D) -> Option<_Point2D> {
         let y1 = self.start.y;
         let y2 = self.end.y;
         let y3 = other.start.y;
@@ -35,7 +35,7 @@ impl Line2D {
         let x = x1 + (ua * (x2 - x1));
         let y = y1 + (ua * (y2 - y1));
 
-        Some(Point2D { x, y })
+        Some(_Point2D { x, y })
     }
 }
 
@@ -45,71 +45,71 @@ mod line2d_intersection_tests {
 
     #[test]
     fn test_parallel_lines() {
-        let line1 = Line2D {
-            start: Point2D { x: 0.0, y: 0.0 },
-            end: Point2D { x: 0.0, y: 10.0 },
+        let line1 = _Line2D {
+            start: _Point2D { x: 0.0, y: 0.0 },
+            end: _Point2D { x: 0.0, y: 10.0 },
         };
-        let line2 = Line2D {
-            start: Point2D { x: 10.0, y: 0.0 },
-            end: Point2D { x: 10.0, y: 10.0 },
+        let line2 = _Line2D {
+            start: _Point2D { x: 10.0, y: 0.0 },
+            end: _Point2D { x: 10.0, y: 10.0 },
         };
 
-        assert_eq!(line1.intersection(line2).is_none(), true);
+        assert_eq!(line1._intersection(line2).is_none(), true);
     }
 
     #[test]
     fn test_perpendicular_lines() {
-        let line1 = Line2D {
-            start: Point2D { x: 0.0, y: -10.0 },
-            end: Point2D { x: 0.0, y: 10.0 },
+        let line1 = _Line2D {
+            start: _Point2D { x: 0.0, y: -10.0 },
+            end: _Point2D { x: 0.0, y: 10.0 },
         };
-        let line2 = Line2D {
-            start: Point2D { x: -10.0, y: 0.0 },
-            end: Point2D { x: 10.0, y: 0.0 },
+        let line2 = _Line2D {
+            start: _Point2D { x: -10.0, y: 0.0 },
+            end: _Point2D { x: 10.0, y: 0.0 },
         };
 
         assert_eq!(
-            line1.intersection(line2).unwrap(),
-            Point2D { x: 0.0, y: 0.0 }
+            line1._intersection(line2).unwrap(),
+            _Point2D { x: 0.0, y: 0.0 }
         );
     }
 
     #[test]
     fn test_angled_lines() {
-        let intersection = Point2D { x: 2.0, y: 1.0 };
+        let intersection = _Point2D { x: 2.0, y: 1.0 };
 
-        let line1 = Line2D {
-            start: Point2D {
+        let line1 = _Line2D {
+            start: _Point2D {
                 x: intersection.x + 4.0,
                 y: intersection.y - 10.0,
             },
-            end: Point2D {
+            end: _Point2D {
                 x: intersection.x - 4.0,
                 y: intersection.y + 10.0,
             },
         };
-        let line2 = Line2D {
-            start: Point2D { x: -232.0, y: 1.0 },
-            end: Point2D { x: 21.0, y: 1.0 },
+        let line2 = _Line2D {
+            start: _Point2D { x: -232.0, y: 1.0 },
+            end: _Point2D { x: 21.0, y: 1.0 },
         };
 
         assert_eq!(
-            line1.intersection(line2).unwrap(),
-            Point2D { x: 2.0, y: 1.0 }
+            line1._intersection(line2).unwrap(),
+            _Point2D { x: 2.0, y: 1.0 }
         );
     }
 
     #[test]
     fn test_lines_with_intersection_outside_bounds() {
-        let line1 = Line2D {
-            start: Point2D { x: 0.0, y: -10.0 },
-            end: Point2D { x: 0.0, y: 10.0 },
+        let line1 = _Line2D {
+            start: _Point2D { x: 0.0, y: -10.0 },
+            end: _Point2D { x: 0.0, y: 10.0 },
         };
-        let line2 = Line2D {
-            start: Point2D { x: 10.0, y: 0.0 },
-            end: Point2D { x: 30.0, y: 0.0 },
+        let line2 = _Line2D {
+            start: _Point2D { x: 10.0, y: 0.0 },
+            end: _Point2D { x: 30.0, y: 0.0 },
         };
 
-        assert_eq!(line1.intersection(line2).is_none(), true);
+        assert_eq!(line1._intersection(line2).is_none(), true);
     }
 }

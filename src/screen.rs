@@ -42,7 +42,7 @@ impl Screen {
         }
     }
 
-    pub fn render(&self, x: u32, y: u32, color: &RGB) {
+    pub fn _render(&self, x: u32, y: u32, color: &RGB) {
         self.canvas_context.set_fill_style_str(format!("rgb({red},{green},{blue})", red = color.red, green = color.green, blue = color.blue).as_str());
         self.canvas_context.fill_rect(x as f64, y as f64, 1.0, 1.0);
     }
