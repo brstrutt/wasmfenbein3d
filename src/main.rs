@@ -23,7 +23,7 @@ fn render(screen: &Screen, i: &mut u32) {
     }
     web_sys::console::time_end_with_label(&timer_label);
 
-    *i = *i + 1;
+    *i = (*i + 1) % 500;
 }
 
 fn setup_render_loop() {
