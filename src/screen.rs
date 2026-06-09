@@ -51,13 +51,12 @@ impl Screen {
         if height > self.height {
             height = self.height;
         }
+
         let center = self.height/2;
         let half_height = height/2;
-        let top = center - half_height;
-        let bottom = top + height;
+        let bottom = center - half_height;
 
-        for y in top..=bottom {
-            self.render(x, y, color);
-        }
+        self.canvas_context.set_fill_style_str(format!("rgb({red},{green},{blue})", red = color.red, green = color.green, blue = color.blue).as_str());
+        self.canvas_context.fill_rect(x as f64, bottom as f64, 1.0, f64::try_from(height).unwrap());
     }
 }
