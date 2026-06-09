@@ -23,6 +23,12 @@ impl Screen {
         let canvas_node = canvas_node.dyn_into::<HtmlCanvasElement>()
             .expect("Failed to convert canvas into HtmlCanvasElement");
 
+        let width: u32 = u32::try_from(canvas_node.offset_width()).unwrap();
+        let height: u32 = u32::try_from(canvas_node.offset_height()).unwrap();
+
+        canvas_node.set_width(width);
+        canvas_node.set_height(height);
+
         let canvas_context = canvas_node.get_context("2d")
             .expect("Failed to get 2D context")
             .unwrap()
