@@ -17,6 +17,8 @@ fn main() {
 fn render(screen: &Screen, i: &mut u32) {
     let timer_label = format!("Render run {}", i);
     web_sys::console::time_with_label(&timer_label);
+
+    screen.clear();
     screen.render_column(10, 500, &RGB {red: 0, green: 0, blue: 0});
     for x in 11..=screen.width {
         screen.render_column(x, *i, &RGB {red: x/15, green: x / 10, blue: x / 20});

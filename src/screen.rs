@@ -59,4 +59,9 @@ impl Screen {
         self.canvas_context.set_fill_style_str(format!("rgb({red},{green},{blue})", red = color.red, green = color.green, blue = color.blue).as_str());
         self.canvas_context.fill_rect(x as f64, bottom as f64, 1.0, f64::try_from(height).unwrap());
     }
+
+    pub fn clear(&self) {
+        self.canvas_context.set_fill_style_str("rgb(0, 0, 0)");
+        self.canvas_context.fill_rect(0.0, 0.0, f64::try_from(self.width).unwrap(), f64::try_from(self.height).unwrap());
+    }
 }
