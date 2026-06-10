@@ -9,11 +9,9 @@ impl World {
     pub fn dummy() -> World {
         World{walls: vec![
             _Line2D{start: _Point2D{ x: 10.0, y: 10.0 }, end: _Point2D { x: 10.0, y: 5.0 }},
-            _Line2D{start: _Point2D{ x: 10.0, y: 10.0 }, end: _Point2D { x: 5.0, y: 10.0 }},
-            _Line2D{start: _Point2D{ x: 5.0, y: 10.0 }, end: _Point2D { x: 5.0, y: 5.0 }},
-            _Line2D{start: _Point2D{ x: 5.0, y: 5.0 }, end: _Point2D { x: 10.0, y: 5.0 }},
-            _Line2D{start: _Point2D{ x: -7.0, y: -3.0 }, end: _Point2D { x: -2.0, y: -8.0 }},
-            _Line2D{start: _Point2D{ x: 2.0, y: 2.0 }, end: _Point2D { x: 20.0, y: 20.0 }},
+            _Line2D{start: _Point2D{ x: 2.0, y: 2.0 }, end: _Point2D { x: 200.0, y: 200.0 }},
+            _Line2D{start: _Point2D{ x: 200.0, y: 2.0 }, end: _Point2D { x: 500.0, y: 200.0 }},
+            _Line2D{start: _Point2D{ x: 1000.0, y: 2.0 }, end: _Point2D { x: 500.0, y: 200.0 }},
         ]}
     }
 

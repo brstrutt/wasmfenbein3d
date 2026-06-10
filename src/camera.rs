@@ -8,8 +8,8 @@ pub struct Camera {
 impl Camera {
     pub fn dummy() -> Camera {
         Camera {
-            position: _Point2D { x: 0.0, y: 0.0 },
-            direction: _Point2D { x: 0.0, y: 100.0 },
+            position: _Point2D { x: -200.0, y: 0.0 },
+            direction: _Point2D { x: -200.0, y: 100.0 },
         }
     }
 
