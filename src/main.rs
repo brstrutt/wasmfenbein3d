@@ -2,6 +2,7 @@ mod rgb;
 mod screen;
 mod primitives;
 mod world;
+mod camera;
 
 use std::{cell::RefCell, rc::Rc};
 
@@ -9,7 +10,7 @@ use screen::Screen;
 use rgb::RGB;
 use wasm_bindgen::{JsCast, JsValue, prelude::Closure};
 
-use crate::world::World;
+use crate::{camera::Camera, world::World};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -34,6 +35,8 @@ fn render(screen: &Screen, i: &mut u32) {
 
 fn setup_render_loop() {
     let screen = Screen::init();
+    let world = World::dummy();
+    let camera = Camera::dummy();
 
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
