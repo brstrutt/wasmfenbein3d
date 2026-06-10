@@ -19,9 +19,7 @@ fn main() {
     setup_render_loop();
 }
 
-fn render(screen: &Screen, world: &World, camera: &Camera, i: &mut u32) {
-    let timer_label = format!("Render run {}", i);
-    web_sys::console::time_with_label(&timer_label);
+fn render(screen: &Screen, world: &World, camera: &Camera) {
     screen.clear();
 
 
@@ -35,11 +33,6 @@ fn render(screen: &Screen, world: &World, camera: &Camera, i: &mut u32) {
             screen.render_column(x, height, &RGB {red: 30 * 100 / distance, green: 150 * 100 / distance, blue: 30 * 100 / distance});
         }
     }
-
-
-    web_sys::console::time_end_with_label(&timer_label);
-
-    *i = (*i + 1) % 500;
 }
 
 fn setup_render_loop() {
@@ -49,11 +42,10 @@ fn setup_render_loop() {
 
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
-    let mut i: u32 = 0;
 
     *g.borrow_mut() = Some(Closure::new(move || {
         // do the animation code here
-        render(&screen, &world, &camera, &mut i);
+        render(&screen, &world, &camera);
         // queue up another re-draw request
         request_animation_frame(f.borrow().as_ref().unwrap());
     }));
