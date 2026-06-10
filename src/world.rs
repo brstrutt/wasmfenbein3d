@@ -10,8 +10,9 @@ impl World {
         World{walls: vec![
             Line2D{start: Point2D{ x: 10.0, y: 10.0 }, end: Point2D { x: 10.0, y: 5.0 }},
             Line2D{start: Point2D{ x: 2.0, y: 2.0 }, end: Point2D { x: 200.0, y: 200.0 }},
-            Line2D{start: Point2D{ x: 200.0, y: 2.0 }, end: Point2D { x: 500.0, y: 200.0 }},
-            Line2D{start: Point2D{ x: 1000.0, y: 2.0 }, end: Point2D { x: 500.0, y: 200.0 }},
+            Line2D{start: Point2D{ x: 200.0, y: 2.0 }, end: Point2D { x: 400.0, y: 200.0 }},
+            Line2D{start: Point2D{ x: 1000.0, y: 2.0 }, end: Point2D { x: 600.0, y: 200.0 }},
+            Line2D{start: Point2D{ x: 1000.0, y: 2.0 }, end: Point2D { x: 1500.0, y: 200.0 }},
         ]}
     }
 
