@@ -61,7 +61,11 @@ impl Screen {
     }
 
     pub fn clear(&self) {
-        self.canvas_context.set_fill_style_str("rgb(0, 0, 0)");
-        self.canvas_context.fill_rect(0.0, 0.0, f64::try_from(self.width).unwrap(), f64::try_from(self.height).unwrap());
+        let half_height = f64::try_from(self.height).unwrap() / 2.0;
+
+        self.canvas_context.set_fill_style_str("rgb(30, 20, 10)");
+        self.canvas_context.fill_rect(0.0, half_height, f64::try_from(self.width).unwrap(), half_height);
+        self.canvas_context.set_fill_style_str("rgb(30, 75, 130)");
+        self.canvas_context.fill_rect(0.0, 0.0, f64::try_from(self.width).unwrap(), half_height);
     }
 }
