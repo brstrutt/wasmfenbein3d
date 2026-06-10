@@ -2,7 +2,7 @@ use crate::primitives::{line2d::_Line2D, point2d::_Point2D};
 
 impl _Line2D {
     // Implementation of a Line intersection point algorithm taken from https://web.archive.org/web/20060911055655/http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
-    pub fn _intersection(&self, other: _Line2D) -> Option<_Point2D> {
+    pub fn _intersection(&self, other: &_Line2D) -> Option<_Point2D> {
         let y1 = self.start.y;
         let y2 = self.end.y;
         let y3 = other.start.y;
@@ -54,7 +54,7 @@ mod line2d_intersection_tests {
             end: _Point2D { x: 10.0, y: 10.0 },
         };
 
-        assert_eq!(line1._intersection(line2).is_none(), true);
+        assert_eq!(line1._intersection(&line2).is_none(), true);
     }
 
     #[test]
@@ -69,7 +69,7 @@ mod line2d_intersection_tests {
         };
 
         assert_eq!(
-            line1._intersection(line2).unwrap(),
+            line1._intersection(&line2).unwrap(),
             _Point2D { x: 0.0, y: 0.0 }
         );
     }
@@ -94,7 +94,7 @@ mod line2d_intersection_tests {
         };
 
         assert_eq!(
-            line1._intersection(line2).unwrap(),
+            line1._intersection(&line2).unwrap(),
             _Point2D { x: 2.0, y: 1.0 }
         );
     }
@@ -110,6 +110,6 @@ mod line2d_intersection_tests {
             end: _Point2D { x: 30.0, y: 0.0 },
         };
 
-        assert_eq!(line1._intersection(line2).is_none(), true);
+        assert_eq!(line1._intersection(&line2).is_none(), true);
     }
 }
