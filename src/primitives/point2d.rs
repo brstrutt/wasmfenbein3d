@@ -1,3 +1,4 @@
+mod distance;
 
 #[derive(Debug, PartialEq)]
 pub struct _Point2D {
