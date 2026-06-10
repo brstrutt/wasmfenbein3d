@@ -19,15 +19,23 @@ fn main() {
     setup_render_loop();
 }
 
-fn render(screen: &Screen, i: &mut u32) {
+fn render(screen: &Screen, world: &World, camera: &Camera, i: &mut u32) {
     let timer_label = format!("Render run {}", i);
     web_sys::console::time_with_label(&timer_label);
-
     screen.clear();
-    screen.render_column(10, 500, &RGB {red: 0, green: 0, blue: 0});
-    for x in 11..=screen.width {
-        screen.render_column(x, *i, &RGB {red: x/15, green: x / 10, blue: x / 20});
+
+
+    for x in 0..=screen.width {
+        let ray = camera.ray_for_column(x);
+        let wall_distance = world.dist_to_wall(&ray);
+
+        if wall_distance.is_some() {
+            let height = screen.height / (wall_distance.unwrap().round() as u32);
+            screen.render_column(x, height, &RGB {red: 30, green: 200, blue: 30});
+        }
     }
+
+
     web_sys::console::time_end_with_label(&timer_label);
 
     *i = (*i + 1) % 500;
@@ -44,7 +52,7 @@ fn setup_render_loop() {
 
     *g.borrow_mut() = Some(Closure::new(move || {
         // do the animation code here
-        render(&screen, &mut i);
+        render(&screen, &world, &camera, &mut i);
         // queue up another re-draw request
         request_animation_frame(f.borrow().as_ref().unwrap());
     }));
