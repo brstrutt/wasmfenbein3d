@@ -1,2 +1,2 @@
-mod point2d;
-mod line2d;
+pub(crate) mod point2d;
+pub(crate) mod line2d;

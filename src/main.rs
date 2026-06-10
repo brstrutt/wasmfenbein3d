@@ -1,11 +1,15 @@
 mod rgb;
 mod screen;
 mod primitives;
+mod world;
+
 use std::{cell::RefCell, rc::Rc};
 
 use screen::Screen;
 use rgb::RGB;
 use wasm_bindgen::{JsCast, JsValue, prelude::Closure};
+
+use crate::world::World;
 
 fn main() {
     console_error_panic_hook::set_once();
