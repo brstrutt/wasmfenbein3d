@@ -30,7 +30,7 @@ fn render(screen: &Screen, world: &World, camera: &Camera, i: &mut u32) {
         let wall_distance = world.dist_to_wall(&ray);
 
         if wall_distance.is_some() {
-            let height = screen.height * 10 / (wall_distance.unwrap().round() as u32);
+            let height = screen.height * 10 / (wall_distance.unwrap().round() as u32 + 100);
             screen.render_column(x, height, &RGB {red: 30, green: 150, blue: 30});
         }
     }
