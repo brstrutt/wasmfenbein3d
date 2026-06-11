@@ -2,7 +2,6 @@ mod rgb;
 mod screen;
 mod primitives;
 mod world;
-mod camera;
 
 use std::{cell::RefCell, rc::Rc};
 
@@ -10,7 +9,7 @@ use screen::Screen;
 use rgb::RGB;
 use wasm_bindgen::{JsCast, JsValue, prelude::Closure};
 
-use crate::{camera::Camera, world::World};
+use crate::{world::camera::Camera, world::World};
 
 fn main() {
     console_error_panic_hook::set_once();
