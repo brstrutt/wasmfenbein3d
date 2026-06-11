@@ -4,13 +4,13 @@ use crate::{
     main_canvas::MainCanvas, render::render, world::World
 };
 
-pub fn setup_render_loop(world: World, canvas: MainCanvas) {
+pub fn setup_render_loop(world: RefCell<World>, canvas: MainCanvas) {
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
 
     *g.borrow_mut() = Some(Closure::new(move || {
         // do the animation code here
-        render(&canvas, &world);
+        render(&canvas, &world.borrow());
         // queue up another re-draw request
         request_animation_frame(f.borrow().as_ref().unwrap());
     }));

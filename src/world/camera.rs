@@ -1,7 +1,8 @@
 use crate::primitives::{line2d::Line2D, point2d::Point2D};
 
+#[derive(Clone, Copy)]
 pub struct Camera {
-    position: Point2D,
+    pub position: Point2D,
     direction: Point2D,
 }
 

@@ -3,6 +3,7 @@ pub(crate) mod camera;
 
 use crate::{primitives::line2d::Line2D, world::camera::Camera};
 
+#[derive(Clone)]
 pub struct World {
     pub walls: Vec<Line2D>,
     pub camera: Camera,

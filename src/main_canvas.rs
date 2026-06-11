@@ -1,4 +1,4 @@
-use wasm_bindgen::JsCast;
+use wasm_bindgen::{JsCast, JsValue, prelude::Closure};
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, window};
 
 pub struct MainCanvas {
@@ -16,6 +16,7 @@ impl MainCanvas {
         let canvas_node = document
             .create_element("canvas")
             .expect("Failed to create canvas node");
+
         body.append_child(canvas_node.as_ref())
             .expect("Failed to append canvas node");
 
@@ -29,6 +30,8 @@ impl MainCanvas {
             .unwrap()
             .dyn_into::<CanvasRenderingContext2d>()
             .expect("Failed to get 2D context even MORE");
+
+
 
         MainCanvas {
             element: canvas_node,
