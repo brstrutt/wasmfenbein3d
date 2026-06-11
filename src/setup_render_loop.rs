@@ -5,12 +5,18 @@ use crate::{
 };
 
 pub fn setup_render_loop(world: Rc<RefCell<World>>, canvas: MainCanvas) {
+    run_function_on_animation_frame(move || {
+        render(&canvas, &world);
+    });
+}
+
+fn run_function_on_animation_frame<T: FnMut()>(mut run: T) where T: 'static{
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
 
     *g.borrow_mut() = Some(Closure::new(move || {
         // do the animation code here
-        render(&canvas, &world);
+        run();
         // queue up another re-draw request
         request_animation_frame(f.borrow().as_ref().unwrap());
     }));
