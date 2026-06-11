@@ -1,12 +1,14 @@
+use std::cell::RefCell;
+
 use crate::{main_canvas::MainCanvas, render::rgb::RGB, world::World};
 
 pub mod screen;
 pub mod rgb;
 
 
-pub fn render(canvas: &MainCanvas, world: &World) {
+pub fn render(canvas: &MainCanvas, world: &RefCell<World>) {
     screen::clear(canvas);
-
+    let world = world.borrow();
 
     for x in 0..=canvas.element.width() {
         let ray = world.camera.ray_for_column(x);

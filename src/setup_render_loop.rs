@@ -10,7 +10,7 @@ pub fn setup_render_loop(world: RefCell<World>, canvas: MainCanvas) {
 
     *g.borrow_mut() = Some(Closure::new(move || {
         // do the animation code here
-        render(&canvas, &world.borrow());
+        render(&canvas, &world);
         // queue up another re-draw request
         request_animation_frame(f.borrow().as_ref().unwrap());
     }));
