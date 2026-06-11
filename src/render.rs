@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 
-use crate::{log, main_canvas::MainCanvas, render::rgb::RGB, world::World};
+use crate::{main_canvas::MainCanvas, render::rgb::RGB, world::World};
 
 pub mod screen;
 pub mod rgb;

@@ -1,4 +1,4 @@
-use wasm_bindgen::{JsCast, JsValue, prelude::Closure};
+use wasm_bindgen::JsCast;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, window};
 
 pub struct MainCanvas {
