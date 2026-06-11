@@ -7,7 +7,7 @@ mod controls;
 mod log;
 
 use setup_render_loop::setup_render_loop;
-use std::cell::RefCell;
+use std::{cell::RefCell, rc::Rc};
 
 use crate::{main_canvas::MainCanvas, world::World};
 
@@ -19,8 +19,8 @@ fn main() {
     let mut canvas = MainCanvas::init();
     canvas.update_canvas_size();
 
-    let world = RefCell::new(World::dummy());
+    let world = Rc::new(RefCell::new(World::dummy()));
 
     controls::setup(world.clone());
-    setup_render_loop(world, canvas);
+    setup_render_loop(world.clone(), canvas);
 }

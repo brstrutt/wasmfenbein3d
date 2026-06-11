@@ -4,7 +4,7 @@ use crate::{
     main_canvas::MainCanvas, render::render, world::World
 };
 
-pub fn setup_render_loop(world: RefCell<World>, canvas: MainCanvas) {
+pub fn setup_render_loop(world: Rc<RefCell<World>>, canvas: MainCanvas) {
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
 
