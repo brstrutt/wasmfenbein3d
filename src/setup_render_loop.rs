@@ -1,16 +1,16 @@
 use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::{JsCast, prelude::Closure};
 use crate::{
-    main_canvas::MainCanvas, render::render, world::{World, camera::Camera}
+    main_canvas::MainCanvas, render::render, world::World
 };
 
-pub fn setup_render_loop(world: World, canvas: MainCanvas, camera: Camera) {
+pub fn setup_render_loop(world: World, canvas: MainCanvas) {
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
 
     *g.borrow_mut() = Some(Closure::new(move || {
         // do the animation code here
-        render(&canvas, &world, &camera);
+        render(&canvas, &world);
         // queue up another re-draw request
         request_animation_frame(f.borrow().as_ref().unwrap());
     }));

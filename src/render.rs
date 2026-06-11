@@ -1,15 +1,15 @@
-use crate::{main_canvas::MainCanvas, render::rgb::RGB, world::{World, camera::Camera}};
+use crate::{main_canvas::MainCanvas, render::rgb::RGB, world::World};
 
 pub mod screen;
 pub mod rgb;
 
 
-pub fn render(canvas: &MainCanvas, world: &World, camera: &Camera) {
+pub fn render(canvas: &MainCanvas, world: &World) {
     screen::clear(canvas);
 
 
     for x in 0..=canvas.element.width() {
-        let ray = camera.ray_for_column(x);
+        let ray = world.camera.ray_for_column(x);
         let wall_distance = world.dist_to_wall(&ray);
 
         if wall_distance.is_some() {

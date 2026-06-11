@@ -7,7 +7,7 @@ mod main_canvas;
 use wasm_bindgen::JsValue;
 use setup_render_loop::setup_render_loop;
 
-use crate::{main_canvas::MainCanvas, world::{World, camera::Camera}};
+use crate::{main_canvas::MainCanvas, world::World};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -18,9 +18,8 @@ fn main() {
     canvas.update_canvas_size();
 
     let world = World::dummy();
-    let camera = Camera::dummy();
 
-    setup_render_loop(world, canvas, camera);
+    setup_render_loop(world, canvas);
 }
 
 fn log(message: &str) {
