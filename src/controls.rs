@@ -3,12 +3,11 @@ use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::{JsCast, prelude::Closure};
 use web_sys::{KeyboardEvent, window};
 
-use crate::{log, world::World};
+use crate::world::World;
 
 
 pub fn setup(world: Rc<RefCell<World>>) {
     run_function_on_document_keydown(move |e: KeyboardEvent| {
-        log::log(format!("Testing: {}", e.key()).as_str());
         match e.key().as_str() {
             "a" => world.borrow_mut().camera.position.x -= 10.0,
             "d" => world.borrow_mut().camera.position.x += 10.0,
