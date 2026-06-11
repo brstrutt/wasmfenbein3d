@@ -1,6 +1,7 @@
 use wasm_bindgen::JsCast;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, window};
-use crate::rgb::RGB;
+
+use crate::render::rgb::RGB;
 
 pub struct Screen {
     pub width: u32,
