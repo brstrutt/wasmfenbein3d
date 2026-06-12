@@ -1,7 +1,7 @@
 mod walls;
 pub(crate) mod camera;
 
-use crate::{primitives::line2d::Line2D, world::camera::Camera};
+use crate::{primitives::{line2d::Line2D, ray2d::Ray2D}, world::camera::Camera};
 
 #[derive(Clone)]
 pub struct World {
@@ -17,7 +17,7 @@ impl World {
         }
     }
 
-    pub fn dist_to_wall(&self, raycast: &Line2D) -> Option<f64> {
+    pub fn dist_to_wall(&self, raycast: &Ray2D) -> Option<f64> {
         walls::dist_to_wall(&self.walls, raycast)
     }
 }

@@ -1,4 +1,4 @@
-use crate::primitives::{line2d::Line2D, point2d::Point2D};
+use crate::primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D};
 
 
 pub fn default_walls() -> Vec<Line2D> {
@@ -11,13 +11,13 @@ pub fn default_walls() -> Vec<Line2D> {
     ]
 }
 
-pub fn dist_to_wall(walls: &Vec<Line2D>, raycast: &Line2D) -> Option<f64> {
+pub fn dist_to_wall(walls: &Vec<Line2D>, raycast: &Ray2D) -> Option<f64> {
     let mut smallest_dist: Option<f64> = None;
 
     for wall in walls.iter() {
         let intersection_point = raycast.intersection(wall);
         if intersection_point.is_some() {
-            let dist = Point2D::dist(&raycast.start, &intersection_point.unwrap());
+            let dist = Point2D::dist(&raycast.origin, &intersection_point.unwrap());
             if smallest_dist.is_none() || dist < smallest_dist.unwrap() {
                 smallest_dist = Some(dist)
             }
