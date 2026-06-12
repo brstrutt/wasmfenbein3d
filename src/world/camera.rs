@@ -10,7 +10,7 @@ impl Camera {
     pub fn dummy() -> Camera {
         Camera {
             position: Point2D { x: -200.0, y: 0.0 },
-            direction: Point2D { x: -200.0, y: 10000.0 },
+            direction: Point2D { x: -200.0, y: 10000.0 }.normalise(),
         }
     }
 
