@@ -12,10 +12,10 @@ pub fn setup(world: Rc<RefCell<World>>) {
 
         let mut world = world.borrow_mut();
         match e.key().as_str() {
-            "a" | "A" => world.camera.origin.x += speed,
-            "d" | "D" => world.camera.origin.x -= speed,
-            "w" | "W" => world.camera.origin.y += speed,
-            "s" | "S" => world.camera.origin.y -= speed,
+            "a" | "A" => world.camera.origin = world.camera.origin - world.camera.rotate(std::f32::consts::PI as f64 / 2.0).direction,
+            "d" | "D" => world.camera.origin = world.camera.origin + world.camera.rotate(std::f32::consts::PI as f64 / 2.0).direction,
+            "w" | "W" => world.camera.origin = world.camera.origin + world.camera.direction,
+            "s" | "S" => world.camera.origin = world.camera.origin - world.camera.direction,
             "ArrowRight" => world.camera = world.camera.rotate(0.1),
             "ArrowLeft" => world.camera = world.camera.rotate(-0.1),
             &_ => return,
