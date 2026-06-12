@@ -1,5 +1,7 @@
 use wasm_bindgen::JsCast;
-use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, window};
+use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
+
+use crate::web;
 
 pub struct MainCanvas {
     pub element: HtmlCanvasElement,
@@ -8,16 +10,13 @@ pub struct MainCanvas {
 
 impl MainCanvas {
     pub fn init() -> Self {
-        let document = window()
-            .and_then(|win| win.document())
-            .expect("Could not access the document");
-        let body = document.body().expect("Could not access document.body");
+        let document = web::access::document();
 
         let canvas_node = document
             .create_element("canvas")
             .expect("Failed to create canvas node");
 
-        body.append_child(canvas_node.as_ref())
+        web::access::body().append_child(canvas_node.as_ref())
             .expect("Failed to append canvas node");
 
         let canvas_node = canvas_node
@@ -30,8 +29,6 @@ impl MainCanvas {
             .unwrap()
             .dyn_into::<CanvasRenderingContext2d>()
             .expect("Failed to get 2D context even MORE");
-
-
 
         MainCanvas {
             element: canvas_node,

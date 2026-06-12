@@ -3,7 +3,7 @@ mod render;
 mod world;
 mod main_canvas;
 mod controls;
-mod log;
+mod web;
 
 use std::{cell::RefCell, rc::Rc};
 
@@ -12,7 +12,7 @@ use crate::{main_canvas::MainCanvas, world::World};
 fn main() {
     console_error_panic_hook::set_once();
 
-    log::log("Starting up!");
+    web::log::log("Starting up!");
 
     let mut canvas = MainCanvas::init();
     canvas.update_canvas_size();
