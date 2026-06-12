@@ -3,7 +3,7 @@ use crate::primitives::point2d::Point2D;
 
 impl Point2D {
     pub fn dist(start: &Point2D, end: &Point2D) -> f64 {
-        let offset = Point2D{x: (end.x - start.x).abs(), y: (end.y - start.y).abs()};
+        let offset = (*end - *start).abs();
         ((offset.x * offset.x) + (offset.y * offset.y)).sqrt()
     }
 }
