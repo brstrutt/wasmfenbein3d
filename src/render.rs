@@ -20,7 +20,7 @@ pub fn render(canvas: &MainCanvas, world: &RefCell<World>) {
 
         if wall_distance.is_some() {
             let distance = wall_distance.unwrap().round() as u32;
-            let height = canvas.element.height() * 10 / (distance + 100);
+            let height = canvas.element.height() / distance;
             screen::render_column(canvas, x, height, &RGB {red: 30 * 100 / distance, green: 150 * 100 / distance, blue: 30 * 100 / distance});
         }
     }
