@@ -12,11 +12,11 @@ impl Point2D {
 
 
 #[cfg(test)]
-mod point2d_normalise_tests {
+mod test {
 use super::*;
 
     #[test]
-    fn test_result_has_length_1() {
+    fn result_has_length_1() {
         let point = Point2D{x: 23.6, y: 28.54};
         assert_eq!(point.normalise().length(), 1.0);
     }

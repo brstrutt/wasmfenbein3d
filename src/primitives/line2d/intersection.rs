@@ -40,11 +40,11 @@ impl Line2D {
 }
 
 #[cfg(test)]
-mod line2d_intersection_tests {
+mod test {
     use super::*;
 
     #[test]
-    fn test_parallel_lines() {
+    fn parallel_lines() {
         let line1 = Line2D {
             start: Point2D { x: 0.0, y: 0.0 },
             end: Point2D { x: 0.0, y: 10.0 },
@@ -58,7 +58,7 @@ mod line2d_intersection_tests {
     }
 
     #[test]
-    fn test_perpendicular_lines() {
+    fn perpendicular_lines() {
         let line1 = Line2D {
             start: Point2D { x: 0.0, y: -10.0 },
             end: Point2D { x: 0.0, y: 10.0 },
@@ -75,7 +75,7 @@ mod line2d_intersection_tests {
     }
 
     #[test]
-    fn test_angled_lines() {
+    fn angled_lines() {
         let intersection = Point2D { x: 2.0, y: 1.0 };
 
         let line1 = Line2D {

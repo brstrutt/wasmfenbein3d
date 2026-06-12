@@ -7,21 +7,21 @@ impl Point2D {
 }
 
 #[cfg(test)]
-mod point2d_length_tests {
+mod test {
 use super::*;
 
     #[test]
-    fn test_vertical_line() {
+    fn vertical_line() {
         assert_eq!(Point2D{x: 0.0, y: 3.4}.length(), 3.4);
     }
 
     #[test]
-    fn test_horizontal_line() {
+    fn horizontal_line() {
         assert_eq!(Point2D{x: 72.5, y: 0.0}.length(), 72.5);
     }
     
     #[test]
-    fn test_angled_line() {
+    fn angled_line() {
         assert_eq!(Point2D{x: 72.5, y: 10.4}.length(), 73.24213268331282);
     }
 }
