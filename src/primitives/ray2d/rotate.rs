@@ -8,8 +8,8 @@ impl Ray2D {
         let x = self.direction.x;
         let y = self.direction.y;
 
-        let rotated_x = x * cos_angle - y * sin_angle;
-        let rotated_y = x * sin_angle + y * cos_angle;
+        let rotated_x = (x * cos_angle) - (y * sin_angle);
+        let rotated_y = (x * sin_angle) + (y * cos_angle);
 
         Ray2D {
             origin: self.origin,
