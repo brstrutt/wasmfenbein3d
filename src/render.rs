@@ -15,7 +15,7 @@ pub fn render(canvas: &MainCanvas, world: &RefCell<World>) {
     let world = world.borrow();
 
     for x in 0..=canvas.element.width() {
-        let ray = world.camera.ray_for_column(x);
+        let ray = world.camera.ray_for_column(x, canvas.element.height(), canvas.element.width());
         let wall_distance = world.dist_to_wall(&ray);
 
         if wall_distance.is_some() {
