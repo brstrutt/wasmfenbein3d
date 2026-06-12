@@ -5,8 +5,8 @@ pub type Camera = Ray2D;
 impl Camera {
     pub fn dummy() -> Camera {
         Ray2D::new(
-            Point2D { x: -200.0, y: 0.0 },
-            Point2D { x: -200.0, y: 10000.0 }
+            Point2D { x: 0.0, y: 0.0 },
+            Point2D { x: 0.0, y: 1.0 }
         )
     }
 
