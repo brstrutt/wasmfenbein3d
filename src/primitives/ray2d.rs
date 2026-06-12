@@ -1,4 +1,5 @@
 use crate::primitives::point2d::Point2D;
+mod intersection;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Ray2D {
