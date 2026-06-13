@@ -1,22 +1,22 @@
 use std::{cell::RefCell, rc::Rc};
-use crate::{main_canvas::MainCanvas, render::rgb::RGB, web, world::World};
+use crate::{main_canvas::MainCanvas, render::rgb::RGB, state::GameState, web};
 
 pub mod screen;
 pub mod rgb;
 
-pub fn setup(world: Rc<RefCell<World>>, canvas: MainCanvas) {
+pub fn setup(state: Rc<RefCell<GameState>>, canvas: MainCanvas) {
     web::window::run_function_every_animation_frame(move || {
-        render(&canvas, &world);
+        render(&canvas, &state);
     });
 }
 
-pub fn render(canvas: &MainCanvas, world: &RefCell<World>) {
+pub fn render(canvas: &MainCanvas, state: &RefCell<GameState>) {
     screen::clear(canvas);
-    let world = world.borrow();
+    let state = state.borrow();
 
     for x in 0..=canvas.element.width() {
-        let ray = world.camera.ray_for_column(x, canvas.element.height(), canvas.element.width());
-        let wall_distance = world.dist_to_wall(&ray);
+        let ray = state.world.camera.ray_for_column(x, canvas.element.height(), canvas.element.width());
+        let wall_distance = state.world.dist_to_wall(&ray);
 
         if wall_distance.is_some() {
             let distance = wall_distance.unwrap();

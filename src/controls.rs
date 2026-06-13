@@ -1,18 +1,31 @@
 use std::{cell::RefCell, rc::Rc};
 use web_sys::{KeyboardEvent};
 
-use crate::{web, world::World};
+use crate::{state::GameState, web};
 
-pub fn setup(world: Rc<RefCell<World>>) {
+pub struct InputState {
+    pub moveLeft: bool,
+    pub moveRight: bool,
+    pub moveForward: bool,
+    pub moveBackward: bool,
+}
+
+impl InputState {
+    pub fn setup() -> InputState {
+        InputState { moveLeft: false, moveRight: false, moveForward: false, moveBackward: false }
+    }
+}
+
+pub fn setup(state: Rc<RefCell<GameState>>) {
     web::document::add_event_listener_with_callback(move |e: KeyboardEvent| {
-        let mut world = world.borrow_mut();
+        let mut state = state.borrow_mut();
         match e.key().as_str() {
-            "a" | "A" => world.camera.origin = world.camera.origin - world.camera.rotate(std::f32::consts::PI as f64 / 2.0).direction,
-            "d" | "D" => world.camera.origin = world.camera.origin + world.camera.rotate(std::f32::consts::PI as f64 / 2.0).direction,
-            "w" | "W" => world.camera.origin = world.camera.origin + world.camera.direction,
-            "s" | "S" => world.camera.origin = world.camera.origin - world.camera.direction,
-            "ArrowRight" => world.camera = world.camera.rotate(0.1),
-            "ArrowLeft" => world.camera = world.camera.rotate(-0.1),
+            "a" | "A" => state.world.camera.origin = state.world.camera.origin - state.world.camera.rotate(std::f32::consts::PI as f64 / 2.0).direction,
+            "d" | "D" => state.world.camera.origin = state.world.camera.origin + state.world.camera.rotate(std::f32::consts::PI as f64 / 2.0).direction,
+            "w" | "W" => state.world.camera.origin = state.world.camera.origin + state.world.camera.direction,
+            "s" | "S" => state.world.camera.origin = state.world.camera.origin - state.world.camera.direction,
+            "ArrowRight" => state.world.camera = state.world.camera.rotate(0.1),
+            "ArrowLeft" => state.world.camera = state.world.camera.rotate(-0.1),
             &_ => return,
         }
     });

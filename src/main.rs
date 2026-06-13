@@ -4,10 +4,11 @@ mod world;
 mod main_canvas;
 mod controls;
 mod web;
+mod state;
 
 use std::{cell::RefCell, rc::Rc};
 
-use crate::{main_canvas::MainCanvas, world::World};
+use crate::{main_canvas::MainCanvas, state::GameState};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -17,8 +18,8 @@ fn main() {
     let mut canvas = MainCanvas::init();
     canvas.update_canvas_size();
 
-    let world = Rc::new(RefCell::new(World::dummy()));
+    let state = Rc::new(RefCell::new(GameState::setup()));
 
-    controls::setup(world.clone());
-    render::setup(world.clone(), canvas);
+    controls::setup(state.clone());
+    render::setup(state.clone(), canvas);
 }
