@@ -11,6 +11,7 @@ pub struct InputState {
     pub move_backward: bool,
     pub rotate_camera_left: bool,
     pub rotate_camera_right: bool,
+    pub pointer_locked: bool,
 }
 
 impl InputState {
@@ -22,6 +23,7 @@ impl InputState {
             move_backward: false,
             rotate_camera_left: false,
             rotate_camera_right: false,
+            pointer_locked: false,
         }
     }
 }
@@ -124,5 +126,12 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
         let main_canvas = main_canvas_outer.borrow_mut();
         main_canvas.element.add_event_listener_with_callback("click", callback.as_ref().unchecked_ref()).expect("Failed to setup on click event for canvas");
         callback.forget();
+
+
+        let state = state.clone();
+        web::document::add_event_listener_with_callback("pointerlockchange", move |_e: KeyboardEvent| {
+            let mut state = state.borrow_mut();
+            state.input.pointer_locked = web::access::document().pointer_lock_element().is_some();
+        });
     }
 }
