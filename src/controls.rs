@@ -40,6 +40,20 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
 
     {
         let state = state.clone();
+        web::document::add_event_listener_with_callback("keyup", move |e: KeyboardEvent| {
+            let mut state = state.borrow_mut();
+            match e.key().as_str() {
+                "a" | "A" => state.input.move_left = false,
+                "d" | "D" => state.input.move_right = false,
+                "w" | "W" => state.input.move_forward = false,
+                "s" | "S" => state.input.move_backward = false,
+                &_ => return,
+            }
+        });
+    }
+
+    {
+        let state = state.clone();
         web::window::run_function_every_animation_frame(move || {
             let mut state = state.borrow_mut();
             const SPEED: f64 = 0.1; // move 0.1 per frame
