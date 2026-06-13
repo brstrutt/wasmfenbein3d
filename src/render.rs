@@ -15,6 +15,8 @@ pub fn render(canvas: &RefCell<MainCanvas>, state: &RefCell<GameState>) {
     let state = state.borrow();
     screen::clear(&canvas);
 
+    const WALL_COLOUR: RGB = RGB {red: 30, green: 125, blue: 30};
+
     for x in 0..=canvas.element.width() {
         let ray = state.world.camera.ray_for_column(x, canvas.element.height(), canvas.element.width());
         let wall_distance = state.world.dist_to_wall(&ray);
@@ -23,7 +25,7 @@ pub fn render(canvas: &RefCell<MainCanvas>, state: &RefCell<GameState>) {
             let distance = wall_distance.unwrap();
             if distance != 0.0 {
                 let height = canvas.element.height() as f64 / distance;
-                screen::render_column(&canvas, x, height as u32, &RGB {red: 30, green: 125, blue: 30});
+                screen::render_column(&canvas, x, height as u32, &(WALL_COLOUR / distance));
             }
         }
     }
