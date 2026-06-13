@@ -38,8 +38,8 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
                 "d" | "D" => state.input.move_right = true,
                 "w" | "W" => state.input.move_forward = true,
                 "s" | "S" => state.input.move_backward = true,
-                "ArrowRight" => state.input.rotate_camera_left = true,
-                "ArrowLeft" => state.input.rotate_camera_right = true,
+                "ArrowRight" => state.input.rotate_camera_right = true,
+                "ArrowLeft" => state.input.rotate_camera_left = true,
                 &_ => return,
             }
         });
@@ -54,8 +54,8 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
                 "d" | "D" => state.input.move_right = false,
                 "w" | "W" => state.input.move_forward = false,
                 "s" | "S" => state.input.move_backward = false,
-                "ArrowRight" => state.input.rotate_camera_left = false,
-                "ArrowLeft" => state.input.rotate_camera_right = false,
+                "ArrowRight" => state.input.rotate_camera_right = false,
+                "ArrowLeft" => state.input.rotate_camera_left = false,
                 &_ => return,
             }
         });
@@ -85,10 +85,12 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
 
             let mut camera_rotation = 0;
             if state.input.rotate_camera_left {
-                camera_rotation += 1;
+                camera_rotation -= 1;
+                state.input.rotate_camera_left = false;
             }
             if state.input.rotate_camera_right {
-                camera_rotation -= 1;
+                camera_rotation += 1;
+                state.input.rotate_camera_right = false;
             }
 
             if sideways_move != 0 {
