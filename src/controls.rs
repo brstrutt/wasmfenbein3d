@@ -9,8 +9,7 @@ pub struct InputState {
     pub move_right: bool,
     pub move_forward: bool,
     pub move_backward: bool,
-    pub rotate_camera_left: bool,
-    pub rotate_camera_right: bool,
+    pub camera_rotation: i32,
     pub pointer_locked: bool,
 }
 
@@ -21,8 +20,7 @@ impl InputState {
             move_right: false,
             move_forward: false,
             move_backward: false,
-            rotate_camera_left: false,
-            rotate_camera_right: false,
+            camera_rotation: 0,
             pointer_locked: false,
         }
     }
@@ -79,15 +77,8 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
                 forwards_move -= 1;
             }
 
-            let mut camera_rotation = 0;
-            if state.input.rotate_camera_left {
-                camera_rotation -= 1;
-                state.input.rotate_camera_left = false;
-            }
-            if state.input.rotate_camera_right {
-                camera_rotation += 1;
-                state.input.rotate_camera_right = false;
-            }
+            let camera_rotation = state.input.camera_rotation;
+            state.input.camera_rotation = 0;
 
             if sideways_move != 0 {
                 let move_right_direction = state
@@ -106,7 +97,7 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
             }
 
             if camera_rotation != 0 {
-                state.world.camera = state.world.camera.rotate(camera_rotation as f64 * 0.01);
+                state.world.camera = state.world.camera.rotate(camera_rotation as f64 * 0.0025);
             }
         });
     }
@@ -138,17 +129,8 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
         web::document::add_event_listener_with_callback("mousemove", move |e: MouseEvent| {
             let mut state = state.borrow_mut();
 
-            state.input.rotate_camera_left = false;
-            state.input.rotate_camera_right = false;
-
             if state.input.pointer_locked {
-                let movement = e.movement_x();
-                if movement < 0 {
-                    state.input.rotate_camera_left = true;
-                }
-                else {
-                    state.input.rotate_camera_right = true;
-                }
+                state.input.camera_rotation += e.movement_x();
             }
         });
     }
