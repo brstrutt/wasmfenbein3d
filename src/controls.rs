@@ -1,7 +1,8 @@
 use std::{cell::RefCell, rc::Rc};
+use wasm_bindgen::{JsCast, prelude::Closure};
 use web_sys::KeyboardEvent;
 
-use crate::{state::GameState, web};
+use crate::{main_canvas::MainCanvas, state::GameState, web};
 
 pub struct InputState {
     pub move_left: bool,
@@ -25,7 +26,7 @@ impl InputState {
     }
 }
 
-pub fn setup(state: Rc<RefCell<GameState>>) {
+pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>) {
     {
         let state = state.clone();
         web::document::add_event_listener_with_callback("keydown", move |e: KeyboardEvent| {
@@ -108,5 +109,20 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
                 state.world.camera = state.world.camera.rotate(camera_rotation as f64 * 0.01);
             }
         });
+    }
+
+
+    {
+        let main_canvas_inner = main_canvas.clone();
+        let main_canvas_outer = main_canvas.clone();
+
+        let callback = Closure::wrap(Box::new(move |_e: web_sys::Event| {
+            let main_canvas = main_canvas_inner.borrow_mut();
+            main_canvas.element.request_pointer_lock();
+        }) as Box<dyn FnMut(_)>);
+
+        let main_canvas = main_canvas_outer.borrow_mut();
+        main_canvas.element.add_event_listener_with_callback("click", callback.as_ref().unchecked_ref()).expect("Failed to setup on click event for canvas");
+        callback.forget();
     }
 }

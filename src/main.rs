@@ -15,11 +15,13 @@ fn main() {
 
     web::log::log("Starting up!");
 
-    let mut canvas = MainCanvas::init();
-    canvas.update_canvas_size();
+    let canvas = Rc::new(RefCell::new(MainCanvas::init()));
+    {
+        canvas.borrow_mut().update_canvas_size();
+    }
 
     let state = Rc::new(RefCell::new(GameState::setup()));
 
-    controls::setup(state.clone());
-    render::setup(state.clone(), canvas);
+    controls::setup(state.clone(), canvas.clone());
+    render::setup(state.clone(), canvas.clone());
 }
