@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::{JsCast, prelude::Closure};
-use web_sys::{Event, KeyboardEvent};
+use web_sys::{Event, KeyboardEvent, MouseEvent};
 
 use crate::{main_canvas::MainCanvas, state::GameState, web};
 
@@ -132,6 +132,26 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
         web::document::add_event_listener_with_callback("pointerlockchange", move |_e: Event| {
             let mut state = state.borrow_mut();
             state.input.pointer_locked = web::access::document().pointer_lock_element().is_some();
+        });
+    }
+
+    {
+        let state = state.clone();
+        web::document::add_event_listener_with_callback("mousemove", move |e: MouseEvent| {
+            let mut state = state.borrow_mut();
+
+            state.input.rotate_camera_left = false;
+            state.input.rotate_camera_right = false;
+
+            if state.input.pointer_locked {
+                let movement = e.movement_x();
+                if movement < 0 {
+                    state.input.rotate_camera_left = true;
+                }
+                else {
+                    state.input.rotate_camera_right = true;
+                }
+            }
         });
     }
 }
