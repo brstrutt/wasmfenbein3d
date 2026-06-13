@@ -8,6 +8,8 @@ pub struct InputState {
     pub move_right: bool,
     pub move_forward: bool,
     pub move_backward: bool,
+    pub rotate_camera_left: bool,
+    pub rotate_camera_right: bool,
 }
 
 impl InputState {
@@ -17,6 +19,8 @@ impl InputState {
             move_right: false,
             move_forward: false,
             move_backward: false,
+            rotate_camera_left: false,
+            rotate_camera_right: false,
         }
     }
 }
@@ -31,8 +35,8 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
                 "d" | "D" => state.input.move_right = true,
                 "w" | "W" => state.input.move_forward = true,
                 "s" | "S" => state.input.move_backward = true,
-                "ArrowRight" => state.world.camera = state.world.camera.rotate(0.1),
-                "ArrowLeft" => state.world.camera = state.world.camera.rotate(-0.1),
+                "ArrowRight" => state.input.rotate_camera_left = true,
+                "ArrowLeft" => state.input.rotate_camera_right = true,
                 &_ => return,
             }
         });
@@ -47,6 +51,8 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
                 "d" | "D" => state.input.move_right = false,
                 "w" | "W" => state.input.move_forward = false,
                 "s" | "S" => state.input.move_backward = false,
+                "ArrowRight" => state.input.rotate_camera_left = false,
+                "ArrowLeft" => state.input.rotate_camera_right = false,
                 &_ => return,
             }
         });
@@ -74,6 +80,14 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
                 forwards_move -= 1;
             }
 
+            let mut camera_rotation = 0;
+            if state.input.rotate_camera_left {
+                camera_rotation += 1;
+            }
+            if state.input.rotate_camera_right {
+                camera_rotation -= 1;
+            }
+
             if sideways_move != 0 {
                 let move_right_direction = state
                     .world
@@ -88,6 +102,10 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
                 let move_forward_direction = state.world.camera.direction;
                 state.world.camera.origin = state.world.camera.origin
                     + (move_forward_direction * forwards_move as f64 * SPEED)
+            }
+
+            if camera_rotation != 0 {
+                state.world.camera = state.world.camera.rotate(camera_rotation as f64 * 0.01);
             }
         });
     }
