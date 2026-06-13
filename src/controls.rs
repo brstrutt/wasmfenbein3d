@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::{JsCast, prelude::Closure};
-use web_sys::KeyboardEvent;
+use web_sys::{Event, KeyboardEvent};
 
 use crate::{main_canvas::MainCanvas, state::GameState, web};
 
@@ -118,7 +118,7 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
         let main_canvas_inner = main_canvas.clone();
         let main_canvas_outer = main_canvas.clone();
 
-        let callback = Closure::wrap(Box::new(move |_e: web_sys::Event| {
+        let callback = Closure::wrap(Box::new(move |_e: Event| {
             let main_canvas = main_canvas_inner.borrow_mut();
             main_canvas.element.request_pointer_lock();
         }) as Box<dyn FnMut(_)>);
@@ -129,7 +129,7 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
 
 
         let state = state.clone();
-        web::document::add_event_listener_with_callback("pointerlockchange", move |_e: KeyboardEvent| {
+        web::document::add_event_listener_with_callback("pointerlockchange", move |_e: Event| {
             let mut state = state.borrow_mut();
             state.input.pointer_locked = web::access::document().pointer_lock_element().is_some();
         });
