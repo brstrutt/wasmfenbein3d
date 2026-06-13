@@ -27,6 +27,14 @@ impl ops::Mul<Point2D> for Point2D {
     }
 }
 
+impl ops::Mul<f64> for Point2D {
+    type Output = Point2D;
+
+    fn mul(self, _rhs: f64) -> Point2D {
+        Point2D{x: self.x * _rhs, y: self.y * _rhs}
+    }
+}
+
 impl ops::Div<Point2D> for Point2D {
     type Output = Point2D;
 
