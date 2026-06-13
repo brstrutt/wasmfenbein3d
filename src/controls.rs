@@ -24,7 +24,7 @@ impl InputState {
 pub fn setup(state: Rc<RefCell<GameState>>) {
     {
         let state = state.clone();
-        web::document::add_event_listener_with_callback(move |e: KeyboardEvent| {
+        web::document::add_event_listener_with_callback("keydown", move |e: KeyboardEvent| {
             let mut state = state.borrow_mut();
             match e.key().as_str() {
                 "a" | "A" => state.input.move_left = true,
