@@ -25,7 +25,7 @@ pub fn render(canvas: &RefCell<MainCanvas>, state: &RefCell<GameState>) {
             let distance = wall_distance.unwrap();
             if distance != 0.0 {
                 let height = canvas.element.height() as f64 / distance;
-                screen::render_column(&canvas, x, height as u32, &(WALL_COLOUR / distance));
+                screen::render_column(&canvas, x, height as u32, &(WALL_COLOUR / (distance/5.0).max(1.0)));
             }
         }
     }
