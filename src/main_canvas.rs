@@ -22,6 +22,7 @@ impl MainCanvas {
         let canvas_node = canvas_node
             .dyn_into::<HtmlCanvasElement>()
             .expect("Failed to convert canvas into HtmlCanvasElement");
+        canvas_node.style().set_property("z-index", "-2").expect("Failed to move the canvas into the background");
 
         let canvas_context = canvas_node
             .get_context("2d")
