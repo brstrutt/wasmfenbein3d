@@ -21,8 +21,8 @@ pub fn render_column(canvas: &MainCanvas, x: u32, mut height: u32, color: &RGB) 
 pub fn clear(canvas: &MainCanvas) {
     let half_height = f64::try_from(canvas.element.height()).unwrap() / 2.0;
 
-    canvas.render_context.set_fill_style_str("rgb(30, 20, 10)");
+    canvas.render_context.set_fill_style_str("rgb(15, 60, 15)");
     canvas.render_context.fill_rect(0.0, half_height, f64::try_from(canvas.element.width()).unwrap(), half_height);
-    canvas.render_context.set_fill_style_str("rgb(30, 75, 130)");
+    canvas.render_context.set_fill_style_str("rgb(10, 40, 10)");
     canvas.render_context.fill_rect(0.0, 0.0, f64::try_from(canvas.element.width()).unwrap(), half_height);
 }
