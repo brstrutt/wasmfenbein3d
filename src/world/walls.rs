@@ -2,13 +2,30 @@ use crate::primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D};
 
 
 pub fn default_walls() -> Vec<Line2D> {
-    vec![
-        Line2D{start: Point2D{ x: 10.0, y: 10.0 }, end: Point2D { x: 10.0, y: 5.0 }},
-        Line2D{start: Point2D{ x: 2.0, y: 2.0 }, end: Point2D { x: 200.0, y: 200.0 }},
-        Line2D{start: Point2D{ x: 200.0, y: 2.0 }, end: Point2D { x: 400.0, y: 200.0 }},
-        Line2D{start: Point2D{ x: 1000.0, y: 2.0 }, end: Point2D { x: 600.0, y: 200.0 }},
-        Line2D{start: Point2D{ x: 1000.0, y: 2.0 }, end: Point2D { x: 1500.0, y: 200.0 }},
-    ]
+    walls_from_point_path(&vec![
+        Point2D::new(-5.0, -3.0),
+        Point2D::new(-5.0, 5.0),
+        Point2D::new(-1.0, 5.0),
+        Point2D::new(5.0, 5.0),
+        Point2D::new(5.0, -5.0),
+        Point2D::new(-10.0, -5.0),
+        Point2D::new(-10.0, -7.0),
+        Point2D::new(-13.0, -7.0),
+        Point2D::new(-13.0, -1.0),
+        Point2D::new(-10.0, -1.0),
+        Point2D::new(-10.0, -3.0),
+    ])
+}
+
+fn walls_from_point_path(points: &Vec<Point2D>) -> Vec<Line2D> {
+    if points.len() < 2 { return vec![];}
+
+    let mut lines = vec![];
+    for index in 1..points.len() {
+        lines.push(Line2D{start: points[index - 1], end: points[index]});
+    }
+    lines.push(Line2D{start: points[points.len() -1], end: points[0]});
+    lines
 }
 
 pub fn dist_to_wall(walls: &Vec<Line2D>, raycast: &Ray2D) -> Option<f64> {
