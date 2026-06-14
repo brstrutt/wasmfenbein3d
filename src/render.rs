@@ -11,8 +11,10 @@ pub fn setup(state: Rc<RefCell<GameState>>, canvas: Rc<RefCell<MainCanvas>>) {
 }
 
 pub fn render(canvas: &RefCell<MainCanvas>, state: &RefCell<GameState>) {
+    let render_start_time = web::window::now_in_ms();
+
     let canvas = canvas.borrow();
-    let state = state.borrow();
+    let mut state = state.borrow_mut();
     screen::clear(&canvas);
 
     const WALL_COLOUR: RGB = RGB {red: 30, green: 125, blue: 30};
@@ -29,4 +31,7 @@ pub fn render(canvas: &RefCell<MainCanvas>, state: &RefCell<GameState>) {
             }
         }
     }
+
+    let render_end_time = web::window::now_in_ms();
+    state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
 }
