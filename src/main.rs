@@ -5,6 +5,7 @@ mod main_canvas;
 mod controls;
 mod web;
 mod state;
+mod hud;
 
 use std::{cell::RefCell, rc::Rc};
 
@@ -24,4 +25,5 @@ fn main() {
 
     controls::setup(state.clone(), canvas.clone());
     render::setup(state.clone(), canvas.clone());
+    hud::setup(state.clone());
 }

@@ -5,6 +5,7 @@ pub struct GameState {
     pub world: World,
     pub input: InputState,
     pub last_frame_time_ms: f64,
+    pub last_time_between_frames_ms: f64,
 }
 
 impl GameState {
@@ -13,6 +14,7 @@ impl GameState {
             world: World::dummy(),
             input: InputState::setup(),
             last_frame_time_ms: web::window::now_in_ms(),
+            last_time_between_frames_ms: 0.0,
         }
     }
 }

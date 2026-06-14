@@ -66,6 +66,7 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
             let current_time = web::window::now_in_ms();
             let time_since_last_frame_ms = current_time - state.last_frame_time_ms;
             state.last_frame_time_ms = current_time;
+            state.last_time_between_frames_ms = time_since_last_frame_ms;
 
             let time_since_last_frame_s = time_since_last_frame_ms / 1000.0;
 
