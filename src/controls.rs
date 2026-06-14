@@ -9,6 +9,7 @@ pub struct InputState {
     pub move_right: bool,
     pub move_forward: bool,
     pub move_backward: bool,
+    pub sprint: bool,
     pub camera_rotation: i32,
     pub pointer_locked: bool,
 }
@@ -20,6 +21,7 @@ impl InputState {
             move_right: false,
             move_forward: false,
             move_backward: false,
+            sprint: false,
             camera_rotation: 0,
             pointer_locked: false,
         }
@@ -31,6 +33,7 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
         let state = state.clone();
         web::document::add_event_listener_with_callback("keydown", move |e: KeyboardEvent| {
             let mut state = state.borrow_mut();
+            state.input.sprint = e.shift_key();
             match e.key().as_str() {
                 "a" | "A" => state.input.move_left = true,
                 "d" | "D" => state.input.move_right = true,
@@ -45,6 +48,7 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
         let state = state.clone();
         web::document::add_event_listener_with_callback("keyup", move |e: KeyboardEvent| {
             let mut state = state.borrow_mut();
+            state.input.sprint = e.shift_key();
             match e.key().as_str() {
                 "a" | "A" => state.input.move_left = false,
                 "d" | "D" => state.input.move_right = false,
@@ -67,6 +71,8 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
 
             const MOVEMENT_SPEED: f64 = 2.0; // move 2.0 per second
             const ROTATION_SPEED: f64 = 0.05; // roate 0.05 per second
+
+            let sprint_speed = if state.input.sprint {5.0} else {1.0};
 
             let mut sideways_move = 0;
             if state.input.move_left {
@@ -94,13 +100,13 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
                     .rotate(std::f32::consts::PI as f64 / 2.0)
                     .direction;
                 state.world.camera.origin = state.world.camera.origin
-                    + (move_right_direction * sideways_move as f64 * MOVEMENT_SPEED * time_since_last_frame_s)
+                    + (move_right_direction * sideways_move as f64 * MOVEMENT_SPEED * sprint_speed * time_since_last_frame_s)
             }
 
             if forwards_move != 0 {
                 let move_forward_direction = state.world.camera.direction;
                 state.world.camera.origin = state.world.camera.origin
-                    + (move_forward_direction * forwards_move as f64 * MOVEMENT_SPEED * time_since_last_frame_s)
+                    + (move_forward_direction * forwards_move as f64 * MOVEMENT_SPEED * sprint_speed * time_since_last_frame_s)
             }
 
             if camera_rotation != 0 {
