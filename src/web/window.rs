@@ -23,3 +23,7 @@ pub fn request_animation_frame(f: &Closure<dyn FnMut()>) {
         .request_animation_frame(f.as_ref().unchecked_ref())
         .expect("should register `requestAnimationFrame` OK");
 }
+
+pub fn now_in_ms() -> f64 {
+    web::access::window().performance().expect("Couldnt get the window performance object").now()
+}

@@ -59,7 +59,14 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
         let state = state.clone();
         web::window::run_function_every_animation_frame(move || {
             let mut state = state.borrow_mut();
-            const SPEED: f64 = 0.1; // move 0.1 per frame
+            let current_time = web::window::now_in_ms();
+            let time_since_last_frame_ms = current_time - state.last_frame_time_ms;
+            state.last_frame_time_ms = current_time;
+
+            let time_since_last_frame_s = time_since_last_frame_ms / 1000.0;
+
+            const MOVEMENT_SPEED: f64 = 2.0; // move 2.0 per second
+            const ROTATION_SPEED: f64 = 0.05; // roate 0.05 per second
 
             let mut sideways_move = 0;
             if state.input.move_left {
@@ -87,17 +94,17 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
                     .rotate(std::f32::consts::PI as f64 / 2.0)
                     .direction;
                 state.world.camera.origin = state.world.camera.origin
-                    + (move_right_direction * sideways_move as f64 * SPEED)
+                    + (move_right_direction * sideways_move as f64 * MOVEMENT_SPEED * time_since_last_frame_s)
             }
 
             if forwards_move != 0 {
                 let move_forward_direction = state.world.camera.direction;
                 state.world.camera.origin = state.world.camera.origin
-                    + (move_forward_direction * forwards_move as f64 * SPEED)
+                    + (move_forward_direction * forwards_move as f64 * MOVEMENT_SPEED * time_since_last_frame_s)
             }
 
             if camera_rotation != 0 {
-                state.world.camera = state.world.camera.rotate(camera_rotation as f64 * 0.0025);
+                state.world.camera = state.world.camera.rotate(camera_rotation as f64 * ROTATION_SPEED * time_since_last_frame_s);
             }
         });
     }
