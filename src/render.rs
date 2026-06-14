@@ -19,8 +19,10 @@ pub fn render(canvas: &RefCell<MainCanvas>, state: &RefCell<GameState>) {
 
     const WALL_COLOUR: RGB = RGB {red: 30, green: 125, blue: 30};
 
-    for x in 0..=canvas.element.width() {
-        let ray = state.world.camera.ray_for_column(x, canvas.element.height(), canvas.element.width());
+    let width = canvas.element.width();
+    let height = canvas.element.height();
+    for x in 0..=width {
+        let ray = state.world.camera.ray_for_column(x, height, width);
         let wall_distance = state.world.dist_to_wall(&ray);
 
         if wall_distance.is_some() {
