@@ -16,5 +16,9 @@ canvas {
     button {
         height: 100px;
         width: 100px;
+
+        @media (hover: hover) {
+            visibility: hidden;
+        }
     }
 }
