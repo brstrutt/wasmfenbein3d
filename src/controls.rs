@@ -1,4 +1,4 @@
-use std::{cell::RefCell, rc::Rc};
+use std::{cell::{RefCell, RefMut}, rc::Rc};
 use wasm_bindgen::{JsCast, prelude::Closure};
 use web_sys::{Event, KeyboardEvent, MouseEvent};
 
@@ -149,92 +149,36 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
         });
     }
 
+    setup_movement_button(state.clone(), "move_forward", |state: &mut RefMut<GameState>, new_value: bool| { state.input.move_forward = new_value; });
+    setup_movement_button(state.clone(), "move_backward", |state: &mut RefMut<GameState>, new_value: bool| { state.input.move_backward = new_value; });
+    setup_movement_button(state.clone(), "move_left", |state: &mut RefMut<GameState>, new_value: bool| { state.input.move_left = new_value; });
+    setup_movement_button(state.clone(), "move_right", |state: &mut RefMut<GameState>, new_value: bool| { state.input.move_right = new_value; });
+}
+
+fn setup_movement_button<T: FnMut(&mut RefMut<GameState>, bool) + Clone>(state: Rc<RefCell<GameState>>, button_id: &str, state_change: T) {
     {
         let state = state.clone();
+        let mut state_change = state_change.clone();
+
         let callback = Closure::wrap(Box::new(move || {
             let mut state = state.borrow_mut();
-            state.input.move_forward = true;
+            state_change(&mut state, true);
         }) as Box<dyn FnMut()>);
-        web::access::button("move_forward").set_onmousedown(Some(callback.as_ref().unchecked_ref()));
-        web::access::button("move_forward").set_ontouchstart(Some(callback.as_ref().unchecked_ref()));
+        web::access::button(button_id).set_onmousedown(Some(callback.as_ref().unchecked_ref()));
+        web::access::button(button_id).set_ontouchstart(Some(callback.as_ref().unchecked_ref()));
         callback.forget();
     }
 
     {
         let state = state.clone();
+        let mut state_change = state_change.clone();
+
         let callback = Closure::wrap(Box::new(move || {
             let mut state = state.borrow_mut();
-            state.input.move_forward = false;
+            state_change(&mut state, false);
         }) as Box<dyn FnMut()>);
-        web::access::button("move_forward").set_onmouseup(Some(callback.as_ref().unchecked_ref()));
-        web::access::button("move_forward").set_ontouchend(Some(callback.as_ref().unchecked_ref()));
-        callback.forget();
-    }
-
-    {
-        let state = state.clone();
-        let callback = Closure::wrap(Box::new(move || {
-            let mut state = state.borrow_mut();
-            state.input.move_backward = true;
-        }) as Box<dyn FnMut()>);
-        web::access::button("move_backward").set_onmousedown(Some(callback.as_ref().unchecked_ref()));
-        web::access::button("move_backward").set_ontouchstart(Some(callback.as_ref().unchecked_ref()));
-        callback.forget();
-    }
-
-    {
-        let state = state.clone();
-        let callback = Closure::wrap(Box::new(move || {
-            let mut state = state.borrow_mut();
-            state.input.move_backward = false;
-        }) as Box<dyn FnMut()>);
-        web::access::button("move_backward").set_onmouseup(Some(callback.as_ref().unchecked_ref()));
-        web::access::button("move_backward").set_ontouchend(Some(callback.as_ref().unchecked_ref()));
-        callback.forget();
-    }
-
-
-    {
-        let state = state.clone();
-        let callback = Closure::wrap(Box::new(move || {
-            let mut state = state.borrow_mut();
-            state.input.move_left = true;
-        }) as Box<dyn FnMut()>);
-        web::access::button("move_left").set_onmousedown(Some(callback.as_ref().unchecked_ref()));
-        web::access::button("move_left").set_ontouchstart(Some(callback.as_ref().unchecked_ref()));
-        callback.forget();
-    }
-
-    {
-        let state = state.clone();
-        let callback = Closure::wrap(Box::new(move || {
-            let mut state = state.borrow_mut();
-            state.input.move_left = false;
-        }) as Box<dyn FnMut()>);
-        web::access::button("move_left").set_onmouseup(Some(callback.as_ref().unchecked_ref()));
-        web::access::button("move_left").set_ontouchend(Some(callback.as_ref().unchecked_ref()));
-        callback.forget();
-    }
-
-    {
-        let state = state.clone();
-        let callback = Closure::wrap(Box::new(move || {
-            let mut state = state.borrow_mut();
-            state.input.move_right = true;
-        }) as Box<dyn FnMut()>);
-        web::access::button("move_right").set_onmousedown(Some(callback.as_ref().unchecked_ref()));
-        web::access::button("move_right").set_ontouchstart(Some(callback.as_ref().unchecked_ref()));
-        callback.forget();
-    }
-
-    {
-        let state = state.clone();
-        let callback = Closure::wrap(Box::new(move || {
-            let mut state = state.borrow_mut();
-            state.input.move_right = false;
-        }) as Box<dyn FnMut()>);
-        web::access::button("move_right").set_onmouseup(Some(callback.as_ref().unchecked_ref()));
-        web::access::button("move_right").set_ontouchend(Some(callback.as_ref().unchecked_ref()));
+        web::access::button(button_id).set_onmouseup(Some(callback.as_ref().unchecked_ref()));
+        web::access::button(button_id).set_ontouchend(Some(callback.as_ref().unchecked_ref()));
         callback.forget();
     }
 }
