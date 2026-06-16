@@ -137,6 +137,7 @@ fn setup_camera_touch_control(state: Rc<RefCell<GameState>>, main_canvas: Rc<Ref
 
     let cloned_state = state.clone();
     let touch_start_closure = Closure::wrap(Box::new(move |e: TouchEvent| {
+        e.prevent_default();
         let mut state = cloned_state.borrow_mut();
 
         let touch_points = e.target_touches();
@@ -152,6 +153,7 @@ fn setup_camera_touch_control(state: Rc<RefCell<GameState>>, main_canvas: Rc<Ref
 
     let cloned_state = state.clone();
     let touch_move_closure = Closure::wrap(Box::new(move |e: TouchEvent| {
+        e.prevent_default();
         let mut state = cloned_state.borrow_mut();
         const ACCELERATION: i32 = 4;
 
@@ -171,7 +173,8 @@ fn setup_camera_touch_control(state: Rc<RefCell<GameState>>, main_canvas: Rc<Ref
 
 
     let cloned_state = state.clone();
-    let touch_end_closure = Closure::wrap(Box::new(move |_e: TouchEvent| {
+    let touch_end_closure = Closure::wrap(Box::new(move |e: TouchEvent| {
+        e.prevent_default();
         let mut state = cloned_state.borrow_mut();
         state.input.last_canvas_touch_point_x = None;
     }) as Box<dyn FnMut(_)>);
