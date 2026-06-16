@@ -17,7 +17,7 @@ canvas {
         height: 100px;
         width: 100px;
 
-        @media (hover: hover) {
+        @media not (pointer: coarse) {
             visibility: hidden;
         }
     }
