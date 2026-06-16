@@ -193,7 +193,7 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
         let time_since_last_frame_s = time_since_last_frame_ms / 1000.0;
 
         const MOVEMENT_SPEED: f64 = 2.0; // move 2.0 per second
-        const ROTATION_SPEED: f64 = 0.05; // roate 0.05 per second
+        const ROTATION_SPEED: f64 = 0.001;
 
         let sprint_speed = if state.input.sprint {5.0} else {1.0};
 
@@ -233,7 +233,7 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
         }
 
         if camera_rotation != 0 {
-            state.world.camera = state.world.camera.rotate(camera_rotation as f64 * ROTATION_SPEED * time_since_last_frame_s);
+            state.world.camera = state.world.camera.rotate(camera_rotation as f64 * ROTATION_SPEED);
         }
     });
 }
