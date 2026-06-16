@@ -192,10 +192,10 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
 
         let time_since_last_frame_s = time_since_last_frame_ms / 1000.0;
 
-        const MOVEMENT_SPEED: f64 = 2.0; // move 2.0 per second
+        const MOVEMENT_SPEED: f64 = 4.0; // move 4.0 per second
         const ROTATION_SPEED: f64 = 0.001;
 
-        let sprint_speed = if state.input.sprint {5.0} else {1.0};
+        let sprint_speed = if state.input.sprint {3.0} else {1.0};
 
         let mut sideways_move = 0;
         if state.input.move_left {
