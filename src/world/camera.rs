@@ -10,7 +10,7 @@ impl Camera {
         )
     }
 
-    pub fn ray_for_column(&self, column: u32, screen_height_pixels: u32, screen_width_pixels: u32) -> Ray2D {
+    pub fn ray_for_column(&self, column: usize, screen_height_pixels: usize, screen_width_pixels: usize) -> Ray2D {
         const FOV_DEGRESS: f64 = std::f32::consts::PI as f64 / 4.0; // 45 degrees in radians
 
         let angle_step = FOV_DEGRESS / screen_height_pixels as f64;

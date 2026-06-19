@@ -1,7 +1,7 @@
 use wasm_bindgen::JsCast;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 
-use crate::web;
+use crate::{render::screen::ScreenBuffer, web};
 
 pub struct MainCanvas {
     pub element: HtmlCanvasElement,
@@ -16,13 +16,17 @@ impl MainCanvas {
             .create_element("canvas")
             .expect("Failed to create canvas node");
 
-        web::access::body().append_child(canvas_node.as_ref())
+        web::access::body()
+            .append_child(canvas_node.as_ref())
             .expect("Failed to append canvas node");
 
         let canvas_node = canvas_node
             .dyn_into::<HtmlCanvasElement>()
             .expect("Failed to convert canvas into HtmlCanvasElement");
-        canvas_node.style().set_property("z-index", "-2").expect("Failed to move the canvas into the background");
+        canvas_node
+            .style()
+            .set_property("z-index", "-2")
+            .expect("Failed to move the canvas into the background");
 
         let canvas_context = canvas_node
             .get_context("2d")
@@ -43,5 +47,11 @@ impl MainCanvas {
 
         self.element.set_width(width);
         self.element.set_height(height);
+    }
+
+    pub fn render_screen_buffer(&mut self, screen_buffer: &ScreenBuffer) {
+        self.render_context
+            .put_image_data(&screen_buffer.to_imagedata(), 0.0, 0.0)
+            .expect("Failed to copy Screen Buffer to canvas.");
     }
 }

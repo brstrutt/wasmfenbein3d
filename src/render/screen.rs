@@ -1,28 +1,68 @@
-use crate::{main_canvas::MainCanvas, render::rgb::RGB};
+use crate::render::rgb::RGB;
+use wasm_bindgen::Clamped;
+use web_sys::ImageData;
 
-pub fn _render(canvas: &MainCanvas, x: u32, y: u32, color: &RGB) {
-    canvas.render_context.set_fill_style_str(format!("rgb({red},{green},{blue})", red = color.red, green = color.green, blue = color.blue).as_str());
-    canvas.render_context.fill_rect(x as f64, y as f64, 1.0, 1.0);
+pub struct ScreenBuffer {
+    pixels: Vec<u8>,
+    width: usize,
+    height: usize,
+    center: usize,
 }
 
-pub fn render_column(canvas: &MainCanvas, x: u32, mut height: u32, color: &RGB) {
-    if height > canvas.element.height() {
-        height = canvas.element.height();
+impl ScreenBuffer {
+    pub fn setup(width: usize, height: usize) -> Self {
+        ScreenBuffer {
+            pixels: vec![255u8; width * height * 4],
+            width,
+            height,
+            center: height/2,
+        }
     }
 
-    let center = canvas.element.height()/2;
-    let half_height = height/2;
-    let bottom = center - half_height;
+    pub fn render(&mut self, x: &usize, y: &usize, color: &RGB) {
+        let pixel_index = ((y * self.width) + x) * 4;
+        self.pixels[pixel_index] = color.red;
+        self.pixels[pixel_index + 1] = color.green;
+        self.pixels[pixel_index + 2] = color.blue;
+    }
 
-    canvas.render_context.set_fill_style_str(format!("rgb({red},{green},{blue})", red = color.red, green = color.green, blue = color.blue).as_str());
-    canvas.render_context.fill_rect(x as f64, bottom as f64, 1.0, f64::try_from(height).unwrap());
-}
+    pub fn render_column(&mut self, x: &usize, mut height: usize, color: &RGB) {
+        if height > self.height {
+            height = self.height;
+        }
 
-pub fn clear(canvas: &MainCanvas) {
-    let half_height = f64::try_from(canvas.element.height()).unwrap() / 2.0;
+        let half_height = height / 2;
+        let top = self.center + half_height;
+        let bottom = self.center - half_height;
 
-    canvas.render_context.set_fill_style_str("rgb(15, 60, 15)");
-    canvas.render_context.fill_rect(0.0, half_height, f64::try_from(canvas.element.width()).unwrap(), half_height);
-    canvas.render_context.set_fill_style_str("rgb(10, 40, 10)");
-    canvas.render_context.fill_rect(0.0, 0.0, f64::try_from(canvas.element.width()).unwrap(), half_height);
+        const FLOOR_COLOR: RGB = RGB {
+            red: 15,
+            green: 60,
+            blue: 15,
+        };
+        const SKY_COLOR: RGB = RGB {
+            red: 10,
+            green: 40,
+            blue: 10,
+        };
+
+        for y in 0..bottom {
+            self.render(&x, &y, &SKY_COLOR);
+        }
+        for y in bottom..top {
+            self.render(&x, &y, &color);
+        }
+        for y in top..self.height {
+            self.render(&x, &y, &FLOOR_COLOR);
+        }
+    }
+
+    pub fn to_imagedata(&self) -> ImageData {
+        ImageData::new_with_u8_clamped_array_and_sh(
+            Clamped(&self.pixels), // Wrap the slice with Clamped
+            self.width as u32,
+            self.height as u32,
+        )
+        .expect("couldnt convert screen_buffer to ImageDats")
+    }
 }
