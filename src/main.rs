@@ -9,7 +9,7 @@ mod hud;
 
 use std::{cell::RefCell, rc::Rc};
 
-use crate::{main_canvas::MainCanvas, state::GameState};
+use crate::{main_canvas::MainCanvas, render::screen::ScreenBuffer, state::GameState};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -20,10 +20,14 @@ fn main() {
     {
         canvas.borrow_mut().update_canvas_size();
     }
+    let screen_buffer = Rc::new(RefCell::new(ScreenBuffer::setup(
+        canvas.borrow().element.width() as usize,
+        canvas.borrow().element.height() as usize,
+    )));
 
     let state = Rc::new(RefCell::new(GameState::setup()));
 
     controls::setup(state.clone(), canvas.clone());
-    render::setup(state.clone(), canvas.clone());
+    render::setup(state.clone(), screen_buffer.clone(), canvas.clone());
     hud::setup(state.clone());
 }
