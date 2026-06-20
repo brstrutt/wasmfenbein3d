@@ -42,17 +42,23 @@ pub fn render(
         let ray = state.world.camera.ray_for_column(x, height, width);
         let wall_distance = state.world.dist_to_wall(&ray);
 
+        let mut height = 0;
+        let mut wall_color_adjustment = 1.0;
+
         if wall_distance.is_some() {
             let distance = wall_distance.unwrap();
+            wall_color_adjustment = (distance / 5.0).max(1.0);
+
             if distance != 0.0 {
-                let height = (2.0 * canvas.element.height() as f64 / distance) as usize;
-                screen_buffer.render_column(
-                    &x,
-                    height,
-                    &(WALL_COLOUR / (distance / 5.0).max(1.0)),
-                );
+                height = (2.0 * canvas.element.height() as f64 / distance) as usize;
             }
         }
+
+        screen_buffer.render_column(
+            &x,
+            height,
+            &(WALL_COLOUR / wall_color_adjustment),
+        );
     }
 
     canvas.render_screen_buffer(&screen_buffer);
