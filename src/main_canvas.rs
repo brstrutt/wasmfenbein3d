@@ -3,6 +3,8 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 
 use crate::{render::screen::ScreenBuffer, web};
 
+const CANVAS_SCALE: u32 = 2;
+
 pub struct MainCanvas {
     pub element: HtmlCanvasElement,
     pub render_context: CanvasRenderingContext2d,
@@ -45,8 +47,8 @@ impl MainCanvas {
         let width: u32 = u32::try_from(self.element.offset_width()).unwrap();
         let height: u32 = u32::try_from(self.element.offset_height()).unwrap();
 
-        self.element.set_width(width);
-        self.element.set_height(height);
+        self.element.set_width(width / CANVAS_SCALE);
+        self.element.set_height(height / CANVAS_SCALE);
     }
 
     pub fn render_screen_buffer(&mut self, screen_buffer: &ScreenBuffer) {
