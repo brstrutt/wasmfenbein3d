@@ -11,9 +11,15 @@ impl Camera {
     }
 
     pub fn ray_for_column(&self, column: usize, screen_height_pixels: usize, screen_width_pixels: usize) -> Ray2D {
-        const FOV_DEGRESS: f64 = std::f32::consts::PI as f64 / 4.0; // 45 degrees in radians
+        const FOV_DEGREES: f64 = 90.0;
+        const FOV_RADIANS: f64 = std::f32::consts::PI as f64 * FOV_DEGREES/180.0;
 
-        let angle_step = FOV_DEGRESS / screen_height_pixels as f64;
+        let fov_step_per_pixel = FOV_RADIANS / screen_width_pixels as f64;
+
+        let screen_ratio = (screen_height_pixels / screen_width_pixels) as f64;
+        let fov_screen_adjustment = fov_step_per_pixel * (screen_ratio - 1.0) * 0.5;
+
+        let angle_step = fov_step_per_pixel - fov_screen_adjustment;
         let horizontal_pixel_coord: i64 = column as i64 - (screen_width_pixels as i64 / 2);
 
         let camera_direction_offset = angle_step * horizontal_pixel_coord as f64;
