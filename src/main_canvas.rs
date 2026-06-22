@@ -15,16 +15,11 @@ impl MainCanvas {
         let document = web::access::document();
 
         let canvas_node = document
-            .create_element("canvas")
-            .expect("Failed to create canvas node");
-
-        web::access::body()
-            .append_child(canvas_node.as_ref())
-            .expect("Failed to append canvas node");
-
-        let canvas_node = canvas_node
+            .get_element_by_id("screen_canvas")
+            .expect("Couldn't find screen canvas element")
             .dyn_into::<HtmlCanvasElement>()
             .expect("Failed to convert canvas into HtmlCanvasElement");
+
         canvas_node
             .style()
             .set_property("z-index", "-2")
