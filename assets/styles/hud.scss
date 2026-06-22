@@ -1,14 +1,16 @@
 
+#debug_info {
+    color: azure;
+    background-color: rgba($color: #555, $alpha: 0.5);
+}
+
 #HUD {
-    #debug_info {
-        color: azure;
-    }
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
     #screen_controls {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
 
         background-color: rgba($color: #555, $alpha: 0.5);
         padding: 10px;
