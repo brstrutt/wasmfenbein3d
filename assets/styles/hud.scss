@@ -1,17 +1,51 @@
 
 #HUD {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+
     #debug_info {
         color: azure;
     }
 
     #screen_controls {
+        background-color: rgba($color: #555, $alpha: 0.5);
+        padding: 10px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        #vertical_movement_buttons {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px;
+
+            :first-child {
+                margin-bottom: 10px;
+            }
+        }
+
         button {
             height: 100px;
             width: 100px;
 
-            @media not (pointer: coarse) {
-                visibility: hidden;
+            background-color: #999;
+            border: 2px solid #933;
+            border-radius: 20px;
+
+            font-weight: bold;
+            font-size:xx-large;
+
+            &:active {
+                background-color: #222;
             }
+        }
+
+        @media not (pointer: coarse) {
+            visibility: hidden;
         }
     }
 }
