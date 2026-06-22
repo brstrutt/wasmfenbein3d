@@ -1,0 +1,17 @@
+
+#HUD {
+    #debug_info {
+        color: azure;
+    }
+
+    #screen_controls {
+        button {
+            height: 100px;
+            width: 100px;
+
+            @media not (pointer: coarse) {
+                visibility: hidden;
+            }
+        }
+    }
+}
