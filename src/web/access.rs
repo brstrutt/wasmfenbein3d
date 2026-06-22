@@ -9,10 +9,6 @@ pub fn document() -> web_sys::Document {
     window().document().expect("no global `document` exists")
 }
 
-pub fn body() -> web_sys::HtmlElement {
-    document().body().expect("no document body exists")
-}
-
 pub fn button(id: &str) -> web_sys::HtmlButtonElement {
     document()
         .get_element_by_id(id)
