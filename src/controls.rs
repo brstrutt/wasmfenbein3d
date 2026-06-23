@@ -47,17 +47,22 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
 }
 
 fn setup_movement_button<T: FnMut(&mut RefMut<GameState>, bool) + Clone>(state: Rc<RefCell<GameState>>, button_id: &str, state_change: T) {
+    let button = web::access::button(button_id);
+
     {
         let state = state.clone();
         let mut state_change = state_change.clone();
 
+        let button_clone = button.clone();
         let callback = Closure::wrap(Box::new(move |e: Event| {
             e.prevent_default();
+            button_clone.set_class_name("active");
+
             let mut state = state.borrow_mut();
             state_change(&mut state, true);
         }) as Box<dyn FnMut(_)>);
-        web::access::button(button_id).set_onmousedown(Some(callback.as_ref().unchecked_ref()));
-        web::access::button(button_id).set_ontouchstart(Some(callback.as_ref().unchecked_ref()));
+        button.set_onmousedown(Some(callback.as_ref().unchecked_ref()));
+        button.set_ontouchstart(Some(callback.as_ref().unchecked_ref()));
         callback.forget();
     }
 
@@ -65,13 +70,16 @@ fn setup_movement_button<T: FnMut(&mut RefMut<GameState>, bool) + Clone>(state: 
         let state = state.clone();
         let mut state_change = state_change.clone();
 
+        let button_clone = button.clone();
         let callback = Closure::wrap(Box::new(move |e: Event| {
             e.prevent_default();
+            button_clone.set_class_name("");
+
             let mut state = state.borrow_mut();
             state_change(&mut state, false);
         }) as Box<dyn FnMut(_)>);
-        web::access::button(button_id).set_onmouseup(Some(callback.as_ref().unchecked_ref()));
-        web::access::button(button_id).set_ontouchend(Some(callback.as_ref().unchecked_ref()));
+        button.set_onmouseup(Some(callback.as_ref().unchecked_ref()));
+        button.set_ontouchend(Some(callback.as_ref().unchecked_ref()));
         callback.forget();
     }
 }

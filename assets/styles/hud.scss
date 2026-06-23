@@ -41,7 +41,7 @@
             font-weight: bold;
             font-size:xx-large;
 
-            &:active {
+            &:active, &.active {
                 background-color: #222;
             }
         }
