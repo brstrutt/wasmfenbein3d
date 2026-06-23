@@ -44,6 +44,8 @@ pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>
     setup_camera_touch_control(state.clone(), main_canvas.clone());
 
     setup_character_motion_loop(state.clone());
+    setup_camera_motion_loop(state.clone());
+    setup_fps_tracker(state);
 }
 
 fn setup_movement_button<T: FnMut(&mut RefMut<GameState>, bool) + Clone>(state: Rc<RefCell<GameState>>, button_id: &str, state_change: T) {
@@ -195,13 +197,10 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
         let mut state = state.borrow_mut();
         let current_time = web::window::now_in_ms();
         let time_since_last_frame_ms = current_time - state.last_frame_time_ms;
-        state.last_frame_time_ms = current_time;
-        state.last_time_between_frames_ms = time_since_last_frame_ms;
 
         let time_since_last_frame_s = time_since_last_frame_ms / 1000.0;
 
         const MOVEMENT_SPEED: f64 = 4.0; // move 4.0 per second
-        const ROTATION_SPEED: f64 = 0.001;
 
         let sprint_speed = if state.input.sprint {3.0} else {1.0};
 
@@ -221,9 +220,6 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
             forwards_move -= 1;
         }
 
-        let camera_rotation = state.input.camera_rotation;
-        state.input.camera_rotation = 0;
-
         if sideways_move != 0 {
             let move_right_direction = state
                 .world
@@ -239,9 +235,30 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
             state.world.camera.origin = state.world.camera.origin
                 + (move_forward_direction * forwards_move as f64 * MOVEMENT_SPEED * sprint_speed * time_since_last_frame_s)
         }
+    });
+}
+
+fn setup_camera_motion_loop(state: Rc<RefCell<GameState>>) {
+    web::window::run_function_every_animation_frame(move || {
+        let mut state = state.borrow_mut();
+
+        const ROTATION_SPEED: f64 = 0.001;
+
+        let camera_rotation = state.input.camera_rotation;
+        state.input.camera_rotation = 0;
 
         if camera_rotation != 0 {
             state.world.camera = state.world.camera.rotate(camera_rotation as f64 * ROTATION_SPEED);
         }
+    });
+}
+
+fn setup_fps_tracker(state: Rc<RefCell<GameState>>) {
+    web::window::run_function_every_animation_frame(move || {
+        let mut state = state.borrow_mut();
+        let current_time = web::window::now_in_ms();
+        let time_since_last_frame_ms = current_time - state.last_frame_time_ms;
+        state.last_frame_time_ms = current_time;
+        state.last_time_between_frames_ms = time_since_last_frame_ms;
     });
 }
