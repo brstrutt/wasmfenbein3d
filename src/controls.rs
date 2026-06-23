@@ -2,7 +2,7 @@ use std::{cell::{RefCell, RefMut}, rc::Rc};
 use wasm_bindgen::{JsCast, prelude::Closure};
 use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
-use crate::{main_canvas::MainCanvas, state::GameState, web};
+use crate::{main_canvas::MainCanvas, primitives::line2d::Line2D, state::GameState, web};
 
 pub struct InputState {
     pub move_left: bool,
@@ -220,20 +220,21 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
             forwards_move -= 1;
         }
 
+        let mut new_position = state.world.camera.origin;
         if sideways_move != 0 {
-            let move_right_direction = state
-                .world
-                .camera
-                .rotate(std::f32::consts::PI as f64 / 2.0)
-                .direction;
-            state.world.camera.origin = state.world.camera.origin
+            let move_right_direction = state.world.camera.rotate(std::f32::consts::PI as f64 / 2.0).direction;
+            new_position = new_position
                 + (move_right_direction * sideways_move as f64 * MOVEMENT_SPEED * sprint_speed * time_since_last_frame_s)
         }
 
         if forwards_move != 0 {
             let move_forward_direction = state.world.camera.direction;
-            state.world.camera.origin = state.world.camera.origin
+            new_position = new_position
                 + (move_forward_direction * forwards_move as f64 * MOVEMENT_SPEED * sprint_speed * time_since_last_frame_s)
+        }
+
+        if !state.world.line_intersects_wall(&Line2D{start: state.world.camera.origin,end: new_position}) {
+            state.world.camera.origin = new_position;
         }
     });
 }

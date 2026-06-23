@@ -20,4 +20,8 @@ impl World {
     pub fn dist_to_wall(&self, raycast: &Ray2D) -> Option<f64> {
         walls::dist_to_wall(&self.walls, raycast)
     }
+
+    pub fn line_intersects_wall(&self, line: &Line2D) -> bool {
+        walls::line_intersects_wall(&self.walls, line)
+    }
 }
