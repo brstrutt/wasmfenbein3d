@@ -10,6 +10,8 @@ impl Point2D {
 
 #[cfg(test)]
 mod test {
+use crate::utils::assert_floats_equal::assert_floats_equal;
+
 use super::*;
 
     #[test]
@@ -22,6 +24,6 @@ use super::*;
     fn test_rotation_angle_is_returned_by_get_angle(original_angle: f64) {
         let point = Point2D{x: 0.0, y: 100.0};
 
-        assert_eq!(point.rotate(original_angle).get_angle(), original_angle);
+        assert_floats_equal(point.rotate(original_angle).get_angle(), original_angle);
     }
 }
