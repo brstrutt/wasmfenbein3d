@@ -1,8 +1,11 @@
-use std::{cell::{RefCell, RefMut}, rc::Rc};
+use std::{
+    cell::{RefCell, RefMut},
+    rc::Rc,
+};
 use wasm_bindgen::{JsCast, prelude::Closure};
 use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
-use crate::{main_canvas::MainCanvas, primitives::line2d::Line2D, state::GameState, web};
+use crate::{primitives::line2d::Line2D, state::GameState, web};
 
 pub struct InputState {
     pub move_left: bool,
@@ -30,25 +33,53 @@ impl InputState {
     }
 }
 
-pub fn setup(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>) {
+pub fn setup(state: Rc<RefCell<GameState>>) {
     setup_keyboard_movement(state.clone());
 
-    setup_movement_button(state.clone(), "move_forward", |state: &mut RefMut<GameState>, new_value: bool| { state.input.move_forward = new_value; });
-    setup_movement_button(state.clone(), "move_backward", |state: &mut RefMut<GameState>, new_value: bool| { state.input.move_backward = new_value; });
-    setup_movement_button(state.clone(), "move_left", |state: &mut RefMut<GameState>, new_value: bool| { state.input.move_left = new_value; });
-    setup_movement_button(state.clone(), "move_right", |state: &mut RefMut<GameState>, new_value: bool| { state.input.move_right = new_value; });
+    setup_movement_button(
+        state.clone(),
+        "move_forward",
+        |state: &mut RefMut<GameState>, new_value: bool| {
+            state.input.move_forward = new_value;
+        },
+    );
+    setup_movement_button(
+        state.clone(),
+        "move_backward",
+        |state: &mut RefMut<GameState>, new_value: bool| {
+            state.input.move_backward = new_value;
+        },
+    );
+    setup_movement_button(
+        state.clone(),
+        "move_left",
+        |state: &mut RefMut<GameState>, new_value: bool| {
+            state.input.move_left = new_value;
+        },
+    );
+    setup_movement_button(
+        state.clone(),
+        "move_right",
+        |state: &mut RefMut<GameState>, new_value: bool| {
+            state.input.move_right = new_value;
+        },
+    );
 
-    setup_mouse_capture_on_click(state.clone(), main_canvas.clone());
+    setup_mouse_capture_on_click(state.clone());
     setup_camera_mouse_control(state.clone());
 
-    setup_camera_touch_control(state.clone(), main_canvas.clone());
+    setup_camera_touch_control(state.clone());
 
     setup_character_motion_loop(state.clone());
     setup_camera_motion_loop(state.clone());
     setup_fps_tracker(state);
 }
 
-fn setup_movement_button<T: FnMut(&mut RefMut<GameState>, bool) + Clone>(state: Rc<RefCell<GameState>>, button_id: &str, state_change: T) {
+fn setup_movement_button<T: FnMut(&mut RefMut<GameState>, bool) + Clone>(
+    state: Rc<RefCell<GameState>>,
+    button_id: &str,
+    state_change: T,
+) {
     let button = web::access::button(button_id);
 
     {
@@ -114,15 +145,16 @@ fn setup_keyboard_movement(state: Rc<RefCell<GameState>>) {
     });
 }
 
-fn setup_mouse_capture_on_click(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>) {
-    let cloned_main_canvas = main_canvas.clone();
+fn setup_mouse_capture_on_click(
+    state: Rc<RefCell<GameState>>,
+) {
     let callback = Closure::wrap(Box::new(move |_e: Event| {
-        let main_canvas = cloned_main_canvas.borrow_mut();
-        main_canvas.element.request_pointer_lock();
+        web::access::main_canvas().request_pointer_lock();
     }) as Box<dyn FnMut(_)>);
 
-    let main_canvas = main_canvas.borrow_mut();
-    main_canvas.element.add_event_listener_with_callback("click", callback.as_ref().unchecked_ref()).expect("Failed to setup on click event for canvas");
+    web::access::main_canvas()
+        .add_event_listener_with_callback("click", callback.as_ref().unchecked_ref())
+        .expect("Failed to setup on click event for canvas");
     callback.forget();
 
     web::document::add_event_listener_with_callback("pointerlockchange", move |_e: Event| {
@@ -132,7 +164,6 @@ fn setup_mouse_capture_on_click(state: Rc<RefCell<GameState>>, main_canvas: Rc<R
 }
 
 fn setup_camera_mouse_control(state: Rc<RefCell<GameState>>) {
-    
     web::document::add_event_listener_with_callback("mousemove", move |e: MouseEvent| {
         let mut state = state.borrow_mut();
 
@@ -142,9 +173,7 @@ fn setup_camera_mouse_control(state: Rc<RefCell<GameState>>) {
     });
 }
 
-fn setup_camera_touch_control(state: Rc<RefCell<GameState>>, main_canvas: Rc<RefCell<MainCanvas>>) {
-    let main_canvas = main_canvas.borrow_mut();
-
+fn setup_camera_touch_control(state: Rc<RefCell<GameState>>) {
     let cloned_state = state.clone();
     let touch_start_closure = Closure::wrap(Box::new(move |e: TouchEvent| {
         e.prevent_default();
@@ -152,14 +181,15 @@ fn setup_camera_touch_control(state: Rc<RefCell<GameState>>, main_canvas: Rc<Ref
 
         let touch_points = e.target_touches();
         if touch_points.length() > 0 {
-            let touch_x_position = touch_points.item(0).expect("Failed to get first touch point on the canvas").screen_x();
+            let touch_x_position = touch_points
+                .item(0)
+                .expect("Failed to get first touch point on the canvas")
+                .screen_x();
             state.input.last_canvas_touch_point_x = Some(touch_x_position);
-
         }
     }) as Box<dyn FnMut(_)>);
-    main_canvas.element.set_ontouchstart(Some(touch_start_closure.as_ref().unchecked_ref()));
+    web::access::main_canvas().set_ontouchstart(Some(touch_start_closure.as_ref().unchecked_ref()));
     touch_start_closure.forget();
-
 
     let cloned_state = state.clone();
     let touch_move_closure = Closure::wrap(Box::new(move |e: TouchEvent| {
@@ -169,18 +199,22 @@ fn setup_camera_touch_control(state: Rc<RefCell<GameState>>, main_canvas: Rc<Ref
 
         let touch_points = e.target_touches();
         if touch_points.length() > 0 {
-            let touch_x_position = touch_points.item(0).expect("Failed to get first touch point on the canvas").screen_x();
+            let touch_x_position = touch_points
+                .item(0)
+                .expect("Failed to get first touch point on the canvas")
+                .screen_x();
 
             if state.input.last_canvas_touch_point_x.is_some() {
-                state.input.camera_rotation = (state.input.last_canvas_touch_point_x.unwrap() - touch_x_position) * ACCELERATION;
+                state.input.camera_rotation = (state.input.last_canvas_touch_point_x.unwrap()
+                    - touch_x_position)
+                    * ACCELERATION;
             }
 
             state.input.last_canvas_touch_point_x = Some(touch_x_position);
         }
     }) as Box<dyn FnMut(_)>);
-    main_canvas.element.set_ontouchmove(Some(touch_move_closure.as_ref().unchecked_ref()));
+    web::access::main_canvas().set_ontouchmove(Some(touch_move_closure.as_ref().unchecked_ref()));
     touch_move_closure.forget();
-
 
     let cloned_state = state.clone();
     let touch_end_closure = Closure::wrap(Box::new(move |e: TouchEvent| {
@@ -188,7 +222,7 @@ fn setup_camera_touch_control(state: Rc<RefCell<GameState>>, main_canvas: Rc<Ref
         let mut state = cloned_state.borrow_mut();
         state.input.last_canvas_touch_point_x = None;
     }) as Box<dyn FnMut(_)>);
-    main_canvas.element.set_ontouchend(Some(touch_end_closure.as_ref().unchecked_ref()));
+    web::access::main_canvas().set_ontouchend(Some(touch_end_closure.as_ref().unchecked_ref()));
     touch_end_closure.forget();
 }
 
@@ -202,7 +236,7 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
 
         const MOVEMENT_SPEED: f64 = 4.0; // move 4.0 per second
 
-        let sprint_speed = if state.input.sprint {3.0} else {1.0};
+        let sprint_speed = if state.input.sprint { 3.0 } else { 1.0 };
 
         let mut sideways_move = 0;
         if state.input.move_left {
@@ -222,18 +256,33 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
 
         let mut new_position = state.world.camera.origin;
         if sideways_move != 0 {
-            let move_right_direction = state.world.camera.rotate(std::f32::consts::PI as f64 / 2.0).direction;
+            let move_right_direction = state
+                .world
+                .camera
+                .rotate(std::f32::consts::PI as f64 / 2.0)
+                .direction;
             new_position = new_position
-                + (move_right_direction * sideways_move as f64 * MOVEMENT_SPEED * sprint_speed * time_since_last_frame_s)
+                + (move_right_direction
+                    * sideways_move as f64
+                    * MOVEMENT_SPEED
+                    * sprint_speed
+                    * time_since_last_frame_s)
         }
 
         if forwards_move != 0 {
             let move_forward_direction = state.world.camera.direction;
             new_position = new_position
-                + (move_forward_direction * forwards_move as f64 * MOVEMENT_SPEED * sprint_speed * time_since_last_frame_s)
+                + (move_forward_direction
+                    * forwards_move as f64
+                    * MOVEMENT_SPEED
+                    * sprint_speed
+                    * time_since_last_frame_s)
         }
 
-        if !state.world.line_intersects_wall(&Line2D{start: state.world.camera.origin,end: new_position}) {
+        if !state.world.line_intersects_wall(&Line2D {
+            start: state.world.camera.origin,
+            end: new_position,
+        }) {
             state.world.camera.origin = new_position;
         }
     });
@@ -249,7 +298,10 @@ fn setup_camera_motion_loop(state: Rc<RefCell<GameState>>) {
         state.input.camera_rotation = 0;
 
         if camera_rotation != 0 {
-            state.world.camera = state.world.camera.rotate(camera_rotation as f64 * ROTATION_SPEED);
+            state.world.camera = state
+                .world
+                .camera
+                .rotate(camera_rotation as f64 * ROTATION_SPEED);
         }
     });
 }

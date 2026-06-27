@@ -4,8 +4,8 @@ use web_sys::ImageData;
 
 pub struct ScreenBuffer {
     pixels: Vec<u8>,
-    width: usize,
-    height: usize,
+    pub width: usize,
+    pub height: usize,
     center: usize,
 }
 
