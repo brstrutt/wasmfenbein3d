@@ -3,6 +3,7 @@ mod operators;
 mod length;
 mod normalise;
 mod rotate;
+mod tangent;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Point2D {

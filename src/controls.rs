@@ -240,11 +240,7 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
         let velocity_per_s = if state.input.sprint { 12.0 } else { 4.0 };
         let velocity = velocity_per_s * time_since_last_frame_s;
 
-        let move_right_direction = state
-            .world
-            .camera
-            .rotate(std::f32::consts::PI as f64 / 2.0)
-            .direction;
+        let move_right_direction = state.world.camera.tangent().direction;
         let move_forward_direction = state.world.camera.direction;
         let mut motion = Point2D { x: 0.0, y: 0.0 };
         if state.input.move_left {
