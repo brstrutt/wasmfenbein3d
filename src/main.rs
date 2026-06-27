@@ -1,3 +1,4 @@
+mod utils;
 mod primitives;
 mod render;
 mod world;
