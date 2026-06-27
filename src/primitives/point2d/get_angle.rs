@@ -14,8 +14,13 @@ use super::*;
 
     #[test]
     fn get_angle_is_the_inverse_of_rotating_the_y_axis() {
+        test_rotation_angle_is_returned_by_get_angle(std::f32::consts::PI as f64 / 3.4);
+        test_rotation_angle_is_returned_by_get_angle(std::f32::consts::PI as f64 / 7.3);
+        test_rotation_angle_is_returned_by_get_angle(std::f32::consts::PI as f64 / -1.3);
+        test_rotation_angle_is_returned_by_get_angle(std::f32::consts::PI as f64 / 2.0);
+    }
+    fn test_rotation_angle_is_returned_by_get_angle(original_angle: f64) {
         let point = Point2D{x: 0.0, y: 100.0};
-        let original_angle = std::f32::consts::PI as f64 / 3.4;
 
         assert_eq!(point.rotate(original_angle).get_angle(), original_angle);
     }
