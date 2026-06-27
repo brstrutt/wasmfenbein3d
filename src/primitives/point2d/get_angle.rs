@@ -15,13 +15,13 @@ use crate::utils::assert_floats_equal::assert_floats_equal;
 use super::*;
 
     #[test]
-    fn get_angle_is_the_inverse_of_rotating_the_y_axis() {
-        test_rotation_angle_is_returned_by_get_angle(std::f32::consts::PI as f64 / 3.4);
-        test_rotation_angle_is_returned_by_get_angle(std::f32::consts::PI as f64 / 7.3);
-        test_rotation_angle_is_returned_by_get_angle(std::f32::consts::PI as f64 / -1.3);
-        test_rotation_angle_is_returned_by_get_angle(std::f32::consts::PI as f64 / 2.0);
+    fn get_angle_is_the_inverse_of_rotating_the_y_axis_less_than_180_degrees() {
+        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(std::f32::consts::PI as f64 / -3.4);
+        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(std::f32::consts::PI as f64 / 2.2);
+        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(std::f32::consts::PI as f64 / 4.0);
+        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(std::f32::consts::PI as f64 / 7.9);
     }
-    fn test_rotation_angle_is_returned_by_get_angle(original_angle: f64) {
+    fn test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(original_angle: f64) {
         let point = Point2D{x: 0.0, y: 100.0};
 
         assert_floats_equal(point.rotate(original_angle).get_angle(), original_angle);
