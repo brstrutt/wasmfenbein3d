@@ -36,6 +36,24 @@ impl InputState {
             last_canvas_touch_point_x: None,
         }
     }
+
+    pub fn get_cameraspace_movement_direction(&self) -> Point2D {
+        let mut motion = Point2D { x: 0.0, y: 0.0 };
+        if self.move_left {
+            motion.x += 1.0;
+        }
+        if self.move_right {
+            motion.x -= 1.0;
+        }
+
+        if self.move_forward {
+            motion.y += 1.0;
+        }
+        if self.move_backward {
+            motion.y -= 1.0;
+        }
+        motion.normalise()
+    }
 }
 
 pub fn setup(state: Rc<RefCell<GameState>>) {
@@ -240,24 +258,8 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
         let velocity_per_s = if state.input.sprint { 12.0 } else { 4.0 };
         let velocity = velocity_per_s * time_since_last_frame_s;
 
-        let move_right_direction = state.world.camera.tangent().direction;
-        let move_forward_direction = state.world.camera.direction;
-        let mut motion = Point2D { x: 0.0, y: 0.0 };
-        if state.input.move_left {
-            motion -= move_right_direction;
-        }
-        if state.input.move_right {
-            motion += move_right_direction;
-        }
-
-        if state.input.move_forward {
-            motion += move_forward_direction;
-        }
-        if state.input.move_backward {
-            motion -= move_forward_direction;
-        }
-
-        motion = motion.normalise() * velocity;
+        let camera_rotation = state.world.camera.get_angle();
+        let motion = state.input.get_cameraspace_movement_direction().rotate(camera_rotation) * velocity;
 
         state.world.camera.origin =
             motion::move_object(state.world.camera.origin, &motion, &state.world);
