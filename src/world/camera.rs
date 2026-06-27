@@ -1,3 +1,5 @@
+use std::f64::consts::PI;
+
 use crate::{primitives::{point2d::Point2D, ray2d::Ray2D}};
 
 pub type Camera = Ray2D;
@@ -12,7 +14,7 @@ impl Camera {
 
     pub fn ray_for_column(&self, column: usize, screen_height_pixels: usize, screen_width_pixels: usize) -> Ray2D {
         const FOV_DEGREES: f64 = 90.0;
-        const FOV_RADIANS: f64 = std::f32::consts::PI as f64 * FOV_DEGREES/180.0;
+        const FOV_RADIANS: f64 = PI * (FOV_DEGREES/180.0);
 
         let fov_step_per_pixel = FOV_RADIANS / screen_width_pixels as f64;
 

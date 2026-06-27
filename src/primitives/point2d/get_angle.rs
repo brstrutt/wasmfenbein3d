@@ -1,9 +1,18 @@
+use std::f64::consts::PI;
+
 use crate::primitives::point2d::Point2D;
 
 impl Point2D {
     pub fn get_angle(&self) -> f64 {
         let gradient = self.x/self.y;
-        gradient.atan() * -1.0
+        let angle_to_y_axis = gradient.atan() * -1.0;
+
+        if self.y >= 0.0 {
+            angle_to_y_axis
+        }
+        else {
+            (PI - angle_to_y_axis.abs()) * angle_to_y_axis.signum() * -1.0
+        }
     }
 }
 
@@ -16,10 +25,10 @@ use super::*;
 
     #[test]
     fn get_angle_is_the_inverse_of_rotating_the_y_axis_less_than_180_degrees() {
-        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(std::f32::consts::PI as f64 / -3.4);
-        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(std::f32::consts::PI as f64 / 2.2);
-        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(std::f32::consts::PI as f64 / 4.0);
-        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(std::f32::consts::PI as f64 / 7.9);
+        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(2.0 * PI / -3.4);
+        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(2.0 * PI / 2.2);
+        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(2.0 * PI / 4.0);
+        test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(2.0 * PI / 7.9);
     }
     fn test_get_angle_is_the_inverse_of_rotating_the_y_axis_by_amount(original_angle: f64) {
         let point = Point2D{x: 0.0, y: 100.0};
