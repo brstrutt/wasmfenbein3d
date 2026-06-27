@@ -5,7 +5,12 @@ use std::{
 use wasm_bindgen::{JsCast, prelude::Closure};
 use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
-use crate::{primitives::line2d::Line2D, state::GameState, web};
+use crate::{
+    motion,
+    primitives::{line2d::Line2D, point2d::Point2D},
+    state::GameState,
+    web,
+};
 
 pub struct InputState {
     pub move_left: bool,
@@ -145,9 +150,7 @@ fn setup_keyboard_movement(state: Rc<RefCell<GameState>>) {
     });
 }
 
-fn setup_mouse_capture_on_click(
-    state: Rc<RefCell<GameState>>,
-) {
+fn setup_mouse_capture_on_click(state: Rc<RefCell<GameState>>) {
     let callback = Closure::wrap(Box::new(move |_e: Event| {
         web::access::main_canvas().request_pointer_lock();
     }) as Box<dyn FnMut(_)>);
@@ -234,57 +237,34 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
 
         let time_since_last_frame_s = time_since_last_frame_ms / 1000.0;
 
-        const MOVEMENT_SPEED: f64 = 4.0; // move 4.0 per second
+        let velocity_per_s = if state.input.sprint { 12.0 } else { 4.0 };
+        let velocity = velocity_per_s * time_since_last_frame_s;
 
-        let sprint_speed = if state.input.sprint { 3.0 } else { 1.0 };
-
-        let mut sideways_move = 0;
+        let move_right_direction = state
+            .world
+            .camera
+            .rotate(std::f32::consts::PI as f64 / 2.0)
+            .direction;
+        let move_forward_direction = state.world.camera.direction;
+        let mut motion = Point2D { x: 0.0, y: 0.0 };
         if state.input.move_left {
-            sideways_move -= 1;
+            motion -= move_right_direction;
         }
         if state.input.move_right {
-            sideways_move += 1;
+            motion += move_right_direction;
         }
 
-        let mut forwards_move = 0;
         if state.input.move_forward {
-            forwards_move += 1;
+            motion += move_forward_direction;
         }
         if state.input.move_backward {
-            forwards_move -= 1;
+            motion -= move_forward_direction;
         }
 
-        let mut new_position = state.world.camera.origin;
-        if sideways_move != 0 {
-            let move_right_direction = state
-                .world
-                .camera
-                .rotate(std::f32::consts::PI as f64 / 2.0)
-                .direction;
-            new_position = new_position
-                + (move_right_direction
-                    * sideways_move as f64
-                    * MOVEMENT_SPEED
-                    * sprint_speed
-                    * time_since_last_frame_s)
-        }
+        motion = motion.normalise() * velocity;
 
-        if forwards_move != 0 {
-            let move_forward_direction = state.world.camera.direction;
-            new_position = new_position
-                + (move_forward_direction
-                    * forwards_move as f64
-                    * MOVEMENT_SPEED
-                    * sprint_speed
-                    * time_since_last_frame_s)
-        }
-
-        if !state.world.line_intersects_wall(&Line2D {
-            start: state.world.camera.origin,
-            end: new_position,
-        }) {
-            state.world.camera.origin = new_position;
-        }
+        state.world.camera.origin =
+            motion::move_object(state.world.camera.origin, &motion, &state.world);
     });
 }
 

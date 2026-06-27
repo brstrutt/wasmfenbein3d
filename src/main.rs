@@ -5,6 +5,7 @@ mod controls;
 mod web;
 mod state;
 mod hud;
+mod motion;
 
 use std::{cell::RefCell, rc::Rc};
 
