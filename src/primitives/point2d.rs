@@ -2,6 +2,7 @@ mod distance;
 mod operators;
 mod length;
 mod normalise;
+mod rotate;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Point2D {
