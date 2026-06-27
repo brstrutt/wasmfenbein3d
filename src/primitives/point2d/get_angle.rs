@@ -10,7 +10,7 @@ impl Point2D {
 
 #[cfg(test)]
 mod test {
-use crate::utils::assert_floats_equal::assert_floats_equal;
+use crate::utils::assert_floats_equal::tests::assert_floats_equal;
 
 use super::*;
 
