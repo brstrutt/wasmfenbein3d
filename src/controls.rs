@@ -7,7 +7,7 @@ use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
 use crate::{
     motion,
-    primitives::{line2d::Line2D, point2d::Point2D},
+    primitives::point2d::Point2D,
     state::GameState,
     web,
 };
