@@ -42,7 +42,12 @@ impl Texture {
         &self.texels[y * self.width + x]
     }
 
-    pub fn get_texel_column_on_line_with_scale(&self, line: &Line2D, point: &Point2D, scale: f64) -> usize {
+    pub fn get_texel_column_on_line_with_scale(
+        &self,
+        line: &Line2D,
+        point: &Point2D,
+        scale: f64,
+    ) -> usize {
         let wall = line;
         let intersection = point;
 
@@ -50,8 +55,7 @@ impl Texture {
         let inverse_wall_angle = wall_end_relative.get_angle() * -1.0;
         let wall_space_intersection = (*intersection - wall.start).rotate(inverse_wall_angle);
 
-        let texture_x_pos =
-            (wall_space_intersection.y as f64 / scale as f64) * self.width as f64;
+        let texture_x_pos = (wall_space_intersection.y as f64 / scale as f64) * self.width as f64;
         texture_x_pos as usize
     }
 }
