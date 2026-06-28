@@ -1,4 +1,4 @@
-use std::ops;
+use std::{ops, fmt};
 
 use crate::primitives::point2d::Point2D;
 
@@ -68,5 +68,11 @@ impl ops::Div<Point2D> for Point2D {
 impl Point2D {
     pub fn abs(&self) -> Point2D {
         Point2D { x: self.x.abs(), y: self.y.abs() }
+    }
+}
+
+impl fmt::Display for Point2D {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
     }
 }
