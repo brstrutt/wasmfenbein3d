@@ -42,15 +42,6 @@ impl Texture {
         &self.texels[y * self.width + x]
     }
 
-    pub fn _get_texel_column_on_line_stretch(&self, line: &Line2D, point: &Point2D) -> usize {
-        let wall = line;
-
-        let wall_end_relative = wall.end - wall.start;
-        let inverse_wall_angle = wall_end_relative.get_angle() * -1.0;
-        let wall_space_end = wall_end_relative.rotate(inverse_wall_angle);
-        self.get_texel_column_on_line_with_scale(line, point, wall_space_end.y as f64)
-    }
-
     pub fn get_texel_column_on_line_with_scale(&self, line: &Line2D, point: &Point2D, scale: f64) -> usize {
         let wall = line;
         let intersection = point;
