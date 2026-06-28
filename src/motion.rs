@@ -9,10 +9,13 @@ pub fn move_object(start_position: Point2D, velocity: &Point2D, world: &World) -
     }
 
     let mut new_position = &start_position + velocity;
+    let mut loops_remaining = 10;
     while let Some(intersection) = world.line_intersects_wall(&Line2D {
         start: start_position,
         end: new_position,
-    }) {
+    }) && loops_remaining > 0
+    {
+        loops_remaining -= 1;
         // Calculate the intended destination and original position relative to the Wall
         let wall_angle_radians = (intersection.wall.end - intersection.wall.start).get_angle();
         let wall_space_start_position =
@@ -30,5 +33,9 @@ pub fn move_object(start_position: Point2D, velocity: &Point2D, world: &World) -
         new_position = wall_space_updated_dest.rotate(wall_angle_radians) + intersection.wall.start;
     }
 
-    return new_position;
+    if loops_remaining < 1 {
+        start_position
+    } else {
+        new_position
+    }
 }
