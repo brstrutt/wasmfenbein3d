@@ -21,11 +21,13 @@ impl Texture {
         };
 
         Texture {
-            width: 2,
-            height: 2,
+            width: 4,
+            height: 4,
             texels: vec![
-                LIGHT_GREEN, DARK_GREEN, 
-                DARK_GREEN, LIGHT_GREEN
+                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, DARK_GREEN,
+                DARK_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
+                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, DARK_GREEN,
+                DARK_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
             ],
         }
     }

@@ -26,7 +26,7 @@ impl ScreenBuffer {
     pub fn render_textured_column(&mut self, x: &usize, height: usize, texture: &Texture) {
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;
-            &texture.get_texel((*x as f64 / 20.0) as usize, texture_y_pos as usize)
+            &texture.get_texel((*x as f64 / 40.0) as usize, texture_y_pos as usize)
         })
 
     }
