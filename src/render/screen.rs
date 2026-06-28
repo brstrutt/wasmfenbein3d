@@ -19,7 +19,16 @@ impl ScreenBuffer {
         }
     }
 
-    pub fn render_column(&mut self, x: &usize, mut height: usize, color: &RGB) {
+    pub fn render_solid_colour_column(&mut self, x: &usize, height: usize, colour: &RGB) {
+        self.render_column(x, height, &|_wall_pixel_index| {colour})
+    }
+
+    pub fn render_textured_column(&mut self, x: &usize, height: usize, colour: &RGB) {
+        self.render_column(x, height, &|_wall_pixel_index| {colour})
+
+    }
+
+    pub fn render_column<'a, F: Fn(usize) -> &'a RGB>(&mut self, x: &usize, mut height: usize, get_colour: &'a F) {
         if height > self.height {
             height = self.height;
         }
@@ -52,10 +61,14 @@ impl ScreenBuffer {
             self.pixels[pixel_index + 2] = SKY_COLOR.blue;
             pixel_index += pixel_increment;
         }
+        let mut wall_pixel_index = 0;
         while pixel_index < top_pixel_index {
-            self.pixels[pixel_index] = color.red;
-            self.pixels[pixel_index + 1] = color.green;
-            self.pixels[pixel_index + 2] = color.blue;
+            let colour = get_colour(wall_pixel_index);
+            wall_pixel_index += 1;
+
+            self.pixels[pixel_index] = colour.red;
+            self.pixels[pixel_index + 1] = colour.green;
+            self.pixels[pixel_index + 2] = colour.blue;
             pixel_index += pixel_increment;
         }
         while pixel_index < end_pixel_index {
