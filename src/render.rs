@@ -41,10 +41,10 @@ pub fn render(
             }
         }
 
-        screen_buffer.render_solid_colour_column(
+        screen_buffer.render_textured_column(
             &x,
             height,
-            &(wall_texture.get_texel(1,1)),
+            &wall_texture,
         );
     }
 

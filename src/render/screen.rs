@@ -1,4 +1,4 @@
-use crate::render::rgb::RGB;
+use crate::render::{rgb::RGB, texture::Texture};
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
 
@@ -19,17 +19,22 @@ impl ScreenBuffer {
         }
     }
 
-    pub fn render_solid_colour_column(&mut self, x: &usize, height: usize, colour: &RGB) {
+    pub fn _render_solid_colour_column(&mut self, x: &usize, height: usize, colour: &RGB) {
         self.render_column(x, height, &|_wall_pixel_index| {colour})
     }
 
-    pub fn render_textured_column(&mut self, x: &usize, height: usize, colour: &RGB) {
-        self.render_column(x, height, &|_wall_pixel_index| {colour})
+    pub fn render_textured_column(&mut self, x: &usize, height: usize, texture: &Texture) {
+        self.render_column(x, height, &|wall_pixel_index| {
+            let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;
+            &texture.get_texel((*x as f64 / 20.0) as usize, texture_y_pos as usize)
+        })
 
     }
 
     pub fn render_column<'a, F: Fn(usize) -> &'a RGB>(&mut self, x: &usize, mut height: usize, get_colour: &'a F) {
+        let mut starting_wall_position = 0;
         if height > self.height {
+            starting_wall_position = (height - self.height) / 2;
             height = self.height;
         }
 
@@ -61,7 +66,7 @@ impl ScreenBuffer {
             self.pixels[pixel_index + 2] = SKY_COLOR.blue;
             pixel_index += pixel_increment;
         }
-        let mut wall_pixel_index = 0;
+        let mut wall_pixel_index = starting_wall_position;
         while pixel_index < top_pixel_index {
             let colour = get_colour(wall_pixel_index);
             wall_pixel_index += 1;
