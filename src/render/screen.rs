@@ -1,5 +1,6 @@
 use crate::{
-    render::{rgb::RGB, texture::Texture}, world::walls::{WALL_HEIGHT, WallCollision},
+    render::{rgb::RGB, texture::Texture},
+    world::walls::{WALL_HEIGHT, WallCollision},
 };
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
@@ -32,8 +33,11 @@ impl ScreenBuffer {
         texture: &Texture,
         wall_details: &WallCollision,
     ) {
-        let texture_x_pos =
-            texture.get_texel_column_on_line_with_scale(&wall_details.wall, &wall_details.intersection, WALL_HEIGHT);
+        let texture_x_pos = texture.get_texel_column_on_line_with_scale(
+            &wall_details.wall,
+            &wall_details.intersection,
+            WALL_HEIGHT,
+        );
 
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;

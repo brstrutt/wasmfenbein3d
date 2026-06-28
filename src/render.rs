@@ -1,5 +1,9 @@
 use crate::{
-    primitives::point2d::Point2D, render::{rgb::RGB, screen::ScreenBuffer, texture::Texture}, state::GameState, web::{self, main_canvas}, world::walls::WALL_HEIGHT,
+    primitives::point2d::Point2D,
+    render::{rgb::RGB, screen::ScreenBuffer, texture::Texture},
+    state::GameState,
+    web::{self, main_canvas},
+    world::walls::WALL_HEIGHT,
 };
 use std::{cell::RefCell, rc::Rc};
 
