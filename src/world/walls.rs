@@ -1,5 +1,7 @@
 use crate::primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D};
 
+pub const WALL_HEIGHT: f64 = 2.0;
+
 pub fn default_walls() -> Vec<Line2D> {
     walls_from_point_path(&vec![
         Point2D::new(-5.0, -3.0),
