@@ -1,5 +1,5 @@
 use crate::{
-    primitives::point2d::Point2D, render::{screen::ScreenBuffer, texture::Texture}, state::GameState, web::{self, main_canvas},
+    primitives::point2d::Point2D, render::{rgb::RGB, screen::ScreenBuffer, texture::Texture}, state::GameState, web::{self, main_canvas},
 };
 use std::{cell::RefCell, rc::Rc};
 
@@ -40,13 +40,22 @@ pub fn render(
             if distance != 0.0 {
                 height = 2.0 * screen_height / distance;
             }
-        }
 
-        screen_buffer.render_textured_column(
-            &x,
-            height,
-            &wall_texture,
-        );
+            screen_buffer.render_textured_column(
+                &x,
+                height,
+                &wall_texture,
+                &wall_intersection,
+            );
+        }
+        else {
+            const NO_WALL_COLOUR: RGB = RGB{red: 0, green: 0, blue: 0};
+            screen_buffer.render_solid_colour_column(
+                &x,
+                0.0,
+                &NO_WALL_COLOUR,
+            );
+        }
     }
 
     main_canvas::render_screen_buffer(&screen_buffer);

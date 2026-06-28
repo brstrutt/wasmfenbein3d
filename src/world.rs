@@ -1,4 +1,4 @@
-mod walls;
+pub mod walls;
 pub(crate) mod camera;
 
 use crate::{primitives::{line2d::Line2D, ray2d::Ray2D}, world::{camera::Camera, walls::WallCollision}};
