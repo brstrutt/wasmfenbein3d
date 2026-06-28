@@ -38,7 +38,7 @@ impl Texture {
         }
     }
 
-    pub fn get_texel<'a>(&'a self, x: usize, y: usize) -> &'a RGB {
+    pub fn get_texel(&self, x: usize, y: usize) -> &RGB {
         let x = x % self.width;
         let y = y % self.height;
         &self.texels[y * self.width + x]
@@ -74,10 +74,10 @@ impl Texture {
         let intersection = point;
 
         let wall_end_relative = wall.end - wall.start;
-        let inverse_wall_angle = wall_end_relative.get_angle() * -1.0;
+        let inverse_wall_angle = -wall_end_relative.get_angle();
         let wall_space_intersection = (*intersection - wall.start).rotate(inverse_wall_angle);
 
-        let texture_x_pos = (wall_space_intersection.y as f64 / scale as f64) * self.width as f64;
+        let texture_x_pos = (wall_space_intersection.y / scale) * self.width as f64;
         texture_x_pos as usize
     }
 }

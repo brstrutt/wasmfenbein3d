@@ -50,8 +50,8 @@ impl ScreenBuffer {
         texture = &texture / colour_adjustment;
 
         self.render_column(x, height, &|wall_pixel_index| {
-            let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;
-            &texture.get_texel(texture_x_pos as usize, texture_y_pos as usize)
+            let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height as f64;
+            texture.get_texel(texture_x_pos, texture_y_pos as usize)
         })
     }
 

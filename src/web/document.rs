@@ -2,10 +2,7 @@ use wasm_bindgen::{JsCast, convert::FromWasmAbi, prelude::Closure};
 
 use crate::web;
 
-pub fn add_event_listener_with_callback<E: FromWasmAbi, T: FnMut(E)>(event_name: &str, mut run: T)
-where
-    T: 'static,
-{
+pub fn add_event_listener_with_callback<E: FromWasmAbi, T: FnMut(E)>(event_name: &str, mut run: T) {
     let callback = Closure::wrap(Box::new(move |e: E| {
         run(e);
     }) as Box<dyn FnMut(_)>);

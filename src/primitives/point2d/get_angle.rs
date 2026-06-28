@@ -5,12 +5,12 @@ use crate::primitives::point2d::Point2D;
 impl Point2D {
     pub fn get_angle(&self) -> f64 {
         let gradient = self.x / self.y;
-        let angle_to_y_axis = gradient.atan() * -1.0;
+        let angle_to_y_axis = -gradient.atan();
 
         if self.y >= 0.0 {
             angle_to_y_axis
         } else {
-            (PI - angle_to_y_axis.abs()) * angle_to_y_axis.signum() * -1.0
+            (PI - angle_to_y_axis.abs()) * -angle_to_y_axis.signum()
         }
     }
 }
