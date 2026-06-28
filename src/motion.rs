@@ -19,13 +19,17 @@ pub fn move_object(start_position: Point2D, velocity: &Point2D, world: &World) -
 
     let intersection = intersection.unwrap();
 
-    // Calculate the normal to the wall in the direction of the camera
+    // Calculate the intended destination and original position relative to the Wall
     let wall_angle_radians = (intersection.wall.end - intersection.wall.start).get_angle();
     let wall_space_start_position = (start_position - intersection.wall.start).rotate(wall_angle_radians * -1.0);
-    let wall_tangent = Point2D{x: 1.0 * wall_space_start_position.x.signum(), y: 0.0}.rotate(wall_angle_radians);
+    let wall_space_destination_point = (new_position - intersection.wall.start).rotate(wall_angle_radians * -1.0);
 
-    // Calculate the new position by moving the intersection point out of the wall along the wall_tangent vector
-    let moved_intersection_point = intersection.location + (wall_tangent * 0.001);
+    // Move the destination to be right next to the wall on the same side as the start_position
+    let wall_space_updated_dest = Point2D{x: 0.001 * wall_space_start_position.x.signum(), y: wall_space_destination_point.y};
 
-    return moved_intersection_point;
+
+    // Move this updated destination back into world space
+    let updated_dest = wall_space_updated_dest.rotate(wall_angle_radians) + intersection.wall.start;
+
+    return updated_dest;
 }
