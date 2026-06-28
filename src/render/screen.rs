@@ -24,21 +24,12 @@ impl ScreenBuffer {
     }
 
     pub fn render_textured_column(&mut self, x: &usize, height: f64, texture: &Texture, wall_details: &WallCollision) {
+        let texture_x_pos = texture.get_texel_column_on_line(&wall_details.wall, &wall_details.intersection);
+
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;
-
-            let wall = wall_details.wall;
-            let wall_end_relative = wall.end - wall.start;
-            let wall_angle = wall_end_relative.get_angle();
-            let inverse_wall_angle = wall_angle * -1.0;
-            let wall_space_end = wall_end_relative.rotate(inverse_wall_angle);
-            let wall_space_intersection = (wall_details.intersection - wall.start).rotate(inverse_wall_angle);
-
-            let texture_x_pos = (wall_space_intersection.y as f64 / wall_space_end.y as f64) * texture.width as f64;
-
             &texture.get_texel(texture_x_pos as usize, texture_y_pos as usize)
         })
-
     }
 
     pub fn render_column<'a, F: Fn(usize) -> &'a RGB>(&mut self, x: &usize, height: f64, get_colour: &'a F) {
