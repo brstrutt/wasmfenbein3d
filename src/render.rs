@@ -24,6 +24,7 @@ pub fn render(
 
     let mut state = state.borrow_mut();
     let mut screen_buffer = screen_buffer.borrow_mut();
+    let screen_height = screen_buffer.height as f64;
 
     let wall_texture = Texture::get_default();
 
@@ -31,13 +32,13 @@ pub fn render(
         let ray = state.world.camera.ray_for_column(x, screen_buffer.height, screen_buffer.width);
         let wall_intersection = state.world.nearest_wall_intersection(&ray);
 
-        let mut height = 0;
+        let mut height = 0.0;
 
         if let Some(wall_intersection) = wall_intersection {
             let distance = Point2D::dist(&state.world.camera.origin, &wall_intersection.intersection);
 
             if distance != 0.0 {
-                height = (2.0 * screen_buffer.height as f64 / distance) as usize;
+                height = 2.0 * screen_height / distance;
             }
         }
 
