@@ -54,7 +54,7 @@ pub fn dist_to_wall(walls: &Vec<Line2D>, raycast: &Ray2D) -> Option<f64> {
 }
 
 pub struct WallCollision {
-    pub location: Point2D,
+    pub _location: Point2D,
     pub wall: Line2D,
 }
 
@@ -62,7 +62,7 @@ pub fn line_intersects_wall(walls: &Vec<Line2D>, line: &Line2D) -> Option<WallCo
     for wall in walls.iter() {
         let intersection_point = line.intersection(wall);
         if intersection_point.is_some() {
-            return Some(WallCollision{location: intersection_point.unwrap(), wall: wall.clone()});
+            return Some(WallCollision{_location: intersection_point.unwrap(), wall: wall.clone()});
         }
     }
 
