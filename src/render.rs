@@ -1,5 +1,8 @@
 use crate::{
-    primitives::point2d::Point2D, render::{rgb::RGB, screen::ScreenBuffer, texture::Texture}, state::GameState, web::{self, main_canvas},
+    primitives::point2d::Point2D,
+    render::{rgb::RGB, screen::ScreenBuffer, texture::Texture},
+    state::GameState,
+    web::{self, main_canvas},
 };
 use std::{cell::RefCell, rc::Rc};
 
@@ -7,19 +10,13 @@ pub mod rgb;
 pub mod screen;
 pub mod texture;
 
-pub fn setup(
-    state: Rc<RefCell<GameState>>,
-    screen_buffer: Rc<RefCell<ScreenBuffer>>,
-) {
+pub fn setup(state: Rc<RefCell<GameState>>, screen_buffer: Rc<RefCell<ScreenBuffer>>) {
     web::window::run_function_every_animation_frame(move || {
         render(&screen_buffer, &state);
     });
 }
 
-pub fn render(
-    screen_buffer: &Rc<RefCell<ScreenBuffer>>,
-    state: &RefCell<GameState>,
-) {
+pub fn render(screen_buffer: &Rc<RefCell<ScreenBuffer>>, state: &RefCell<GameState>) {
     let render_start_time = web::window::now_in_ms();
 
     let mut state = state.borrow_mut();
@@ -29,32 +26,30 @@ pub fn render(
     let wall_texture = Texture::get_default();
 
     for x in 0..screen_buffer.width {
-        let ray = state.world.camera.ray_for_column(x, screen_buffer.height, screen_buffer.width);
+        let ray = state
+            .world
+            .camera
+            .ray_for_column(x, screen_buffer.height, screen_buffer.width);
         let wall_intersection = state.world.nearest_wall_intersection(&ray);
 
         let mut height = 0.0;
 
         if let Some(wall_intersection) = wall_intersection {
-            let distance = Point2D::dist(&state.world.camera.origin, &wall_intersection.intersection);
+            let distance =
+                Point2D::dist(&state.world.camera.origin, &wall_intersection.intersection);
 
             if distance != 0.0 {
                 height = 2.0 * screen_height / distance;
             }
 
-            screen_buffer.render_textured_column(
-                &x,
-                height,
-                &wall_texture,
-                &wall_intersection,
-            );
-        }
-        else {
-            const NO_WALL_COLOUR: RGB = RGB{red: 0, green: 0, blue: 0};
-            screen_buffer.render_solid_colour_column(
-                &x,
-                0.0,
-                &NO_WALL_COLOUR,
-            );
+            screen_buffer.render_textured_column(&x, height, &wall_texture, &wall_intersection);
+        } else {
+            const NO_WALL_COLOUR: RGB = RGB {
+                red: 0,
+                green: 0,
+                blue: 0,
+            };
+            screen_buffer.render_solid_colour_column(&x, 0.0, &NO_WALL_COLOUR);
         }
     }
 

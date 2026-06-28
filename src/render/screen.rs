@@ -1,4 +1,7 @@
-use crate::{render::{rgb::RGB, texture::Texture}, world::walls::WallCollision};
+use crate::{
+    render::{rgb::RGB, texture::Texture},
+    world::walls::WallCollision,
+};
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
 
@@ -15,16 +18,23 @@ impl ScreenBuffer {
             pixels: vec![255u8; width * height * 4],
             width,
             height,
-            center: height/2,
+            center: height / 2,
         }
     }
 
     pub fn render_solid_colour_column(&mut self, x: &usize, height: f64, colour: &RGB) {
-        self.render_column(x, height, &|_wall_pixel_index| {colour})
+        self.render_column(x, height, &|_wall_pixel_index| colour)
     }
 
-    pub fn render_textured_column(&mut self, x: &usize, height: f64, texture: &Texture, wall_details: &WallCollision) {
-        let texture_x_pos = texture.get_texel_column_on_line(&wall_details.wall, &wall_details.intersection);
+    pub fn render_textured_column(
+        &mut self,
+        x: &usize,
+        height: f64,
+        texture: &Texture,
+        wall_details: &WallCollision,
+    ) {
+        let texture_x_pos =
+            texture.get_texel_column_on_line(&wall_details.wall, &wall_details.intersection);
 
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;
@@ -32,7 +42,12 @@ impl ScreenBuffer {
         })
     }
 
-    pub fn render_column<'a, F: Fn(usize) -> &'a RGB>(&mut self, x: &usize, height: f64, get_colour: &'a F) {
+    pub fn render_column<'a, F: Fn(usize) -> &'a RGB>(
+        &mut self,
+        x: &usize,
+        height: f64,
+        get_colour: &'a F,
+    ) {
         let mut starting_wall_position = 0;
         let mut height = height as usize;
         if height > self.height {

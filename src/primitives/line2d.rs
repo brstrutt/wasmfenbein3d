@@ -1,6 +1,6 @@
+mod get_angle;
 mod intersection;
 mod length;
-mod get_angle;
 
 use crate::primitives::point2d::Point2D;
 

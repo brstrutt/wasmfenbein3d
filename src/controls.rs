@@ -5,12 +5,7 @@ use std::{
 use wasm_bindgen::{JsCast, prelude::Closure};
 use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
-use crate::{
-    motion,
-    primitives::point2d::Point2D,
-    state::GameState,
-    web,
-};
+use crate::{motion, primitives::point2d::Point2D, state::GameState, web};
 
 pub struct InputState {
     pub move_left: bool,
@@ -259,7 +254,11 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
         let velocity = velocity_per_s * time_since_last_frame_s;
 
         let camera_rotation = state.world.camera.get_angle();
-        let motion = state.input.get_cameraspace_movement_direction().rotate(camera_rotation) * velocity;
+        let motion = state
+            .input
+            .get_cameraspace_movement_direction()
+            .rotate(camera_rotation)
+            * velocity;
 
         state.world.camera.origin =
             motion::move_object(state.world.camera.origin, &motion, &state.world);

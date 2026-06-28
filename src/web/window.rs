@@ -3,7 +3,10 @@ use wasm_bindgen::{JsCast, prelude::Closure};
 
 use crate::web;
 
-pub fn run_function_every_animation_frame<T: FnMut()>(mut run: T) where T: 'static{
+pub fn run_function_every_animation_frame<T: FnMut()>(mut run: T)
+where
+    T: 'static,
+{
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
 
@@ -25,5 +28,8 @@ pub fn request_animation_frame(f: &Closure<dyn FnMut()>) {
 }
 
 pub fn now_in_ms() -> f64 {
-    web::access::window().performance().expect("Couldnt get the window performance object").now()
+    web::access::window()
+        .performance()
+        .expect("Couldnt get the window performance object")
+        .now()
 }

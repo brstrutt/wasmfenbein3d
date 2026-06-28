@@ -1,7 +1,7 @@
 use crate::primitives::point2d::Point2D;
+mod get_angle;
 mod intersection;
 mod rotate;
-mod get_angle;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Ray2D {
@@ -17,4 +17,3 @@ impl Ray2D {
         }
     }
 }
-

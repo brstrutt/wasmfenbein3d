@@ -8,20 +8,20 @@ impl Point2D {
 
 #[cfg(test)]
 mod test {
-use super::*;
+    use super::*;
 
     #[test]
     fn vertical_line() {
-        assert_eq!(Point2D{x: 0.0, y: 3.4}.length(), 3.4);
+        assert_eq!(Point2D { x: 0.0, y: 3.4 }.length(), 3.4);
     }
 
     #[test]
     fn horizontal_line() {
-        assert_eq!(Point2D{x: 72.5, y: 0.0}.length(), 72.5);
+        assert_eq!(Point2D { x: 72.5, y: 0.0 }.length(), 72.5);
     }
-    
+
     #[test]
     fn angled_line() {
-        assert_eq!(Point2D{x: 72.5, y: 10.4}.length(), 73.24213268331282);
+        assert_eq!(Point2D { x: 72.5, y: 10.4 }.length(), 73.24213268331282);
     }
 }
