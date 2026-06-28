@@ -8,6 +8,10 @@ It's a proof of concept/mess around type repo to see if I can get something like
 
 Current live site can be seen at [https://brstrutt.github.io/wasmfenbein3d/](https://brstrutt.github.io/wasmfenbein3d/)
 
+
+<img width="2520" height="1245" alt="image" src="https://github.com/user-attachments/assets/e98b1dc8-07a6-4a60-bf9c-be35202f54b3" />
+
+
 ## How to develop
 
 To setup the dev environment: use the devcontainer
