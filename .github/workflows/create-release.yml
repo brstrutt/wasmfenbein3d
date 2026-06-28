@@ -1,0 +1,46 @@
+name: Create Release
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'
+
+# Set permissions of the GITHUB_TOKEN to allow creation of a new release
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+      runs-on: ubuntu-latest
+      concurrency: ci-${{github.ref}}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v6
+
+        - name: Rust setup
+          uses: actions-rust-lang/setup-rust-toolchain@v1
+          with:
+            target: wasm32-unknown-unknown
+
+        - name: Trunk setup
+          run: cargo install --locked trunk
+
+        - name: Build
+          run: trunk build --release
+
+        - name: Create release archives
+          run: |
+            # Create tarball for Unix systems
+            tar -czvf wasmfenbein3d-${{ github.ref_name }}.tar.gz -C dist .
+
+        - name: Create GitHub Release
+          uses: softprops/action-gh-release@v3
+          with:
+            name: Release ${{ github.ref_name }}
+            body: "TODO: Manually write release notes"
+            draft: false
+            prerelease: ${{ contains(github.ref_name, '-') }}  # Pre-release if tag has hyphen
+            files: |
+              wasmfenbein3d-*.tar.gz
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

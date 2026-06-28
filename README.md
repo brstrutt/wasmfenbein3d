@@ -19,3 +19,5 @@ To run a local dev server: `trunk serve`
 To run the unit tests: `cargo test`
 
 To push live: Push changes to `main`. Github Actions will automatically build top of `main` and push it live.
+
+To create a release: Push a tag of the format `v1.2.3`. Tags like `v1.2.3-stuff` will create a pre-release. Releases mostly exist just to mark milestones in the project.
