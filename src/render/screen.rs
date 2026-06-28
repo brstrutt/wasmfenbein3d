@@ -1,4 +1,4 @@
-use crate::render::{rgb::RGB, texture::Texture};
+use crate::{render::{rgb::RGB, texture::Texture}, world::walls::WallCollision};
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
 
@@ -19,14 +19,24 @@ impl ScreenBuffer {
         }
     }
 
-    pub fn _render_solid_colour_column(&mut self, x: &usize, height: f64, colour: &RGB) {
+    pub fn render_solid_colour_column(&mut self, x: &usize, height: f64, colour: &RGB) {
         self.render_column(x, height, &|_wall_pixel_index| {colour})
     }
 
-    pub fn render_textured_column(&mut self, x: &usize, height: f64, texture: &Texture) {
+    pub fn render_textured_column(&mut self, x: &usize, height: f64, texture: &Texture, wall_details: &WallCollision) {
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;
-            &texture.get_texel((*x as f64 / 40.0) as usize, texture_y_pos as usize)
+
+            let wall = wall_details.wall;
+            let wall_end_relative = wall.end - wall.start;
+            let wall_angle = wall_end_relative.get_angle();
+            let inverse_wall_angle = wall_angle * -1.0;
+            let wall_space_end = wall_end_relative.rotate(inverse_wall_angle);
+            let wall_space_intersection = (wall_details.intersection - wall.start).rotate(inverse_wall_angle);
+
+            let texture_x_pos = (wall_space_intersection.y as f64 / wall_space_end.y as f64) * texture.width as f64;
+
+            &texture.get_texel(texture_x_pos as usize, texture_y_pos as usize)
         })
 
     }
