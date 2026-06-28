@@ -8,6 +8,7 @@ use std::{cell::RefCell, rc::Rc};
 
 pub mod rgb;
 pub mod screen;
+pub mod texture;
 
 pub fn setup(
     state: Rc<RefCell<GameState>>,
