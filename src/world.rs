@@ -1,7 +1,7 @@
 mod walls;
 pub(crate) mod camera;
 
-use crate::{primitives::{line2d::Line2D, ray2d::Ray2D}, world::camera::Camera};
+use crate::{primitives::{line2d::Line2D, ray2d::Ray2D}, world::{camera::Camera, walls::WallCollision}};
 
 #[derive(Clone)]
 pub struct World {
@@ -21,7 +21,7 @@ impl World {
         walls::dist_to_wall(&self.walls, raycast)
     }
 
-    pub fn line_intersects_wall(&self, line: &Line2D) -> bool {
+    pub fn line_intersects_wall(&self, line: &Line2D) -> Option<WallCollision> {
         walls::line_intersects_wall(&self.walls, line)
     }
 }

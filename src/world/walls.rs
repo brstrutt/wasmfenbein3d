@@ -53,13 +53,18 @@ pub fn dist_to_wall(walls: &Vec<Line2D>, raycast: &Ray2D) -> Option<f64> {
     return smallest_dist;
 }
 
-pub fn line_intersects_wall(walls: &Vec<Line2D>, line: &Line2D) -> bool {
+pub struct WallCollision {
+    pub location: Point2D,
+    pub wall: Line2D,
+}
+
+pub fn line_intersects_wall(walls: &Vec<Line2D>, line: &Line2D) -> Option<WallCollision> {
     for wall in walls.iter() {
         let intersection_point = line.intersection(wall);
         if intersection_point.is_some() {
-            return true;
+            return Some(WallCollision{location: intersection_point.unwrap(), wall: wall.clone()});
         }
     }
 
-    return false;
+    return None;
 }
