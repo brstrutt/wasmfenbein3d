@@ -30,9 +30,9 @@ impl Texture {
         }
     }
 
-    pub fn get_texel(&self, x: usize, y: usize) -> RGB {
+    pub fn get_texel<'a>(&'a self, x: usize, y: usize) -> &'a RGB {
         let x = x % self.width;
         let y = y % self.height;
-        self.texels[y * self.width + x].clone()
+        &self.texels[y * self.width + x]
     }
 }
