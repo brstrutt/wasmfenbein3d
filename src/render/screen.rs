@@ -19,11 +19,11 @@ impl ScreenBuffer {
         }
     }
 
-    pub fn _render_solid_colour_column(&mut self, x: &usize, height: usize, colour: &RGB) {
+    pub fn _render_solid_colour_column(&mut self, x: &usize, height: f64, colour: &RGB) {
         self.render_column(x, height, &|_wall_pixel_index| {colour})
     }
 
-    pub fn render_textured_column(&mut self, x: &usize, height: usize, texture: &Texture) {
+    pub fn render_textured_column(&mut self, x: &usize, height: f64, texture: &Texture) {
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;
             &texture.get_texel((*x as f64 / 40.0) as usize, texture_y_pos as usize)
@@ -31,8 +31,9 @@ impl ScreenBuffer {
 
     }
 
-    pub fn render_column<'a, F: Fn(usize) -> &'a RGB>(&mut self, x: &usize, mut height: usize, get_colour: &'a F) {
+    pub fn render_column<'a, F: Fn(usize) -> &'a RGB>(&mut self, x: &usize, height: f64, get_colour: &'a F) {
         let mut starting_wall_position = 0;
+        let mut height = height as usize;
         if height > self.height {
             starting_wall_position = (height - self.height) / 2;
             height = self.height;
