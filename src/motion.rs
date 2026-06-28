@@ -17,7 +17,7 @@ pub fn move_object(start_position: Point2D, velocity: &Point2D, world: &World) -
     {
         loops_remaining -= 1;
         // Calculate the intended destination and original position relative to the Wall
-        let wall_angle_radians = (intersection.wall.end - intersection.wall.start).get_angle();
+        let wall_angle_radians = intersection.wall.get_angle();
         let wall_space_start_position =
             (start_position - intersection.wall.start).rotate(wall_angle_radians * -1.0);
         let wall_space_destination_point =
