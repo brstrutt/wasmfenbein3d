@@ -3,7 +3,6 @@ mod operators;
 mod length;
 mod normalise;
 mod rotate;
-mod tangent;
 mod get_angle;
 
 #[derive(Debug, PartialEq, Clone, Copy)]

@@ -1,7 +1,6 @@
 use crate::primitives::point2d::Point2D;
 mod intersection;
 mod rotate;
-mod tangent;
 mod get_angle;
 
 #[derive(Debug, Clone, Copy)]
