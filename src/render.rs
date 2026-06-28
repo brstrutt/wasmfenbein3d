@@ -34,23 +34,36 @@ pub fn render(screen_buffer: &Rc<RefCell<ScreenBuffer>>, state: &RefCell<GameSta
         let wall_intersection = state.world.nearest_wall_intersection(&ray);
 
         let mut height = 0.0;
+        let mut wall_color_adjustment = 1.0;
 
         if let Some(wall_intersection) = wall_intersection {
             let distance =
                 Point2D::dist(&state.world.camera.origin, &wall_intersection.intersection);
+            wall_color_adjustment = (distance / 5.0).max(1.0);
 
             if distance != 0.0 {
                 height = WALL_HEIGHT * screen_height / distance;
             }
 
-            screen_buffer.render_textured_column(&x, height, &wall_texture, &wall_intersection);
+            screen_buffer.render_textured_column(
+                &x,
+                height,
+                &wall_texture,
+                &wall_intersection,
+                wall_color_adjustment,
+            );
         } else {
             const NO_WALL_COLOUR: RGB = RGB {
                 red: 0,
                 green: 0,
                 blue: 0,
             };
-            screen_buffer.render_solid_colour_column(&x, 0.0, &NO_WALL_COLOUR);
+            screen_buffer.render_solid_colour_column(
+                &x,
+                0.0,
+                &NO_WALL_COLOUR,
+                wall_color_adjustment,
+            );
         }
     }
 

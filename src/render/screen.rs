@@ -22,7 +22,13 @@ impl ScreenBuffer {
         }
     }
 
-    pub fn render_solid_colour_column(&mut self, x: &usize, height: f64, colour: &RGB) {
+    pub fn render_solid_colour_column(
+        &mut self,
+        x: &usize,
+        height: f64,
+        colour: &RGB,
+        colour_adjustment: f64,
+    ) {
         self.render_column(x, height, &|_wall_pixel_index| colour)
     }
 
@@ -32,7 +38,9 @@ impl ScreenBuffer {
         height: f64,
         texture: &Texture,
         wall_details: &WallCollision,
+        colour_adjustment: f64,
     ) {
+        let texture = texture / colour_adjustment;
         let texture_x_pos = texture.get_texel_column_on_line_with_scale(
             &wall_details.wall,
             &wall_details.intersection,
@@ -88,7 +96,7 @@ impl ScreenBuffer {
         }
         let mut wall_pixel_index = starting_wall_position;
         while pixel_index < top_pixel_index {
-            let colour = get_colour(wall_pixel_index);
+            let colour = get_colour(wall_pixel_index).clone();
             wall_pixel_index += 1;
 
             self.pixels[pixel_index] = colour.red;

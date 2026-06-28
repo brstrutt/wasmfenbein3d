@@ -1,3 +1,5 @@
+use std::ops;
+
 use crate::{
     primitives::{line2d::Line2D, point2d::Point2D},
     render::rgb::RGB,
@@ -57,5 +59,22 @@ impl Texture {
 
         let texture_x_pos = (wall_space_intersection.y as f64 / scale as f64) * self.width as f64;
         texture_x_pos as usize
+    }
+}
+
+impl ops::Div<f64> for &Texture {
+    type Output = Texture;
+
+    fn div(self, rhs: f64) -> Texture {
+        Texture {
+            texels: self
+                .texels
+                .clone()
+                .into_iter()
+                .map(|texel| texel / rhs)
+                .collect(),
+            width: self.width,
+            height: self.height,
+        }
     }
 }
