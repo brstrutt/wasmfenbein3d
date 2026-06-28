@@ -29,7 +29,8 @@ impl ScreenBuffer {
         colour: &RGB,
         colour_adjustment: f64,
     ) {
-        self.render_column(x, height, &|_wall_pixel_index| colour)
+        let colour = colour.clone() / colour_adjustment;
+        self.render_column(x, height, &|_wall_pixel_index| &colour)
     }
 
     pub fn render_textured_column(
@@ -40,12 +41,13 @@ impl ScreenBuffer {
         wall_details: &WallCollision,
         colour_adjustment: f64,
     ) {
-        let texture = texture / colour_adjustment;
         let texture_x_pos = texture.get_texel_column_on_line_with_scale(
             &wall_details.wall,
             &wall_details.intersection,
             WALL_HEIGHT,
         );
+        let mut texture = texture.get_texel_column(texture_x_pos);
+        texture = &texture / colour_adjustment;
 
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height as f64) * texture.height as f64;
