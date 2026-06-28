@@ -10,6 +10,9 @@ impl Point2D {
         let rotated_x = (x * cos_angle) - (y * sin_angle);
         let rotated_y = (x * sin_angle) + (y * cos_angle);
 
-        Point2D {x: rotated_x, y: rotated_y}
+        Point2D {
+            x: rotated_x,
+            y: rotated_y,
+        }
     }
 }

@@ -1,7 +1,10 @@
-pub mod walls;
 pub(crate) mod camera;
+pub mod walls;
 
-use crate::{primitives::{line2d::Line2D, ray2d::Ray2D}, world::{camera::Camera, walls::WallCollision}};
+use crate::{
+    primitives::{line2d::Line2D, ray2d::Ray2D},
+    world::{camera::Camera, walls::WallCollision},
+};
 
 #[derive(Clone)]
 pub struct World {
@@ -11,7 +14,7 @@ pub struct World {
 
 impl World {
     pub fn dummy() -> World {
-        World{
+        World {
             walls: walls::default_walls(),
             camera: Camera::dummy(),
         }

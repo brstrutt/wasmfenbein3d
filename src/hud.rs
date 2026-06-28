@@ -24,6 +24,12 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
         time_to_render_display_element
             .first_child()
             .expect("Couldnt get FPS display child")
-            .set_text_content(Some(format!("Time to Render: {}ms", state.last_time_to_render_one_frame_ms.round()).as_str()));
+            .set_text_content(Some(
+                format!(
+                    "Time to Render: {}ms",
+                    state.last_time_to_render_one_frame_ms.round()
+                )
+                .as_str(),
+            ));
     });
 }

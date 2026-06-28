@@ -1,16 +1,20 @@
-mod utils;
-mod primitives;
-mod render;
-mod world;
 mod controls;
-mod web;
-mod state;
 mod hud;
 mod motion;
+mod primitives;
+mod render;
+mod state;
+mod utils;
+mod web;
+mod world;
 
 use std::{cell::RefCell, rc::Rc};
 
-use crate::{render::screen::ScreenBuffer, state::GameState, web::{access, main_canvas}};
+use crate::{
+    render::screen::ScreenBuffer,
+    state::GameState,
+    web::{access, main_canvas},
+};
 
 fn main() {
     console_error_panic_hook::set_once();

@@ -1,7 +1,6 @@
 use wasm_bindgen::JsCast;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 
-
 pub fn window() -> web_sys::Window {
     web_sys::window().expect("no global `window` exists")
 }
@@ -15,7 +14,13 @@ pub fn button(id: &str) -> web_sys::HtmlButtonElement {
         .get_element_by_id(id)
         .expect(format!("Couldn't find button element with ID: {}", id).as_str())
         .dyn_into::<web_sys::HtmlButtonElement>()
-        .expect(format!("Element with ID {} couldn't be converted into an HtmlButtonElement", id).as_str())
+        .expect(
+            format!(
+                "Element with ID {} couldn't be converted into an HtmlButtonElement",
+                id
+            )
+            .as_str(),
+        )
 }
 
 pub fn main_canvas() -> web_sys::HtmlCanvasElement {

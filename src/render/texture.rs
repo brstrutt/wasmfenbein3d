@@ -1,4 +1,7 @@
-use crate::{primitives::{line2d::Line2D, point2d::Point2D}, render::rgb::RGB};
+use crate::{
+    primitives::{line2d::Line2D, point2d::Point2D},
+    render::rgb::RGB,
+};
 
 pub struct Texture {
     texels: Vec<RGB>,
@@ -24,10 +27,22 @@ impl Texture {
             width: 4,
             height: 4,
             texels: vec![
-                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, DARK_GREEN,
-                DARK_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
-                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, DARK_GREEN,
-                DARK_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
+                LIGHT_GREEN,
+                DARK_GREEN,
+                LIGHT_GREEN,
+                DARK_GREEN,
+                DARK_GREEN,
+                LIGHT_GREEN,
+                DARK_GREEN,
+                LIGHT_GREEN,
+                LIGHT_GREEN,
+                DARK_GREEN,
+                LIGHT_GREEN,
+                DARK_GREEN,
+                DARK_GREEN,
+                LIGHT_GREEN,
+                DARK_GREEN,
+                LIGHT_GREEN,
             ],
         }
     }
@@ -39,7 +54,6 @@ impl Texture {
     }
 
     pub fn get_texel_column_on_line(&self, line: &Line2D, point: &Point2D) -> usize {
-
         let wall = line;
         let intersection = point;
 
@@ -49,7 +63,8 @@ impl Texture {
         let wall_space_end = wall_end_relative.rotate(inverse_wall_angle);
         let wall_space_intersection = (*intersection - wall.start).rotate(inverse_wall_angle);
 
-        let texture_x_pos = (wall_space_intersection.y as f64 / wall_space_end.y as f64) * self.width as f64;
+        let texture_x_pos =
+            (wall_space_intersection.y as f64 / wall_space_end.y as f64) * self.width as f64;
         texture_x_pos as usize
     }
 }
