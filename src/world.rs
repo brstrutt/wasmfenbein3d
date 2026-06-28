@@ -17,8 +17,8 @@ impl World {
         }
     }
 
-    pub fn dist_to_wall(&self, raycast: &Ray2D) -> Option<f64> {
-        walls::dist_to_wall(&self.walls, raycast)
+    pub fn nearest_wall_intersection(&self, raycast: &Ray2D) -> Option<WallCollision> {
+        walls::nearest_wall_intersection(&self.walls, raycast)
     }
 
     pub fn line_intersects_wall(&self, line: &Line2D) -> Option<WallCollision> {

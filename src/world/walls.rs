@@ -37,31 +37,40 @@ fn walls_from_point_path(points: &Vec<Point2D>) -> Vec<Line2D> {
     lines
 }
 
-pub fn dist_to_wall(walls: &Vec<Line2D>, raycast: &Ray2D) -> Option<f64> {
-    let mut smallest_dist: Option<f64> = None;
+pub struct WallCollision {
+    pub intersection: Point2D,
+    pub wall: Line2D,
+}
+
+pub fn nearest_wall_intersection(walls: &Vec<Line2D>, raycast: &Ray2D) -> Option<WallCollision> {
+    let mut closest_collision_distance: Option<f64> = None;
+    let mut closest_collision: Option<WallCollision> = None;
 
     for wall in walls.iter() {
         let intersection_point = raycast.intersection(wall);
-        if intersection_point.is_some() {
-            let dist = Point2D::dist(&raycast.origin, &intersection_point.unwrap());
-            if smallest_dist.is_none() || dist < smallest_dist.unwrap() {
-                smallest_dist = Some(dist)
+        if let Some(intersection_point) = intersection_point {
+            let dist = Point2D::dist(&raycast.origin, &intersection_point);
+            if closest_collision_distance.is_none() || dist < closest_collision_distance.unwrap() {
+                closest_collision_distance = Some(dist);
+                closest_collision = Some(WallCollision{
+                    intersection: intersection_point,
+                    wall: wall.clone()
+                })
             }
         }
     }
 
-    return smallest_dist;
-}
-
-pub struct WallCollision {
-    pub wall: Line2D,
+    return closest_collision;
 }
 
 pub fn line_intersects_wall(walls: &Vec<Line2D>, line: &Line2D) -> Option<WallCollision> {
     for wall in walls.iter() {
         let intersection_point = line.intersection(wall);
-        if intersection_point.is_some() {
-            return Some(WallCollision{wall: wall.clone()});
+        if let Some(intersection_point) = intersection_point {
+            return Some(WallCollision{
+                intersection: intersection_point,
+                wall: wall.clone()
+            });
         }
     }
 
