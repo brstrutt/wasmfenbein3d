@@ -101,6 +101,7 @@ impl ScreenBuffer {
         screen_width_pixels: f64,
         dist_to_floor: f64,
         texture: &Texture,
+        colour_adjustment: f64,
     ) {
         let pixel_increment = 4;
         let row_length = self.width * 4;
@@ -118,7 +119,8 @@ impl ScreenBuffer {
             let position = ray.origin + (ray.direction * dist_to_floor);
             let colour = texture
                 .get_texel(position.x * 4.0, position.y * 4.0)
-                .clone();
+                .clone()
+                / colour_adjustment;
 
             self.pixels[pixel_index] = colour.red;
             self.pixels[pixel_index + 1] = colour.green;
