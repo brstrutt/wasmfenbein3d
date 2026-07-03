@@ -22,9 +22,18 @@ pub fn render(screen_buffer: &Rc<RefCell<ScreenBuffer>>, state: &RefCell<GameSta
 
     let mut state = state.borrow_mut();
     let mut screen_buffer = screen_buffer.borrow_mut();
-    let screen_height = screen_buffer.height as f64;
 
-    let wall_texture = Texture::get_default();
+    render_walls(&mut screen_buffer, &state);
+
+    main_canvas::render_screen_buffer(&screen_buffer);
+
+    let render_end_time = web::window::now_in_ms();
+    state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
+}
+
+fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
+    let wall_texture = Texture::get_default_wall();
+    let screen_height = screen_buffer.height as f64;
 
     for x in 0..screen_buffer.width {
         let ray = state
@@ -66,9 +75,4 @@ pub fn render(screen_buffer: &Rc<RefCell<ScreenBuffer>>, state: &RefCell<GameSta
             );
         }
     }
-
-    main_canvas::render_screen_buffer(&screen_buffer);
-
-    let render_end_time = web::window::now_in_ms();
-    state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
 }
