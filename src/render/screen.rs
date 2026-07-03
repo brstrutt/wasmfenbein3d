@@ -1,7 +1,5 @@
-use std::f64::consts::PI;
-
 use crate::{
-    primitives::{point2d::Point2D, ray2d::Ray2D},
+    primitives::ray2d::Ray2D,
     render::{rgb::RGB, texture::Texture},
     world::walls::{WALL_HEIGHT, WallCollision},
 };

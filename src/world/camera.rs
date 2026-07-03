@@ -30,16 +30,4 @@ impl Camera {
 
         self.rotate(camera_direction_offset)
     }
-
-    pub fn leftmost_ray(&self, screen_height_pixels: usize, screen_width_pixels: usize) -> Ray2D {
-        self.ray_for_column(0, screen_height_pixels, screen_width_pixels)
-    }
-
-    pub fn rightmost_ray(&self, screen_height_pixels: usize, screen_width_pixels: usize) -> Ray2D {
-        self.ray_for_column(
-            screen_width_pixels - 1,
-            screen_height_pixels,
-            screen_width_pixels,
-        )
-    }
 }
