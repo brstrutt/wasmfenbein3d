@@ -116,8 +116,8 @@ impl ScreenBuffer {
         while pixel_index < end_point {
             let colour = texture
                 .get_texel(
-                    current_floor_position.x as usize,
-                    current_floor_position.y as usize,
+                    (current_floor_position.x * 10.0) as usize,
+                    (current_floor_position.y * 10.0) as usize,
                 )
                 .clone();
 
