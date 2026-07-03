@@ -1,5 +1,7 @@
+use std::f64::consts::PI;
+
 use crate::{
-    primitives::point2d::Point2D,
+    primitives::{point2d::Point2D, ray2d::Ray2D},
     render::{rgb::RGB, texture::Texture},
     world::walls::{WALL_HEIGHT, WallCollision},
 };
@@ -94,38 +96,36 @@ impl ScreenBuffer {
     pub fn render_textured_row(
         &mut self,
         y: &usize,
-        camera_position: Point2D,
-        left_ray_dir: Point2D,
-        right_ray_dir: Point2D,
+        camera: &Ray2D,
+        screen_height_pixels: f64,
         screen_width_pixels: f64,
         dist_to_floor: f64,
         texture: &Texture,
     ) {
-        let floor_position_increment =
-            (right_ray_dir - left_ray_dir) * (dist_to_floor / screen_width_pixels);
-
-        let initial_floor_position = camera_position + (left_ray_dir * dist_to_floor);
-
         let pixel_increment = 4;
         let row_length = self.width * 4;
 
         let mut pixel_index = y * row_length;
         let end_point = pixel_index + row_length;
-        let mut current_floor_position = initial_floor_position;
 
+        let mut x = 0;
         while pixel_index < end_point {
+            let ray = camera.ray_for_column(
+                x,
+                screen_height_pixels as usize,
+                screen_width_pixels as usize,
+            );
+            let position = ray.origin + (ray.direction * dist_to_floor);
             let colour = texture
-                .get_texel(
-                    current_floor_position.x * 10.0,
-                    current_floor_position.y * 10.0,
-                )
+                .get_texel(position.x * 4.0, position.y * 4.0)
                 .clone();
 
             self.pixels[pixel_index] = colour.red;
             self.pixels[pixel_index + 1] = colour.green;
             self.pixels[pixel_index + 2] = colour.blue;
             pixel_index += pixel_increment;
-            current_floor_position += floor_position_increment;
+
+            x += 1;
         }
     }
 

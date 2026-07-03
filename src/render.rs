@@ -37,21 +37,18 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
 
     let camera = state.world.camera;
     let screen_width = screen_buffer.width as f64;
-    let half_screen_height = screen_buffer.height as f64 / 2.0;
-
-    let left_ray = camera.leftmost_ray(screen_buffer.height, screen_buffer.width);
-    let right_ray = camera.rightmost_ray(screen_buffer.height, screen_buffer.width);
+    let screen_height = screen_buffer.height as f64;
+    let half_screen_height = screen_height / 2.0;
 
     for y in 0..screen_buffer.height {
         let dist_to_floor = half_screen_height / (y as f64 - half_screen_height);
 
         screen_buffer.render_textured_row(
             &y,
-            camera.origin,
-            left_ray.direction,
-            right_ray.direction,
+            &camera,
+            screen_height,
             screen_width,
-            dist_to_floor.abs(),
+            dist_to_floor.abs() * WALL_HEIGHT,
             &floor_texture,
         );
     }
