@@ -51,7 +51,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
             left_ray.direction,
             right_ray.direction,
             screen_width,
-            dist_to_floor,
+            dist_to_floor.abs(),
             &floor_texture,
         );
     }
