@@ -72,10 +72,16 @@ impl Texture {
         }
     }
 
-    pub fn get_texel(&self, x: usize, y: usize) -> &RGB {
-        let x = x % self.width;
-        let y = y % self.height;
-        &self.texels[y * self.width + x]
+    pub fn get_texel(&self, x: f64, y: f64) -> &RGB {
+        let mut x = x % self.width as f64;
+        if x < 0.0 {
+            x = self.width as f64 + x;
+        }
+        let mut y = y % self.height as f64;
+        if y < 0.0 {
+            y = self.height as f64 + y;
+        }
+        &self.texels[y as usize * self.width + x as usize]
     }
 
     pub fn get_texel_column(&self, x: usize) -> Texture {

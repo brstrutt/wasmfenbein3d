@@ -52,7 +52,7 @@ impl ScreenBuffer {
 
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height as f64;
-            texture.get_texel(texture_x_pos, texture_y_pos as usize)
+            texture.get_texel(texture_x_pos as f64, texture_y_pos)
         })
     }
 
@@ -116,8 +116,8 @@ impl ScreenBuffer {
         while pixel_index < end_point {
             let colour = texture
                 .get_texel(
-                    (current_floor_position.x * 10.0) as usize,
-                    (current_floor_position.y * 10.0) as usize,
+                    current_floor_position.x * 10.0,
+                    current_floor_position.y * 10.0,
                 )
                 .clone();
 
