@@ -42,6 +42,36 @@ impl Texture {
         }
     }
 
+    pub fn get_default_floor() -> Self {
+        const LIGHT_GREEN: RGB = RGB {
+            red: 60,
+            green: 175,
+            blue: 30,
+        };
+
+        const DARK_GREEN: RGB = RGB {
+            red: 30,
+            green: 100,
+            blue: 60,
+        };
+
+        Texture {
+            width: 8,
+            height: 8,
+            #[rustfmt::skip]
+            texels: vec![
+                LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN,
+                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
+                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
+                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
+                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
+                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
+                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
+                LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN,
+            ],
+        }
+    }
+
     pub fn get_texel(&self, x: usize, y: usize) -> &RGB {
         let x = x % self.width;
         let y = y % self.height;

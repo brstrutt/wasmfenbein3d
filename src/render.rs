@@ -23,12 +23,38 @@ pub fn render(screen_buffer: &Rc<RefCell<ScreenBuffer>>, state: &RefCell<GameSta
     let mut state = state.borrow_mut();
     let mut screen_buffer = screen_buffer.borrow_mut();
 
+    render_background(&mut screen_buffer, &state);
     render_walls(&mut screen_buffer, &state);
 
     main_canvas::render_screen_buffer(&screen_buffer);
 
     let render_end_time = web::window::now_in_ms();
     state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
+}
+
+fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
+    let floor_texture = Texture::get_default_floor();
+
+    let camera = state.world.camera;
+    let screen_width = screen_buffer.width as f64;
+    let half_screen_height = screen_buffer.height as f64 / 2.0;
+
+    let left_ray = camera.leftmost_ray(screen_buffer.height, screen_buffer.width);
+    let right_ray = camera.rightmost_ray(screen_buffer.height, screen_buffer.width);
+
+    for y in 0..screen_buffer.height {
+        let dist_to_floor = half_screen_height / (y as f64 - half_screen_height);
+
+        screen_buffer.render_textured_row(
+            &y,
+            camera.origin,
+            left_ray.direction,
+            right_ray.direction,
+            screen_width,
+            dist_to_floor,
+            &floor_texture,
+        );
+    }
 }
 
 fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {

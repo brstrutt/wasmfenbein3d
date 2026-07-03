@@ -1,4 +1,5 @@
 use crate::{
+    primitives::point2d::Point2D,
     render::{rgb::RGB, texture::Texture},
     world::walls::{WALL_HEIGHT, WallCollision},
 };
@@ -55,7 +56,7 @@ impl ScreenBuffer {
         })
     }
 
-    pub fn render_column<'a, F: Fn(usize) -> &'a RGB>(
+    fn render_column<'a, F: Fn(usize) -> &'a RGB>(
         &mut self,
         x: &usize,
         height: f64,
@@ -72,30 +73,12 @@ impl ScreenBuffer {
         let top = self.center + half_height;
         let bottom = self.center - half_height;
 
-        const FLOOR_COLOR: RGB = RGB {
-            red: 15,
-            green: 60,
-            blue: 15,
-        };
-        const SKY_COLOR: RGB = RGB {
-            red: 10,
-            green: 40,
-            blue: 10,
-        };
-
         let pixel_increment = self.width * 4;
         let start_pixel_index = x * 4;
         let bottom_pixel_index = start_pixel_index + (bottom * pixel_increment);
         let top_pixel_index = start_pixel_index + (top * pixel_increment);
-        let end_pixel_index = start_pixel_index + (self.height * pixel_increment);
-        let mut pixel_index = start_pixel_index;
+        let mut pixel_index = bottom_pixel_index;
 
-        while pixel_index < bottom_pixel_index {
-            self.pixels[pixel_index] = SKY_COLOR.red;
-            self.pixels[pixel_index + 1] = SKY_COLOR.green;
-            self.pixels[pixel_index + 2] = SKY_COLOR.blue;
-            pixel_index += pixel_increment;
-        }
         let mut wall_pixel_index = starting_wall_position;
         while pixel_index < top_pixel_index {
             let colour = get_colour(wall_pixel_index).clone();
@@ -106,11 +89,43 @@ impl ScreenBuffer {
             self.pixels[pixel_index + 2] = colour.blue;
             pixel_index += pixel_increment;
         }
-        while pixel_index < end_pixel_index {
-            self.pixels[pixel_index] = FLOOR_COLOR.red;
-            self.pixels[pixel_index + 1] = FLOOR_COLOR.green;
-            self.pixels[pixel_index + 2] = FLOOR_COLOR.blue;
+    }
+
+    pub fn render_textured_row(
+        &mut self,
+        y: &usize,
+        camera_position: Point2D,
+        left_ray_dir: Point2D,
+        right_ray_dir: Point2D,
+        screen_width_pixels: f64,
+        dist_to_floor: f64,
+        texture: &Texture,
+    ) {
+        let floor_position_increment =
+            (right_ray_dir - left_ray_dir) * (dist_to_floor / screen_width_pixels);
+
+        let initial_floor_position = camera_position + (left_ray_dir * dist_to_floor);
+
+        let pixel_increment = 4;
+        let row_length = self.width * 4;
+
+        let mut pixel_index = y * row_length;
+        let end_point = pixel_index + row_length;
+        let mut current_floor_position = initial_floor_position;
+
+        while pixel_index < end_point {
+            let colour = texture
+                .get_texel(
+                    current_floor_position.x as usize,
+                    current_floor_position.y as usize,
+                )
+                .clone();
+
+            self.pixels[pixel_index] = colour.red;
+            self.pixels[pixel_index + 1] = colour.green;
+            self.pixels[pixel_index + 2] = colour.blue;
             pixel_index += pixel_increment;
+            current_floor_position += floor_position_increment;
         }
     }
 

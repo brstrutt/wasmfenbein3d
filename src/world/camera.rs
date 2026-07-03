@@ -4,6 +4,9 @@ use crate::primitives::{point2d::Point2D, ray2d::Ray2D};
 
 pub type Camera = Ray2D;
 
+const FOV_DEGREES: f64 = 90.0;
+const FOV_RADIANS: f64 = PI * (FOV_DEGREES / 180.0);
+
 impl Camera {
     pub fn dummy() -> Camera {
         Ray2D::new(Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 1.0 })
@@ -15,9 +18,6 @@ impl Camera {
         screen_height_pixels: usize,
         screen_width_pixels: usize,
     ) -> Ray2D {
-        const FOV_DEGREES: f64 = 90.0;
-        const FOV_RADIANS: f64 = PI * (FOV_DEGREES / 180.0);
-
         let fov_step_per_pixel = FOV_RADIANS / screen_width_pixels as f64;
 
         let screen_ratio = (screen_height_pixels / screen_width_pixels) as f64;
@@ -29,5 +29,17 @@ impl Camera {
         let camera_direction_offset = angle_step * horizontal_pixel_coord as f64;
 
         self.rotate(camera_direction_offset)
+    }
+
+    pub fn leftmost_ray(&self, screen_height_pixels: usize, screen_width_pixels: usize) -> Ray2D {
+        self.ray_for_column(0, screen_height_pixels, screen_width_pixels)
+    }
+
+    pub fn rightmost_ray(&self, screen_height_pixels: usize, screen_width_pixels: usize) -> Ray2D {
+        self.ray_for_column(
+            screen_width_pixels - 1,
+            screen_height_pixels,
+            screen_width_pixels,
+        )
     }
 }
