@@ -10,6 +10,7 @@ use web_sys::ImageData;
 
 pub struct ScreenBuffer {
     pixels: Vec<u8>,
+    already_drawn: Vec<bool>,
     pub width: usize,
     pub height: usize,
     center: usize,
@@ -19,10 +20,15 @@ impl ScreenBuffer {
     pub fn setup(width: usize, height: usize) -> Self {
         ScreenBuffer {
             pixels: vec![255u8; width * height * 4],
+            already_drawn: vec![false; width * height],
             width,
             height,
             center: height / 2,
         }
+    }
+
+    pub fn reset_draw_history(&mut self) {
+        self.already_drawn.fill(false)
     }
 
     pub fn render_solid_colour_column(
@@ -78,20 +84,25 @@ impl ScreenBuffer {
         let top = self.center + half_height;
         let bottom = self.center - half_height;
 
-        let pixel_increment = self.width * 4;
-        let start_pixel_index = x * 4;
-        let bottom_pixel_index = start_pixel_index + (bottom * pixel_increment);
-        let top_pixel_index = start_pixel_index + (top * pixel_increment);
-        let mut pixel_index = bottom_pixel_index;
+        let pixel_increment = self.width;
+        let rgb_pixel_increment = pixel_increment * 4;
+        let start_rgb_pixel_index = x * 4;
+        let bottom_rgb_pixel_index = start_rgb_pixel_index + (bottom * rgb_pixel_increment);
+        let top_rgb_pixel_index = start_rgb_pixel_index + (top * rgb_pixel_increment);
+        let mut rgb_pixel_index = bottom_rgb_pixel_index;
 
         let mut wall_pixel_index = starting_wall_position;
-        while pixel_index < top_pixel_index {
+        let mut pixel_index = x + (bottom * pixel_increment);
+        while rgb_pixel_index < top_rgb_pixel_index {
             let colour = get_colour(wall_pixel_index).clone();
-            wall_pixel_index += 1;
 
-            self.pixels[pixel_index] = colour.red;
-            self.pixels[pixel_index + 1] = colour.green;
-            self.pixels[pixel_index + 2] = colour.blue;
+            self.pixels[rgb_pixel_index] = colour.red;
+            self.pixels[rgb_pixel_index + 1] = colour.green;
+            self.pixels[rgb_pixel_index + 2] = colour.blue;
+            self.already_drawn[pixel_index] = true;
+
+            wall_pixel_index += 1;
+            rgb_pixel_index += rgb_pixel_increment;
             pixel_index += pixel_increment;
         }
     }
@@ -105,25 +116,29 @@ impl ScreenBuffer {
         colour_adjustment: f64,
     ) {
         let adjusted_texture = texture / colour_adjustment;
-        let pixel_increment = 4;
+        let rgb_pixel_increment = 4;
         let row_length = self.width * 4;
 
-        let mut pixel_index = y * row_length;
-        let end_point = pixel_index + row_length;
+        let mut rgb_pixel_index = y * row_length;
+        let end_point = rgb_pixel_index + row_length;
 
         let mut x = 0;
-        while pixel_index < end_point {
-            let ray = camera.ray_for_column(x);
-            let position = ray.origin + (ray.direction * dist_to_floor);
-            let colour = adjusted_texture
-                .get_texel((position.x * 4.0) as isize, (position.y * 4.0) as isize);
+        let mut pixel_index = y * self.width;
+        while rgb_pixel_index < end_point {
+            if !self.already_drawn[pixel_index] {
+                let ray = camera.ray_for_column(x);
+                let position = ray.origin + (ray.direction * dist_to_floor);
+                let colour = adjusted_texture
+                    .get_texel((position.x * 4.0) as isize, (position.y * 4.0) as isize);
 
-            self.pixels[pixel_index] = colour.red;
-            self.pixels[pixel_index + 1] = colour.green;
-            self.pixels[pixel_index + 2] = colour.blue;
-            pixel_index += pixel_increment;
+                self.pixels[rgb_pixel_index] = colour.red;
+                self.pixels[rgb_pixel_index + 1] = colour.green;
+                self.pixels[rgb_pixel_index + 2] = colour.blue;
+            }
 
+            rgb_pixel_index += rgb_pixel_increment;
             x += 1;
+            pixel_index += 1;
         }
     }
 

@@ -23,8 +23,9 @@ pub fn render(screen_buffer: &Rc<RefCell<ScreenBuffer>>, state: &RefCell<GameSta
     let mut state = state.borrow_mut();
     let mut screen_buffer = screen_buffer.borrow_mut();
 
-    render_background(&mut screen_buffer, &state);
+    screen_buffer.reset_draw_history();
     render_walls(&mut screen_buffer, &state);
+    render_background(&mut screen_buffer, &state);
 
     main_canvas::render_screen_buffer(&screen_buffer);
 
