@@ -9,9 +9,9 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn setup() -> GameState {
+    pub fn setup(screen_width: usize, screen_height: usize) -> GameState {
         GameState {
-            world: World::dummy(),
+            world: World::new(screen_width, screen_height),
             input: InputState::setup(),
             last_frame_time_ms: web::window::now_in_ms(),
             last_time_between_frames_ms: 0.0,

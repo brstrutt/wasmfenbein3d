@@ -97,8 +97,6 @@ impl ScreenBuffer {
         &mut self,
         y: &usize,
         camera: &Camera,
-        screen_height_pixels: f64,
-        screen_width_pixels: f64,
         dist_to_floor: f64,
         texture: &Texture,
         colour_adjustment: f64,
@@ -111,11 +109,7 @@ impl ScreenBuffer {
 
         let mut x = 0;
         while pixel_index < end_point {
-            let ray = camera.ray_for_column(
-                x,
-                screen_height_pixels as usize,
-                screen_width_pixels as usize,
-            );
+            let ray = camera.ray_for_column(x);
             let position = ray.origin + (ray.direction * dist_to_floor);
             let colour = texture
                 .get_texel(position.x * 4.0, position.y * 4.0)

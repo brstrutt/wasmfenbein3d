@@ -36,9 +36,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
     let floor_texture = Texture::get_default_floor();
 
     let camera = state.world.camera.clone();
-    let screen_width = screen_buffer.width as f64;
-    let screen_height = screen_buffer.height as f64;
-    let half_screen_height = screen_height / 2.0;
+    let half_screen_height = screen_buffer.height as f64 / 2.0;
 
     for y in 0..screen_buffer.height {
         let dist_to_floor =
@@ -47,8 +45,6 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
         screen_buffer.render_textured_row(
             &y,
             &camera,
-            screen_height,
-            screen_width,
             dist_to_floor,
             &floor_texture,
             (dist_to_floor / 5.0).max(1.0),
@@ -61,10 +57,7 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
     let screen_height = screen_buffer.height as f64;
 
     for x in 0..screen_buffer.width {
-        let ray = state
-            .world
-            .camera
-            .ray_for_column(x, screen_buffer.height, screen_buffer.width);
+        let ray = state.world.camera.ray_for_column(x);
         let wall_intersection = state.world.nearest_wall_intersection(&ray);
 
         let mut height = 0.0;

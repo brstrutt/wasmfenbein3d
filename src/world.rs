@@ -13,10 +13,10 @@ pub struct World {
 }
 
 impl World {
-    pub fn dummy() -> World {
+    pub fn new(screen_width: usize, screen_height: usize) -> World {
         World {
             walls: walls::default_walls(),
-            camera: Camera::dummy(),
+            camera: Camera::new(screen_width, screen_height),
         }
     }
 

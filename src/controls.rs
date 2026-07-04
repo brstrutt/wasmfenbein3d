@@ -262,6 +262,7 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
 
         state.world.camera.ray.origin =
             motion::move_object(state.world.camera.ray.origin, &motion, &state.world);
+        state.world.camera.refresh_screen_rays();
     });
 }
 
@@ -279,6 +280,7 @@ fn setup_camera_motion_loop(state: Rc<RefCell<GameState>>) {
                 .world
                 .camera
                 .rotate(camera_rotation as f64 * ROTATION_SPEED);
+            state.world.camera.refresh_screen_rays();
         }
     });
 }
