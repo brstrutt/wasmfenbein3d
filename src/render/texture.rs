@@ -17,13 +17,13 @@ impl Texture {
         const LIGHT_GREEN: RGB = RGB {
             red: 60,
             green: 175,
-            blue: 30,
+            blue: 100,
         };
 
         const DARK_GREEN: RGB = RGB {
             red: 30,
             green: 100,
-            blue: 60,
+            blue: 80,
         };
 
         Texture {
@@ -45,15 +45,15 @@ impl Texture {
 
     pub fn get_default_floor() -> Self {
         const LIGHT_GREEN: RGB = RGB {
-            red: 60,
-            green: 175,
-            blue: 30,
+            red: 100,
+            green: 120,
+            blue: 90,
         };
 
         const DARK_GREEN: RGB = RGB {
-            red: 30,
-            green: 100,
-            blue: 60,
+            red: 50,
+            green: 70,
+            blue: 70,
         };
 
         Texture {
