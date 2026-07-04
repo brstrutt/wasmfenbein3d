@@ -3,7 +3,7 @@
 
 ## Description
 
-This repo is intended to contain a basic implementation of the Wolfenstein 3D renderer, running in WASM.
+This repo is intended to contain a basic 3d renderer inspired by Wolfenstein3D and Doom, running in WASM. The goal is to see if I can get an interactive 3d environment with a good framerate without using hardware acceleration.
 It's a proof of concept/mess around type repo to see if I can get something like this working.
 
 Current live site can be seen at [https://brstrutt.github.io/wasmfenbein3d/](https://brstrutt.github.io/wasmfenbein3d/)
