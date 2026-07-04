@@ -41,12 +41,12 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
     let half_wall_height = half_screen_height * WALL_HEIGHT;
 
     for y in 0..screen_buffer.height {
-        let dist_to_floor = (1.0 / (y as f64 - half_screen_height)) * half_wall_height;
+        let dist_to_floor = ((1.0 / (y as f64 - half_screen_height)) * half_wall_height).abs();
 
         screen_buffer.render_textured_row(
             &y,
             &camera,
-            dist_to_floor.abs(),
+            dist_to_floor,
             &floor_texture,
             (dist_to_floor / 5.0).max(1.0),
         );
