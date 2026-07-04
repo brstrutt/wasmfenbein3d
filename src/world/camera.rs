@@ -2,14 +2,19 @@ use std::f64::consts::PI;
 
 use crate::primitives::{point2d::Point2D, ray2d::Ray2D};
 
-pub type Camera = Ray2D;
+#[derive(Clone)]
+pub struct Camera {
+    pub ray: Ray2D,
+}
 
 const FOV_DEGREES: f64 = 90.0;
 const FOV_RADIANS: f64 = PI * (FOV_DEGREES / 180.0);
 
 impl Camera {
     pub fn dummy() -> Camera {
-        Ray2D::new(Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 1.0 })
+        Camera {
+            ray: Ray2D::new(Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 1.0 }),
+        }
     }
 
     pub fn ray_for_column(
@@ -28,6 +33,12 @@ impl Camera {
 
         let camera_direction_offset = angle_step * horizontal_pixel_coord as f64;
 
-        self.rotate(camera_direction_offset)
+        self.ray.rotate(camera_direction_offset)
+    }
+
+    pub fn rotate(&self, angle_radians: f64) -> Camera {
+        Camera {
+            ray: self.ray.rotate(angle_radians),
+        }
     }
 }

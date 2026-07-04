@@ -253,15 +253,15 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
         let velocity_per_s = if state.input.sprint { 12.0 } else { 4.0 };
         let velocity = velocity_per_s * time_since_last_frame_s;
 
-        let camera_rotation = state.world.camera.get_angle();
+        let camera_rotation = state.world.camera.ray.get_angle();
         let motion = state
             .input
             .get_cameraspace_movement_direction()
             .rotate(camera_rotation)
             * velocity;
 
-        state.world.camera.origin =
-            motion::move_object(state.world.camera.origin, &motion, &state.world);
+        state.world.camera.ray.origin =
+            motion::move_object(state.world.camera.ray.origin, &motion, &state.world);
     });
 }
 

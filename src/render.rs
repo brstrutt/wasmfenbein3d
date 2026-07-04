@@ -35,7 +35,7 @@ pub fn render(screen_buffer: &Rc<RefCell<ScreenBuffer>>, state: &RefCell<GameSta
 fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
     let floor_texture = Texture::get_default_floor();
 
-    let camera = state.world.camera;
+    let camera = state.world.camera.clone();
     let screen_width = screen_buffer.width as f64;
     let screen_height = screen_buffer.height as f64;
     let half_screen_height = screen_height / 2.0;
@@ -71,8 +71,10 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
         let mut wall_color_adjustment = 1.0;
 
         if let Some(wall_intersection) = wall_intersection {
-            let distance =
-                Point2D::dist(&state.world.camera.origin, &wall_intersection.intersection);
+            let distance = Point2D::dist(
+                &state.world.camera.ray.origin,
+                &wall_intersection.intersection,
+            );
             wall_color_adjustment = (distance / 5.0).max(1.0);
 
             if distance != 0.0 {

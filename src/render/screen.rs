@@ -1,7 +1,9 @@
 use crate::{
-    primitives::ray2d::Ray2D,
     render::{rgb::RGB, texture::Texture},
-    world::walls::{WALL_HEIGHT, WallCollision},
+    world::{
+        camera::Camera,
+        walls::{WALL_HEIGHT, WallCollision},
+    },
 };
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
@@ -94,7 +96,7 @@ impl ScreenBuffer {
     pub fn render_textured_row(
         &mut self,
         y: &usize,
-        camera: &Ray2D,
+        camera: &Camera,
         screen_height_pixels: f64,
         screen_width_pixels: f64,
         dist_to_floor: f64,
