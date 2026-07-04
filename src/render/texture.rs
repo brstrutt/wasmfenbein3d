@@ -3,6 +3,7 @@ use std::ops;
 use crate::{
     primitives::{line2d::Line2D, point2d::Point2D},
     render::rgb::RGB,
+    utils::wrapping_mod::wrapping_mod,
 };
 
 pub struct Texture {
@@ -73,14 +74,8 @@ impl Texture {
     }
 
     pub fn get_texel(&self, x: f64, y: f64) -> &RGB {
-        let mut x = x % self.width as f64;
-        if x < 0.0 {
-            x = self.width as f64 + x;
-        }
-        let mut y = y % self.height as f64;
-        if y < 0.0 {
-            y = self.height as f64 + y;
-        }
+        let x = wrapping_mod(x, self.width as f64);
+        let y = wrapping_mod(y, self.height as f64);
         &self.texels[y as usize * self.width + x as usize]
     }
 
