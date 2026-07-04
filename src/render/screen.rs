@@ -54,7 +54,10 @@ impl ScreenBuffer {
 
         self.render_column(x, height, &|wall_pixel_index| {
             let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height as f64;
-            texture.get_texel(texture_x_pos as f64, texture_y_pos * WALL_HEIGHT)
+            texture.get_texel(
+                texture_x_pos as isize,
+                (texture_y_pos * WALL_HEIGHT) as isize,
+            )
         })
     }
 
@@ -112,7 +115,7 @@ impl ScreenBuffer {
             let ray = camera.ray_for_column(x);
             let position = ray.origin + (ray.direction * dist_to_floor);
             let colour = texture
-                .get_texel(position.x * 4.0, position.y * 4.0)
+                .get_texel((position.x * 4.0) as isize, (position.y * 4.0) as isize)
                 .clone()
                 / colour_adjustment;
 

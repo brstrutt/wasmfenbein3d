@@ -73,10 +73,10 @@ impl Texture {
         }
     }
 
-    pub fn get_texel(&self, x: f64, y: f64) -> &RGB {
-        let x = wrapping_mod(x, self.width as f64);
-        let y = wrapping_mod(y, self.height as f64);
-        &self.texels[y as usize * self.width + x as usize]
+    pub fn get_texel(&self, x: isize, y: isize) -> &RGB {
+        let x = wrapping_mod(x, self.width as isize) as usize;
+        let y = wrapping_mod(y, self.height as isize) as usize;
+        &self.texels[(y * self.width) + x]
     }
 
     pub fn get_texel_column(&self, x: usize) -> Texture {

@@ -1,7 +1,7 @@
-pub fn wrapping_mod(val: f64, modulus: f64) -> f64 {
+pub fn wrapping_mod(val: isize, modulus: isize) -> usize {
     let mut val = val % modulus;
-    if val < 0.0 {
+    if val < 0 {
         val = modulus + val;
     }
-    val
+    val as usize
 }
