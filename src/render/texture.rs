@@ -1,4 +1,6 @@
-use std::ops;
+use std::{io::Cursor, ops};
+
+use image::ImageReader;
 
 use crate::{
     primitives::{line2d::Line2D, point2d::Point2D},
@@ -13,6 +15,31 @@ pub struct Texture {
 }
 
 impl Texture {
+    pub fn new_from_bmp_data(bmp_data: &[u8]) -> Self {
+        let result = ImageReader::new(Cursor::new(bmp_data))
+            .with_guessed_format()
+            .expect("Failed to guess image format of raw data array.")
+            .decode()
+            .expect("Failed to decode image.");
+        let width = result.width() as usize;
+        let height = result.height() as usize;
+
+        let bytes = result.to_rgb8();
+
+        let mut texels = vec![RGB::white(); width * height];
+        let mut index = 0;
+        for rgb in bytes.pixels() {
+            texels[index] = RGB::from_u8(&rgb.0);
+            index += 1;
+        }
+
+        Texture {
+            width,
+            height,
+            texels,
+        }
+    }
+
     pub fn get_default_wall() -> Self {
         const LIGHT_GREEN: RGB = RGB {
             red: 60,

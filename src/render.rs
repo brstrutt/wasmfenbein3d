@@ -1,6 +1,6 @@
 use crate::{
     primitives::point2d::Point2D,
-    render::{rgb::RGB, screen::ScreenBuffer, texture::Texture},
+    render::{rgb::RGB, screen::ScreenBuffer, texture::Texture, textures::Textures},
     state::GameState,
     web::{self, main_canvas},
     world::walls::WALL_HEIGHT,
@@ -10,21 +10,31 @@ use std::{cell::RefCell, rc::Rc};
 pub mod rgb;
 pub mod screen;
 pub mod texture;
+pub mod textures;
 
-pub fn setup(state: Rc<RefCell<GameState>>, screen_buffer: Rc<RefCell<ScreenBuffer>>) {
+pub fn setup(
+    state: Rc<RefCell<GameState>>,
+    screen_buffer: Rc<RefCell<ScreenBuffer>>,
+    textures: Rc<RefCell<Textures>>,
+) {
     web::window::run_function_every_animation_frame(move || {
-        render(&screen_buffer, &state);
+        render(&screen_buffer, &state, &textures);
     });
 }
 
-pub fn render(screen_buffer: &Rc<RefCell<ScreenBuffer>>, state: &RefCell<GameState>) {
+pub fn render(
+    screen_buffer: &Rc<RefCell<ScreenBuffer>>,
+    state: &RefCell<GameState>,
+    textures: &Rc<RefCell<Textures>>,
+) {
     let render_start_time = web::window::now_in_ms();
 
     let mut state = state.borrow_mut();
     let mut screen_buffer = screen_buffer.borrow_mut();
+    let textures = textures.borrow();
 
     screen_buffer.reset_draw_history();
-    render_walls(&mut screen_buffer, &state);
+    render_walls(&mut screen_buffer, &state, &textures);
     render_background(&mut screen_buffer, &state);
 
     main_canvas::render_screen_buffer(&screen_buffer);
@@ -54,8 +64,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
     }
 }
 
-fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
-    let wall_texture = Texture::get_default_wall();
+fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &Textures) {
     let screen_height = screen_buffer.height as f64;
 
     for x in 0..screen_buffer.width {
@@ -79,7 +88,7 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
             screen_buffer.render_textured_column(
                 &x,
                 height,
-                &wall_texture,
+                &textures.wall,
                 &wall_intersection,
                 wall_color_adjustment,
             );

@@ -7,6 +7,24 @@ pub struct RGB {
     pub blue: u8,
 }
 
+impl RGB {
+    pub fn from_u8(rgb_bytes: &[u8; 3]) -> Self {
+        RGB {
+            red: rgb_bytes[0],
+            green: rgb_bytes[1],
+            blue: rgb_bytes[2],
+        }
+    }
+
+    pub fn white() -> Self {
+        RGB {
+            red: 255,
+            green: 255,
+            blue: 255,
+        }
+    }
+}
+
 impl ops::Div<f64> for RGB {
     type Output = RGB;
 

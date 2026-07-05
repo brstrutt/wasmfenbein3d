@@ -11,7 +11,7 @@ mod world;
 use std::{cell::RefCell, rc::Rc};
 
 use crate::{
-    render::screen::ScreenBuffer,
+    render::{screen::ScreenBuffer, textures::Textures},
     state::GameState,
     web::{access, main_canvas},
 };
@@ -33,8 +33,9 @@ fn main() {
     )));
 
     let state = Rc::new(RefCell::new(GameState::setup(screen_width, screen_height)));
+    let textures = Rc::new(RefCell::new(Textures::load()));
 
     controls::setup(state.clone());
-    render::setup(state.clone(), screen_buffer.clone());
+    render::setup(state.clone(), screen_buffer.clone(), textures.clone());
     hud::setup(state.clone());
 }
