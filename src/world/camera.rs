@@ -10,7 +10,7 @@ pub struct Camera {
     screen_column_rays: Vec<Ray2D>,
 }
 
-const FOV_DEGREES: f64 = 90.0;
+const FOV_DEGREES: f64 = 45.0;
 const FOV_RADIANS: f64 = PI * (FOV_DEGREES / 180.0);
 
 impl Camera {
