@@ -129,7 +129,7 @@ impl ScreenBuffer {
                 let ray = camera.ray_for_column(x);
                 let position = ray.origin + (ray.direction * dist_to_floor);
                 let colour = adjusted_texture
-                    .get_texel((position.x * 4.0) as isize, (position.y * 4.0) as isize);
+                    .get_texel((position.x * 8.0) as isize, (position.y * 8.0) as isize);
 
                 self.pixels[rgb_pixel_index] = colour.red;
                 self.pixels[rgb_pixel_index + 1] = colour.green;
