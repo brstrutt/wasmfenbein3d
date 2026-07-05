@@ -1,6 +1,6 @@
 use crate::{
     primitives::point2d::Point2D,
-    render::{rgb::RGB, screen::ScreenBuffer, texture::Texture, textures::Textures},
+    render::{rgb::RGB, screen::ScreenBuffer, textures::Textures},
     state::GameState,
     web::{self, main_canvas},
     world::walls::WALL_HEIGHT,
@@ -35,7 +35,7 @@ pub fn render(
 
     screen_buffer.reset_draw_history();
     render_walls(&mut screen_buffer, &state, &textures);
-    render_background(&mut screen_buffer, &state);
+    render_background(&mut screen_buffer, &state, &textures);
 
     main_canvas::render_screen_buffer(&screen_buffer);
 
@@ -43,9 +43,7 @@ pub fn render(
     state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
 }
 
-fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
-    let floor_texture = Texture::get_default_floor();
-
+fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &Textures) {
     let camera = state.world.camera.clone();
     let half_screen_height = screen_buffer.height as f64 / 2.0;
 
@@ -58,7 +56,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
             &y,
             &camera,
             dist_to_floor,
-            &floor_texture,
+            &textures.floor,
             (dist_to_floor / 5.0).max(1.0),
         );
     }
