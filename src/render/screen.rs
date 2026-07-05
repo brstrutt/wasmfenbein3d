@@ -53,7 +53,7 @@ impl ScreenBuffer {
         let texture_x_pos = texture.get_texel_column_on_line_with_scale(
             &wall_details.wall,
             &wall_details.intersection,
-            WALL_HEIGHT,
+            1.0,
         );
         let mut texture = texture.get_texel_column(texture_x_pos);
         texture = &texture / colour_adjustment;
@@ -129,7 +129,7 @@ impl ScreenBuffer {
                 let ray = camera.ray_for_column(x);
                 let position = ray.origin + (ray.direction * dist_to_floor);
                 let colour = adjusted_texture
-                    .get_texel((position.x * 8.0) as isize, (position.y * 8.0) as isize);
+                    .get_texel((position.x * 16.0) as isize, (position.y * 16.0) as isize);
 
                 self.pixels[rgb_pixel_index] = colour.red;
                 self.pixels[rgb_pixel_index + 1] = colour.green;
