@@ -5,11 +5,14 @@ use image::ImageReader;
 use crate::{
     primitives::{line2d::Line2D, point2d::Point2D},
     render::rgb::RGB,
-    utils::wrapping_mod::wrapping_mod,
 };
 
+pub const TEXTURE_SIZE: usize = 16;
+pub const TEXTURE_SIZE_BITS: usize = TEXTURE_SIZE - 1;
+pub const TEXTURE_SIZE_BITS_I: isize = TEXTURE_SIZE_BITS as isize;
+
 pub struct Texture {
-    texels: Vec<RGB>,
+    pub texels: Vec<RGB>,
     pub width: usize,
     pub height: usize,
 }
@@ -33,6 +36,13 @@ impl Texture {
             index += 1;
         }
 
+        if width != TEXTURE_SIZE || height != TEXTURE_SIZE {
+            panic!(
+                "Couldn't load texture. It was not {}X{}",
+                TEXTURE_SIZE, TEXTURE_SIZE
+            );
+        }
+
         Texture {
             width,
             height,
@@ -40,70 +50,10 @@ impl Texture {
         }
     }
 
-    pub fn get_default_wall() -> Self {
-        const LIGHT_GREEN: RGB = RGB {
-            red: 60,
-            green: 175,
-            blue: 100,
-        };
-
-        const DARK_GREEN: RGB = RGB {
-            red: 30,
-            green: 100,
-            blue: 80,
-        };
-
-        Texture {
-            width: 8,
-            height: 8,
-            #[rustfmt::skip]
-            texels: vec![
-                LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN,
-                DARK_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN,
-                LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN,
-                LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN,
-                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
-                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
-                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
-                LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN,
-            ],
-        }
-    }
-
-    pub fn get_default_floor() -> Self {
-        const LIGHT_GREEN: RGB = RGB {
-            red: 100,
-            green: 120,
-            blue: 90,
-        };
-
-        const DARK_GREEN: RGB = RGB {
-            red: 50,
-            green: 70,
-            blue: 70,
-        };
-
-        Texture {
-            width: 8,
-            height: 8,
-            #[rustfmt::skip]
-            texels: vec![
-                LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN,
-                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
-                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
-                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
-                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
-                DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN,
-                LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, LIGHT_GREEN,
-                LIGHT_GREEN, LIGHT_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN, LIGHT_GREEN, LIGHT_GREEN,
-            ],
-        }
-    }
-
     pub fn get_texel(&self, x: isize, y: isize) -> &RGB {
-        let x = wrapping_mod(x, self.width as isize) as usize;
-        let y = wrapping_mod(y, self.height as isize) as usize;
-        &self.texels[(y * self.width) + x]
+        let x = x & TEXTURE_SIZE_BITS_I;
+        let y = y & TEXTURE_SIZE_BITS_I;
+        &self.texels[(y as usize * self.width) + x as usize]
     }
 
     pub fn get_texel_column(&self, x: usize) -> Texture {
@@ -112,7 +62,7 @@ impl Texture {
             RGB {
                 red: 0,
                 green: 0,
-                blue: 0
+                blue: 0,
             };
             self.height
         ];
