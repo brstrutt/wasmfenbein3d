@@ -100,5 +100,5 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &
 }
 
 fn get_light_falloff(distance: f64) -> u8 {
-    (distance.ln() * 40.0) as u8
+    (distance.ln() * 20.0) as u8
 }
