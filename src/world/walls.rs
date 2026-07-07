@@ -72,16 +72,23 @@ pub fn nearest_wall_intersection(walls: &[Line2D], raycast: &Ray2D) -> Option<Wa
     closest_collision
 }
 
-pub fn line_intersects_wall(walls: &[Line2D], line: &Line2D) -> Option<WallCollision> {
+pub fn nearest_wall_intersecting_line(walls: &[Line2D], line: &Line2D) -> Option<WallCollision> {
+    let mut closest_collision_distance: Option<f64> = None;
+    let mut closest_collision: Option<WallCollision> = None;
+
     for wall in walls.iter() {
         let intersection_point = line.intersection(wall);
         if let Some(intersection_point) = intersection_point {
-            return Some(WallCollision {
-                intersection: intersection_point,
-                wall: *wall,
-            });
+            let dist = Point2D::dist(&line.start, &intersection_point);
+            if closest_collision_distance.is_none() || dist < closest_collision_distance.unwrap() {
+                closest_collision_distance = Some(dist);
+                closest_collision = Some(WallCollision {
+                    intersection: intersection_point,
+                    wall: *wall,
+                });
+            }
         }
     }
 
-    None
+    closest_collision
 }

@@ -67,7 +67,7 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &
 
     for x in 0..screen_buffer.width {
         let ray = state.world.camera.ray_for_column(x);
-        let wall_intersection = state.world.nearest_wall_intersection(&ray);
+        let wall_intersection = state.world.nearest_wall_intersecting_ray(&ray);
 
         let mut height = 0.0;
         let mut wall_color_adjustment = 1.0;

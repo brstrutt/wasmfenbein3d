@@ -10,7 +10,7 @@ pub fn move_object(start_position: Point2D, velocity: &Point2D, world: &World) -
 
     let mut new_position = &start_position + velocity;
     let mut loops_remaining = 10;
-    while let Some(intersection) = world.line_intersects_wall(&Line2D {
+    while let Some(intersection) = world.nearest_wall_intersecting_line(&Line2D {
         start: start_position,
         end: new_position,
     }) && loops_remaining > 0
