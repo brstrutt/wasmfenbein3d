@@ -60,7 +60,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState, textur
             &camera,
             dist_to_floor,
             &textures.floor,
-            (dist_to_floor / 5.0).max(1.0),
+            get_light_falloff(dist_to_floor),
         );
     }
 }
@@ -73,14 +73,11 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &
         let wall_intersection = state.world.nearest_wall_intersecting_ray(&ray);
 
         let mut height = 0.0;
-        let mut wall_color_adjustment = 1.0;
-
         if let Some(wall_intersection) = wall_intersection {
             let distance = Point2D::dist(
                 &state.world.camera.ray.origin,
                 &wall_intersection.intersection,
             );
-            wall_color_adjustment = (distance / 5.0).max(1.0);
 
             if distance != 0.0 {
                 height = WALL_HEIGHT * screen_height / distance;
@@ -91,7 +88,7 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &
                 height,
                 &textures.wall,
                 &wall_intersection,
-                wall_color_adjustment,
+                get_light_falloff(distance),
             );
         } else {
             const NO_WALL_COLOUR: RGB = RGB {
@@ -99,12 +96,11 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &
                 green: 0,
                 blue: 0,
             };
-            screen_buffer.render_solid_colour_column(
-                &x,
-                0.0,
-                &NO_WALL_COLOUR,
-                wall_color_adjustment,
-            );
+            screen_buffer.render_solid_colour_column(&x, 0.0, &NO_WALL_COLOUR, 0);
         }
     }
+}
+
+fn get_light_falloff(distance: f64) -> u8 {
+    (distance.ln() * 40.0) as u8
 }

@@ -34,3 +34,15 @@ impl ops::Div<f64> for RGB {
         }
     }
 }
+
+impl ops::Sub<u8> for &RGB {
+    type Output = RGB;
+
+    fn sub(self, _rhs: u8) -> RGB {
+        RGB {
+            red: self.red.saturating_sub(_rhs),
+            green: self.green.saturating_sub(_rhs),
+            blue: self.blue.saturating_sub(_rhs),
+        }
+    }
+}
