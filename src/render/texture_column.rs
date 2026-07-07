@@ -5,7 +5,7 @@ use crate::render::{
 use std::ops;
 
 pub struct TextureColumn {
-    texture: Texture,
+    pub texture: Texture,
 }
 
 impl TextureColumn {

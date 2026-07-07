@@ -4,31 +4,42 @@ use crate::{
 };
 use std::ops;
 
-pub const TEXTURE_SIZE: usize = 16;
-pub const TEXTURE_SIZE_BITS: usize = TEXTURE_SIZE - 1;
-pub const TEXTURE_SIZE_BITS_I: isize = TEXTURE_SIZE_BITS as isize;
-
 pub struct TilingTexture {
     pub texture: Texture,
+    pub size_bitwise_mask: usize,
+    pub size_bitwise_mask_i: isize,
 }
 
 impl TilingTexture {
     pub fn new_from_bmp_data(bmp_data: &[u8]) -> Self {
         let texture = Texture::new_from_bmp_data(bmp_data);
 
-        if texture.width != TEXTURE_SIZE || texture.height != TEXTURE_SIZE {
+        if texture.width != texture.height {
             panic!(
-                "Couldn't load tiling texture. It was not {}X{}",
-                TEXTURE_SIZE, TEXTURE_SIZE
+                "Couldn't load tiling texture. The texture is not a perfect square (size is {}X{})",
+                texture.width, texture.height
             );
         }
 
-        TilingTexture { texture }
+        let size_is_power_of_two = texture.width.count_ones() == 1;
+        if !size_is_power_of_two {
+            panic!(
+                "Couldn't load tiling texture. Width/Height are not powers of two (size is {}X{})",
+                texture.width, texture.height
+            );
+        }
+
+        let bitwise_mask = texture.width - 1;
+        TilingTexture {
+            texture,
+            size_bitwise_mask: bitwise_mask,
+            size_bitwise_mask_i: bitwise_mask as isize,
+        }
     }
 
     pub fn get_texel(&self, x: isize, y: isize) -> &RGB {
-        let x = x & TEXTURE_SIZE_BITS_I;
-        let y = y & TEXTURE_SIZE_BITS_I;
+        let x = x & self.size_bitwise_mask_i;
+        let y = y & self.size_bitwise_mask_i;
         &self.texture.get_texel(x, y)
     }
 
@@ -53,6 +64,8 @@ impl ops::Div<f64> for &TilingTexture {
     fn div(self, rhs: f64) -> TilingTexture {
         TilingTexture {
             texture: &self.texture / rhs,
+            size_bitwise_mask: self.size_bitwise_mask,
+            size_bitwise_mask_i: self.size_bitwise_mask_i,
         }
     }
 }
