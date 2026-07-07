@@ -1,5 +1,5 @@
-use crate::render::texture::Texture;
+use crate::render::tiling_texture::TilingTexture;
 
-pub fn load_texture() -> Texture {
-    Texture::new_from_bmp_data(include_bytes!("./floor.bmp"))
+pub fn load_texture() -> TilingTexture {
+    TilingTexture::new_from_bmp_data(include_bytes!("./floor.bmp"))
 }

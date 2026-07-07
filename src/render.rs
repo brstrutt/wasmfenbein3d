@@ -11,6 +11,7 @@ pub mod rgb;
 pub mod screen;
 pub mod texture;
 pub mod textures;
+pub mod tiling_texture;
 
 pub fn setup(
     state: Rc<RefCell<GameState>>,

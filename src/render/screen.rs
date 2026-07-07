@@ -1,7 +1,7 @@
 use crate::{
     render::{
         rgb::RGB,
-        texture::{TEXTURE_SIZE_BITS, Texture},
+        tiling_texture::{TEXTURE_SIZE_BITS, TilingTexture},
     },
     world::{
         camera::Camera,
@@ -49,7 +49,7 @@ impl ScreenBuffer {
         &mut self,
         x: &usize,
         height: f64,
-        texture: &Texture,
+        texture: &TilingTexture,
         wall_details: &WallCollision,
         colour_adjustment: f64,
     ) {
@@ -112,7 +112,7 @@ impl ScreenBuffer {
         y: &usize,
         camera: &Camera,
         dist_to_floor: f64,
-        texture: &Texture,
+        texture: &TilingTexture,
         colour_adjustment: f64,
     ) {
         let adjusted_texture = texture / colour_adjustment;

@@ -1,11 +1,11 @@
-use crate::render::texture::Texture;
+use crate::render::tiling_texture::TilingTexture;
 
 mod floor;
 mod wall;
 
 pub struct Textures {
-    pub wall: Texture,
-    pub floor: Texture,
+    pub wall: TilingTexture,
+    pub floor: TilingTexture,
 }
 
 impl Textures {
