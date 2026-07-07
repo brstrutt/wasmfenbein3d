@@ -43,25 +43,6 @@ impl Texture {
         &self.texels[(y as usize * self.width) + x as usize]
     }
 
-    pub fn get_texel_column(&self, x: usize) -> Texture {
-        let mut texels_slice = vec![
-            RGB {
-                red: 0,
-                green: 0,
-                blue: 0,
-            };
-            self.height
-        ];
-        for (i, sub_texel) in texels_slice.iter_mut().enumerate() {
-            *sub_texel = self.texels[x + (i * self.width)].clone();
-        }
-        Texture {
-            width: 1,
-            height: self.height,
-            texels: texels_slice,
-        }
-    }
-
     pub fn get_texel_column_on_line_with_scale(
         &self,
         line: &Line2D,

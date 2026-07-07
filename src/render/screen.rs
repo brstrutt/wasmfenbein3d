@@ -1,8 +1,5 @@
 use crate::{
-    render::{
-        rgb::RGB,
-        tiling_texture::{TEXTURE_SIZE_BITS, TilingTexture},
-    },
+    render::{rgb::RGB, tiling_texture::TilingTexture, tiling_texture_column::TilingTextureColumn},
     world::{
         camera::Camera,
         walls::{WALL_HEIGHT, WallCollision},
@@ -58,12 +55,12 @@ impl ScreenBuffer {
             &wall_details.intersection,
             1.0,
         );
-        let mut texture = texture.get_texel_column(texture_x_pos);
-        texture = &texture / colour_adjustment;
+        let mut texture_column = TilingTextureColumn::from_texture(texture, texture_x_pos);
+        texture_column = &texture_column / colour_adjustment;
 
         self.render_column(x, height, &|wall_pixel_index| {
-            let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height as f64;
-            &texture.texels[(texture_y_pos * WALL_HEIGHT) as usize & TEXTURE_SIZE_BITS]
+            let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height() as f64;
+            &texture_column.get_texel((texture_y_pos * WALL_HEIGHT) as isize)
         })
     }
 

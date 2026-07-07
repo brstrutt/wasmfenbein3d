@@ -10,8 +10,10 @@ use std::{cell::RefCell, rc::Rc};
 pub mod rgb;
 pub mod screen;
 pub mod texture;
+pub mod texture_column;
 pub mod textures;
 pub mod tiling_texture;
+pub mod tiling_texture_column;
 
 pub fn setup(
     state: Rc<RefCell<GameState>>,

@@ -1,16 +1,15 @@
-use std::ops;
-
 use crate::{
     primitives::{line2d::Line2D, point2d::Point2D},
     render::{rgb::RGB, texture::Texture},
 };
+use std::ops;
 
 pub const TEXTURE_SIZE: usize = 16;
 pub const TEXTURE_SIZE_BITS: usize = TEXTURE_SIZE - 1;
 pub const TEXTURE_SIZE_BITS_I: isize = TEXTURE_SIZE_BITS as isize;
 
 pub struct TilingTexture {
-    texture: Texture,
+    pub texture: Texture,
 }
 
 impl TilingTexture {
@@ -33,11 +32,6 @@ impl TilingTexture {
         &self.texture.get_texel(x, y)
     }
 
-    pub fn get_texel_column(&self, x: usize) -> Texture {
-        let x = x & TEXTURE_SIZE_BITS;
-        self.texture.get_texel_column(x)
-    }
-
     pub fn get_texel_column_on_line_with_scale(
         &self,
         line: &Line2D,
@@ -46,6 +40,10 @@ impl TilingTexture {
     ) -> usize {
         self.texture
             .get_texel_column_on_line_with_scale(line, point, scale)
+    }
+
+    pub fn height(&self) -> usize {
+        self.texture.height
     }
 }
 
