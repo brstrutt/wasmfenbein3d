@@ -9,7 +9,15 @@
 			"settings": {
 				"rust-analyzer.cargo.features": "all", // Enable all features
 				"editor.inlayHints.enabled": "offUnlessPressed",
-				"editor.formatOnSave": true
+				"editor.formatOnSave": true,
+				"editor.semanticTokenColorCustomizations": {
+					"enabled": true,
+					"rules": {
+						"*.mutable": {
+							"underline": false
+						}
+					}
+				}
 			},
 			"extensions": [
 				"fill-labs.dependi"
