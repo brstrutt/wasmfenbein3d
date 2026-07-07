@@ -4,7 +4,7 @@ use image::ImageReader;
 
 use crate::{
     primitives::{line2d::Line2D, point2d::Point2D},
-    render::rgb::RGB,
+    render::rgb::{self, RGB},
 };
 
 pub struct Texture {
@@ -25,7 +25,7 @@ impl Texture {
 
         let bytes = result.to_rgb8();
 
-        let mut texels = vec![RGB::white(); width * height];
+        let mut texels = vec![rgb::WHITE; width * height];
         let mut index = 0;
         for rgb in bytes.pixels() {
             texels[index] = RGB::from_u8(&rgb.0);

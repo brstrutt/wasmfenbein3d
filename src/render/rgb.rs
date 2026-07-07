@@ -15,15 +15,13 @@ impl RGB {
             blue: rgb_bytes[2],
         }
     }
-
-    pub fn white() -> Self {
-        RGB {
-            red: 255,
-            green: 255,
-            blue: 255,
-        }
-    }
 }
+
+pub const WHITE: RGB = RGB {
+    red: 255,
+    green: 255,
+    blue: 255,
+};
 
 impl ops::Div<f64> for RGB {
     type Output = RGB;

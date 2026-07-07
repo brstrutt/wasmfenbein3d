@@ -1,4 +1,7 @@
-use crate::render::{rgb::RGB, texture::Texture};
+use crate::render::{
+    rgb::{self, RGB},
+    texture::Texture,
+};
 use std::ops;
 
 pub struct TextureColumn {
@@ -7,7 +10,7 @@ pub struct TextureColumn {
 
 impl TextureColumn {
     pub fn from_texture(source_texture: &Texture, column: usize) -> Self {
-        let mut texels_slice = vec![RGB::white(); source_texture.height];
+        let mut texels_slice = vec![rgb::WHITE; source_texture.height];
         for (i, sub_texel) in texels_slice.iter_mut().enumerate() {
             *sub_texel = source_texture.texels[column + (i * source_texture.width)].clone();
         }
