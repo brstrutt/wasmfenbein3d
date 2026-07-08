@@ -1,9 +1,7 @@
-use crate::core::{
-    render::{rgb::RGB, tiling_texture::TilingTexture},
-    world::{
-        camera::Camera,
-        walls::{WALL_HEIGHT, WallCollision},
-    },
+use super::{rgb::RGB, tiling_texture::TilingTexture};
+use crate::core::world::{
+    camera::Camera,
+    walls::{WALL_HEIGHT, WallCollision},
 };
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;

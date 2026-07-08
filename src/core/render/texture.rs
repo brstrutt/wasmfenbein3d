@@ -2,10 +2,8 @@ use std::{io::Cursor, ops};
 
 use image::ImageReader;
 
-use crate::core::{
-    primitives::{line2d::Line2D, point2d::Point2D},
-    render::rgb::{self, RGB},
-};
+use super::rgb::{self, RGB};
+use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 
 pub struct Texture {
     pub texels: Vec<RGB>,

@@ -1,4 +1,4 @@
-use crate::core::render::tiling_texture::TilingTexture;
+use super::super::tiling_texture::TilingTexture;
 
 #[allow(unused)]
 pub fn load_texture() -> TilingTexture {

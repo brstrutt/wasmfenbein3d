@@ -1,4 +1,5 @@
-use crate::core::primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D};
+use super::super::{line2d::Line2D, point2d::Point2D};
+use super::Ray2D;
 
 impl Ray2D {
     pub fn intersection(&self, other: &Line2D) -> Option<Point2D> {

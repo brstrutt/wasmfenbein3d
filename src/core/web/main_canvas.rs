@@ -1,4 +1,5 @@
-use crate::core::{render::screen::ScreenBuffer, web::access};
+use super::access;
+use crate::core::render::screen::ScreenBuffer;
 
 const CANVAS_SCALE: u32 = 2;
 

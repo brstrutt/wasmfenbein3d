@@ -2,7 +2,7 @@ mod get_angle;
 mod intersection;
 mod length;
 
-use crate::core::primitives::point2d::Point2D;
+use super::point2d::Point2D;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Line2D {

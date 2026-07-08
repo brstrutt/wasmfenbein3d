@@ -1,4 +1,5 @@
-use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
+use super::super::point2d::Point2D;
+use super::Line2D;
 
 impl Line2D {
     // Implementation of a Line intersection point algorithm taken from https://web.archive.org/web/20060911055655/http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/

@@ -1,6 +1,5 @@
+use super::Point2D;
 use std::{fmt, ops};
-
-use crate::core::primitives::point2d::Point2D;
 
 impl ops::Add<Point2D> for Point2D {
     type Output = Point2D;

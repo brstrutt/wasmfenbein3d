@@ -1,4 +1,4 @@
-use crate::core::primitives::point2d::Point2D;
+use super::point2d::Point2D;
 mod get_angle;
 mod intersection;
 mod rotate;

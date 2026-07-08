@@ -1,4 +1,4 @@
-use crate::core::render::tiling_texture::TilingTexture;
+use super::tiling_texture::TilingTexture;
 
 mod big_floor;
 mod floor;

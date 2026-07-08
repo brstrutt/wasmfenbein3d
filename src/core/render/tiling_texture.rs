@@ -1,7 +1,5 @@
-use crate::core::{
-    primitives::{line2d::Line2D, point2d::Point2D},
-    render::{rgb::RGB, texture::Texture},
-};
+use super::{rgb::RGB, texture::Texture};
+use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 use std::ops;
 
 pub struct TilingTexture {

@@ -1,4 +1,4 @@
-use crate::core::primitives::line2d::Line2D;
+use super::Line2D;
 
 impl Line2D {
     pub fn get_angle(&self) -> f64 {

@@ -1,4 +1,4 @@
-use crate::core::primitives::ray2d::Ray2D;
+use super::Ray2D;
 
 impl Ray2D {
     pub fn rotate(&self, angle_radians: f64) -> Ray2D {
