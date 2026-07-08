@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use wasmfenbein3d::{
+use wasmfenbein3d::core::{
     controls, hud,
     render::{self, screen::ScreenBuffer, textures::Textures},
     state::GameState,

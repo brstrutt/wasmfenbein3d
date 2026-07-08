@@ -1,9 +1,1 @@
-pub mod controls;
-pub mod hud;
-pub mod motion;
-pub mod primitives;
-pub mod render;
-pub mod state;
-pub mod utils;
-pub mod web;
-pub mod world;
+pub mod core;
