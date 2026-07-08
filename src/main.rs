@@ -1,19 +1,10 @@
-mod controls;
-mod hud;
-mod motion;
-mod primitives;
-mod render;
-mod state;
-mod utils;
-mod web;
-mod world;
-
 use std::{cell::RefCell, rc::Rc};
 
-use crate::{
-    render::{screen::ScreenBuffer, textures::Textures},
+use wasmfenbein3d::{
+    controls, hud,
+    render::{self, screen::ScreenBuffer, textures::Textures},
     state::GameState,
-    web::{access, main_canvas},
+    web::{self, access, main_canvas},
 };
 
 fn main() {
