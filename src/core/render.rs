@@ -53,13 +53,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState, textur
     for y in 0..screen_buffer.height {
         let dist_to_floor = ((1.0 / (y as f64 - half_screen_height)) * half_wall_height).abs();
 
-        screen_buffer.render_textured_row(
-            &y,
-            &camera,
-            dist_to_floor,
-            &textures.floor,
-            get_light_falloff(dist_to_floor),
-        );
+        screen_buffer.render_textured_row(&y, &camera, dist_to_floor, &textures.floor);
     }
 }
 
@@ -81,24 +75,14 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &
                 height = WALL_HEIGHT * screen_height / distance;
             }
 
-            screen_buffer.render_textured_column(
-                &x,
-                height,
-                &textures.wall,
-                &wall_intersection,
-                get_light_falloff(distance),
-            );
+            screen_buffer.render_textured_column(&x, height, &textures.wall, &wall_intersection);
         } else {
             const NO_WALL_COLOUR: RGB = RGB {
                 red: 0,
                 green: 0,
                 blue: 0,
             };
-            screen_buffer.render_solid_colour_column(&x, 0.0, &NO_WALL_COLOUR, 0);
+            screen_buffer.render_solid_colour_column(&x, 0.0, &NO_WALL_COLOUR);
         }
     }
-}
-
-fn get_light_falloff(distance: f64) -> u8 {
-    (distance.ln() * 20.0) as u8
 }
