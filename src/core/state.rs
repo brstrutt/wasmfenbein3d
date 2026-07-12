@@ -1,4 +1,4 @@
-use crate::core::{controls::InputState, web, world::World};
+use crate::core::{controls::InputState, world::World};
 
 pub struct GameState {
     pub world: World,
@@ -13,7 +13,7 @@ impl GameState {
         GameState {
             world: World::new(screen_width, screen_height),
             input: InputState::setup(),
-            last_frame_time_ms: web::window::now_in_ms(),
+            last_frame_time_ms: 0.0,
             last_time_between_frames_ms: 0.0,
             last_time_to_render_one_frame_ms: 0.0,
         }

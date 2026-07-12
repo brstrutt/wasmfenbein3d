@@ -1,6 +1,8 @@
 use std::{cell::RefCell, rc::Rc};
 
-use crate::core::{state::GameState, web};
+use wasmfenbein3d::core::state::GameState;
+
+use crate::web;
 
 pub fn setup(state: Rc<RefCell<GameState>>) {
     let document = web::access::document();

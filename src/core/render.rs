@@ -2,7 +2,6 @@ use crate::core::{
     primitives::point2d::Point2D,
     render::{rgb::RGB, screen::ScreenBuffer, textures::Textures},
     state::GameState,
-    web::{self, main_canvas},
     world::walls::WALL_HEIGHT,
 };
 use std::{cell::RefCell, rc::Rc};
@@ -13,35 +12,18 @@ pub mod texture;
 pub mod textures;
 pub mod tiling_texture;
 
-pub fn setup(
-    state: Rc<RefCell<GameState>>,
-    screen_buffer: Rc<RefCell<ScreenBuffer>>,
-    textures: Rc<RefCell<Textures>>,
-) {
-    web::window::run_function_every_animation_frame(move || {
-        render(&screen_buffer, &state, &textures);
-    });
-}
-
-pub fn render(
+pub fn render_to_screen_buffer(
     screen_buffer: &Rc<RefCell<ScreenBuffer>>,
     state: &RefCell<GameState>,
     textures: &Rc<RefCell<Textures>>,
 ) {
-    let render_start_time = web::window::now_in_ms();
-
-    let mut state = state.borrow_mut();
+    let state = state.borrow_mut();
     let mut screen_buffer = screen_buffer.borrow_mut();
     let textures = textures.borrow();
 
     screen_buffer.reset_draw_history();
     render_walls(&mut screen_buffer, &state, &textures);
     render_background(&mut screen_buffer, &state, &textures);
-
-    main_canvas::render_screen_buffer(&screen_buffer);
-
-    let render_end_time = web::window::now_in_ms();
-    state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
 }
 
 fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &Textures) {

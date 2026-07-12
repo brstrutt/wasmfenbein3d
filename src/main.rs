@@ -1,11 +1,14 @@
 use std::{cell::RefCell, rc::Rc};
+mod controls;
+mod hud;
+mod web;
 
 use wasmfenbein3d::core::{
-    controls, hud,
-    render::{self, screen::ScreenBuffer, textures::Textures},
+    render::{render_to_screen_buffer, screen::ScreenBuffer, textures::Textures},
     state::GameState,
-    web::{access, main_canvas},
 };
+
+use crate::web::{access, main_canvas};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -28,6 +31,14 @@ fn main() {
     let textures = Rc::new(RefCell::new(Textures::load()));
 
     controls::setup(state.clone());
-    render::setup(state.clone(), screen_buffer.clone(), textures.clone());
     hud::setup(state.clone());
+    web::window::run_function_every_animation_frame(move || {
+        let render_start_time = web::window::now_in_ms();
+        render_to_screen_buffer(&screen_buffer, &state, &textures);
+        main_canvas::render_screen_buffer(&screen_buffer.borrow());
+        let render_end_time = web::window::now_in_ms();
+
+        let mut state = state.borrow_mut();
+        state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
+    });
 }

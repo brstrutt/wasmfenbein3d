@@ -1,7 +1,7 @@
 use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::{JsCast, prelude::Closure};
 
-use crate::core::web;
+use super::access;
 
 pub fn run_function_every_animation_frame<T: FnMut()>(mut run: T)
 where
@@ -22,13 +22,13 @@ where
 }
 
 pub fn request_animation_frame(f: &Closure<dyn FnMut()>) {
-    web::access::window()
+    access::window()
         .request_animation_frame(f.as_ref().unchecked_ref())
         .expect("should register `requestAnimationFrame` OK");
 }
 
 pub fn now_in_ms() -> f64 {
-    web::access::window()
+    access::window()
         .performance()
         .expect("Couldnt get the window performance object")
         .now()
