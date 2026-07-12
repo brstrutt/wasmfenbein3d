@@ -17,11 +17,11 @@ pub fn move_object(start_position: Point2D, velocity: &Point2D, world: &World) -
     {
         loops_remaining -= 1;
         // Calculate the intended destination and original position relative to the Wall
-        let wall_angle_radians = intersection.wall.get_angle();
+        let wall_angle_radians = intersection.wall.position.get_angle();
         let wall_space_start_position =
-            (start_position - intersection.wall.start).rotate(-wall_angle_radians);
+            (start_position - intersection.wall.position.start).rotate(-wall_angle_radians);
         let wall_space_destination_point =
-            (new_position - intersection.wall.start).rotate(-wall_angle_radians);
+            (new_position - intersection.wall.position.start).rotate(-wall_angle_radians);
 
         // Move the destination to be right next to the wall on the same side as the start_position
         let wall_space_updated_dest = Point2D {
@@ -30,7 +30,8 @@ pub fn move_object(start_position: Point2D, velocity: &Point2D, world: &World) -
         };
 
         // Move this updated destination back into world space
-        new_position = wall_space_updated_dest.rotate(wall_angle_radians) + intersection.wall.start;
+        new_position =
+            wall_space_updated_dest.rotate(wall_angle_radians) + intersection.wall.position.start;
     }
 
     if loops_remaining < 1 {

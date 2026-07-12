@@ -2,6 +2,7 @@ use super::{rgb::RGB, texture::Texture};
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 use std::ops;
 
+#[derive(Clone)]
 pub struct TilingTexture {
     pub texture: Texture,
     pub size_bitwise_mask: usize,

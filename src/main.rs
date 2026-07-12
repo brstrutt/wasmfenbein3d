@@ -27,8 +27,12 @@ fn main() {
         screen_height,
     )));
 
-    let state = Rc::new(RefCell::new(GameState::setup(screen_width, screen_height)));
     let textures = Rc::new(RefCell::new(Textures::load()));
+    let state = Rc::new(RefCell::new(GameState::setup(
+        screen_width,
+        screen_height,
+        &textures,
+    )));
 
     controls::setup(state.clone());
     hud::setup(state.clone());

@@ -41,7 +41,7 @@ impl ScreenBuffer {
         wall_details: &WallCollision,
     ) {
         let texture_x_pos = texture.get_texel_column_on_line_with_scale(
-            &wall_details.wall,
+            &wall_details.wall.position,
             &wall_details.intersection,
             1.0,
         ) as isize;

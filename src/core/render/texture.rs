@@ -5,6 +5,7 @@ use image::ImageReader;
 use super::rgb::{self, RGB};
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 
+#[derive(Clone)]
 pub struct Texture {
     pub texels: Vec<RGB>,
     pub width: usize,

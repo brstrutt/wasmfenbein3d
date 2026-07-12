@@ -22,7 +22,7 @@ pub fn render_to_screen_buffer(
     let textures = textures.borrow();
 
     screen_buffer.reset_draw_history();
-    render_walls(&mut screen_buffer, &state, &textures);
+    render_walls(&mut screen_buffer, &state);
     render_background(&mut screen_buffer, &state, &textures);
 }
 
@@ -39,7 +39,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState, textur
     }
 }
 
-fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &Textures) {
+fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
     let screen_height = screen_buffer.height as f64;
 
     for x in 0..screen_buffer.width {
@@ -57,7 +57,12 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &
                 height = WALL_HEIGHT * screen_height / distance;
             }
 
-            screen_buffer.render_textured_column(&x, height, &textures.wall, &wall_intersection);
+            screen_buffer.render_textured_column(
+                &x,
+                height,
+                &wall_intersection.wall.texture,
+                &wall_intersection,
+            );
         } else {
             const NO_WALL_COLOUR: RGB = RGB {
                 red: 0,
