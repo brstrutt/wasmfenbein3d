@@ -4,7 +4,7 @@ pub mod walls;
 
 use crate::core::{
     primitives::{line2d::Line2D, ray2d::Ray2D},
-    render::textures::Textures,
+    render::{rgb::WHITE, rgb_palette::RgbPalette, rgbv::RGBV, textures::Textures},
     world::{camera::Camera, wall::Wall, walls::WallCollision},
 };
 
@@ -12,13 +12,20 @@ use crate::core::{
 pub struct World {
     pub walls: Vec<Wall>,
     pub camera: Camera,
+    pub skybox_colour: RGBV,
 }
 
 impl World {
-    pub fn new(screen_width: usize, screen_height: usize, textures: &Textures) -> World {
+    pub fn new(
+        screen_width: usize,
+        screen_height: usize,
+        textures: &Textures,
+        palette: &mut RgbPalette,
+    ) -> World {
         World {
             walls: walls::default_walls(textures),
             camera: Camera::new(screen_width, screen_height),
+            skybox_colour: RGBV::from_rgb(&WHITE, palette),
         }
     }
 

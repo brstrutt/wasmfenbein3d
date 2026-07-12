@@ -1,4 +1,4 @@
-use super::{rgb::RGB, texture::Texture};
+use super::{rgb_palette::RgbPalette, rgbv::RGBV, texture::Texture};
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 use std::ops;
 
@@ -10,8 +10,8 @@ pub struct TilingTexture {
 }
 
 impl TilingTexture {
-    pub fn new_from_bmp_data(bmp_data: &[u8]) -> Self {
-        let texture = Texture::new_from_bmp_data(bmp_data);
+    pub fn new_from_bmp_data(bmp_data: &[u8], palette: &mut RgbPalette) -> Self {
+        let texture = Texture::new_from_bmp_data(bmp_data, palette);
 
         if texture.width != texture.height {
             panic!(
@@ -36,7 +36,7 @@ impl TilingTexture {
         }
     }
 
-    pub fn get_texel(&self, x: isize, y: isize) -> &RGB {
+    pub fn get_texel(&self, x: isize, y: isize) -> &RGBV {
         let x = x & self.size_bitwise_mask_i;
         let y = y & self.size_bitwise_mask_i;
         &self.texture.get_texel(x, y)
@@ -54,17 +54,5 @@ impl TilingTexture {
 
     pub fn height(&self) -> usize {
         self.texture.height
-    }
-}
-
-impl ops::Div<f64> for &TilingTexture {
-    type Output = TilingTexture;
-
-    fn div(self, rhs: f64) -> TilingTexture {
-        TilingTexture {
-            texture: &self.texture / rhs,
-            size_bitwise_mask: self.size_bitwise_mask,
-            size_bitwise_mask_i: self.size_bitwise_mask_i,
-        }
     }
 }

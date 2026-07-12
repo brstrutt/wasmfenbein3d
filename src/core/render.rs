@@ -1,12 +1,15 @@
 use crate::core::{
     primitives::point2d::Point2D,
-    render::{rgb::RGB, screen::ScreenBuffer, textures::Textures},
+    render::{screen::ScreenBuffer, textures::Textures},
     state::GameState,
     world::walls::WALL_HEIGHT,
 };
 use std::{cell::RefCell, rc::Rc};
 
 pub mod rgb;
+pub mod rgb_brightness_lookup_table;
+pub mod rgb_palette;
+pub mod rgbv;
 pub mod screen;
 pub mod texture;
 pub mod textures;
@@ -64,12 +67,7 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
                 &wall_intersection,
             );
         } else {
-            const NO_WALL_COLOUR: RGB = RGB {
-                red: 0,
-                green: 0,
-                blue: 0,
-            };
-            screen_buffer.render_solid_colour_column(&x, 0.0, &NO_WALL_COLOUR);
+            screen_buffer.render_solid_colour_column(&x, 0.0, &state.world.skybox_colour);
         }
     }
 }

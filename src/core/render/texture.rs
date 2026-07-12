@@ -1,19 +1,21 @@
-use std::{io::Cursor, ops};
+use std::io::Cursor;
 
 use image::ImageReader;
 
-use super::rgb::{self, RGB};
+use super::rgb::WHITE;
+use super::rgb_palette::RgbPalette;
+use super::rgbv::RGBV;
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 
 #[derive(Clone)]
 pub struct Texture {
-    pub texels: Vec<RGB>,
+    pub texels: Vec<RGBV>,
     pub width: usize,
     pub height: usize,
 }
 
 impl Texture {
-    pub fn new_from_bmp_data(bmp_data: &[u8]) -> Self {
+    pub fn new_from_bmp_data(bmp_data: &[u8], palette: &mut RgbPalette) -> Self {
         let result = ImageReader::new(Cursor::new(bmp_data))
             .with_guessed_format()
             .expect("Failed to guess image format of raw data array.")
@@ -24,10 +26,10 @@ impl Texture {
 
         let bytes = result.to_rgb8();
 
-        let mut texels = vec![rgb::WHITE; width * height];
+        let mut texels = vec![RGBV::from_rgb(&WHITE, palette); width * height];
         let mut index = 0;
         for rgb in bytes.pixels() {
-            texels[index] = RGB::from_u8(&rgb.0);
+            texels[index] = RGBV::from_u8(&rgb.0, palette);
             index += 1;
         }
 
@@ -38,7 +40,7 @@ impl Texture {
         }
     }
 
-    pub fn get_texel(&self, x: isize, y: isize) -> &RGB {
+    pub fn get_texel(&self, x: isize, y: isize) -> &RGBV {
         &self.texels[(y as usize * self.width) + x as usize]
     }
 
@@ -57,22 +59,5 @@ impl Texture {
 
         let texture_x_pos = (wall_space_intersection.y / scale) * self.width as f64;
         texture_x_pos as usize
-    }
-}
-
-impl ops::Div<f64> for &Texture {
-    type Output = Texture;
-
-    fn div(self, rhs: f64) -> Texture {
-        Texture {
-            texels: self
-                .texels
-                .clone()
-                .into_iter()
-                .map(|texel| texel / rhs)
-                .collect(),
-            width: self.width,
-            height: self.height,
-        }
     }
 }

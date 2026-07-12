@@ -1,4 +1,4 @@
-use super::{rgb::RGB, tiling_texture::TilingTexture};
+use super::{rgbv::RGBV, tiling_texture::TilingTexture};
 use crate::core::world::{
     camera::Camera,
     walls::{WALL_HEIGHT, WallCollision},
@@ -29,7 +29,7 @@ impl ScreenBuffer {
         self.already_drawn.fill(false)
     }
 
-    pub fn render_solid_colour_column(&mut self, x: &usize, height: f64, colour: &RGB) {
+    pub fn render_solid_colour_column(&mut self, x: &usize, height: f64, colour: &RGBV) {
         self.render_column(x, height, &|_wall_pixel_index| &colour)
     }
 
@@ -52,7 +52,7 @@ impl ScreenBuffer {
         })
     }
 
-    fn render_column<'a, F: Fn(usize) -> &'a RGB>(
+    fn render_column<'a, F: Fn(usize) -> &'a RGBV>(
         &mut self,
         x: &usize,
         height: f64,
@@ -79,7 +79,7 @@ impl ScreenBuffer {
         let mut wall_pixel_index = starting_wall_position;
         let mut pixel_index = x + (bottom * pixel_increment);
         while rgb_pixel_index < top_rgb_pixel_index {
-            let colour = get_colour(wall_pixel_index);
+            let colour = get_colour(wall_pixel_index).at_brightness(99);
 
             self.pixels[rgb_pixel_index] = colour.red;
             self.pixels[rgb_pixel_index + 1] = colour.green;
@@ -111,8 +111,9 @@ impl ScreenBuffer {
             if !self.already_drawn[pixel_index] {
                 let ray = camera.ray_for_column(x);
                 let position = ray.origin + (ray.direction * dist_to_floor);
-                let colour =
-                    texture.get_texel((position.x * 16.0) as isize, (position.y * 16.0) as isize);
+                let colour = texture
+                    .get_texel((position.x * 16.0) as isize, (position.y * 16.0) as isize)
+                    .at_brightness(99);
 
                 self.pixels[rgb_pixel_index] = colour.red;
                 self.pixels[rgb_pixel_index + 1] = colour.green;

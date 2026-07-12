@@ -4,7 +4,9 @@ mod hud;
 mod web;
 
 use wasmfenbein3d::core::{
-    render::{render_to_screen_buffer, screen::ScreenBuffer, textures::Textures},
+    render::{
+        render_to_screen_buffer, rgb_palette::RgbPalette, screen::ScreenBuffer, textures::Textures,
+    },
     state::GameState,
 };
 
@@ -27,11 +29,13 @@ fn main() {
         screen_height,
     )));
 
-    let textures = Rc::new(RefCell::new(Textures::load()));
+    let mut palette = RgbPalette::new();
+    let textures = Rc::new(RefCell::new(Textures::load(&mut palette)));
     let state = Rc::new(RefCell::new(GameState::setup(
         screen_width,
         screen_height,
         &textures,
+        &mut palette,
     )));
 
     controls::setup(state.clone());
