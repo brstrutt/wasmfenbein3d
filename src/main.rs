@@ -4,13 +4,14 @@ use wasmfenbein3d::core::{
     controls, hud,
     render::{self, screen::ScreenBuffer, textures::Textures},
     state::GameState,
-    web::{self, access, main_canvas},
+    web::{access, main_canvas},
 };
 
 fn main() {
     console_error_panic_hook::set_once();
+    wasm_logger::init(wasm_logger::Config::new(log::Level::Debug));
 
-    web::log::log("Starting up!");
+    log::info!("Starting up!");
 
     main_canvas::setup();
     main_canvas::update_canvas_size();
