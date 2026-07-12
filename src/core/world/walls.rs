@@ -1,3 +1,5 @@
+use std::{cell::RefCell, rc::Rc};
+
 use super::wall::Wall;
 use crate::core::{
     primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D},
@@ -74,7 +76,7 @@ pub fn default_walls(textures: &Textures) -> Vec<Wall> {
     result
 }
 
-fn walls_from_point_path(points: &[Point2D], texture: &TilingTexture) -> Vec<Wall> {
+fn walls_from_point_path(points: &[Point2D], texture: &Rc<RefCell<TilingTexture>>) -> Vec<Wall> {
     if points.len() < 2 {
         return vec![];
     }
@@ -86,7 +88,7 @@ fn walls_from_point_path(points: &[Point2D], texture: &TilingTexture) -> Vec<Wal
                 start: points[index],
                 end: points[index + 1],
             },
-            texture,
+            &texture,
         ));
     }
     lines

@@ -35,7 +35,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState, textur
     for y in 0..screen_buffer.height {
         let dist_to_floor = ((1.0 / (y as f64 - half_screen_height)) * half_wall_height).abs();
 
-        screen_buffer.render_textured_row(&y, &camera, dist_to_floor, &textures.floor);
+        screen_buffer.render_textured_row(&y, &camera, dist_to_floor, &textures.floor.borrow());
     }
 }
 
@@ -60,7 +60,7 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
             screen_buffer.render_textured_column(
                 &x,
                 height,
-                &wall_intersection.wall.texture,
+                &wall_intersection.wall.texture.borrow(),
                 &wall_intersection,
             );
         } else {
