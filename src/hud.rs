@@ -5,6 +5,11 @@ use wasmfenbein3d::core::state::GameState;
 use crate::web;
 
 pub fn setup(state: Rc<RefCell<GameState>>) {
+    setup_fps_tracking(state.clone());
+    setup_fps_display(state);
+}
+
+fn setup_fps_display(state: Rc<RefCell<GameState>>) {
     let document = web::access::document();
 
     let fps_display_element = document
@@ -33,5 +38,15 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
                 )
                 .as_str(),
             ));
+    });
+}
+
+fn setup_fps_tracking(state: Rc<RefCell<GameState>>) {
+    web::window::run_function_every_animation_frame(move || {
+        let mut state = state.borrow_mut();
+        let current_time = web::window::now_in_ms();
+        let time_since_last_frame_ms = current_time - state.last_frame_time_ms;
+        state.last_frame_time_ms = current_time;
+        state.last_time_between_frames_ms = time_since_last_frame_ms;
     });
 }

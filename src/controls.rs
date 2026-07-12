@@ -48,7 +48,6 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
 
     setup_character_motion_loop(state.clone());
     setup_camera_motion_loop(state.clone());
-    setup_fps_tracker(state);
 }
 
 fn setup_movement_button<T: FnMut(&mut RefMut<GameState>, bool) + Clone>(
@@ -240,15 +239,5 @@ fn setup_camera_motion_loop(state: Rc<RefCell<GameState>>) {
                 .rotate(camera_rotation as f64 * ROTATION_SPEED);
             state.world.camera.refresh_screen_rays();
         }
-    });
-}
-
-fn setup_fps_tracker(state: Rc<RefCell<GameState>>) {
-    web::window::run_function_every_animation_frame(move || {
-        let mut state = state.borrow_mut();
-        let current_time = web::window::now_in_ms();
-        let time_since_last_frame_ms = current_time - state.last_frame_time_ms;
-        state.last_frame_time_ms = current_time;
-        state.last_time_between_frames_ms = time_since_last_frame_ms;
     });
 }
