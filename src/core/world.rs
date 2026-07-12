@@ -20,11 +20,17 @@ impl World {
         }
     }
 
-    pub fn nearest_wall_intersecting_ray(&self, raycast: &Ray2D) -> Option<WallCollision> {
+    pub fn nearest_wall_intersecting_ray<'a>(
+        &'a self,
+        raycast: &Ray2D,
+    ) -> Option<WallCollision<'a>> {
         walls::nearest_wall_intersection(&self.walls, raycast)
     }
 
-    pub fn nearest_wall_intersecting_line(&self, line: &Line2D) -> Option<WallCollision> {
+    pub fn nearest_wall_intersecting_line<'a>(
+        &'a self,
+        line: &Line2D,
+    ) -> Option<WallCollision<'a>> {
         walls::nearest_wall_intersecting_line(&self.walls, line)
     }
 }

@@ -1,8 +1,9 @@
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D};
 
+type Wall = Line2D;
 pub const WALL_HEIGHT: f64 = 2.0;
 
-pub fn default_walls() -> Vec<Line2D> {
+pub fn default_walls() -> Vec<Wall> {
     walls_from_point_path(&vec![
         Point2D::new(-5.0, -3.0),
         Point2D::new(-5.0, 5.0),
@@ -27,7 +28,7 @@ pub fn default_walls() -> Vec<Line2D> {
     ])
 }
 
-fn walls_from_point_path(points: &[Point2D]) -> Vec<Line2D> {
+fn walls_from_point_path(points: &[Point2D]) -> Vec<Wall> {
     if points.len() < 2 {
         return vec![];
     }
@@ -46,12 +47,15 @@ fn walls_from_point_path(points: &[Point2D]) -> Vec<Line2D> {
     lines
 }
 
-pub struct WallCollision {
+pub struct WallCollision<'a> {
     pub intersection: Point2D,
-    pub wall: Line2D,
+    pub wall: &'a Wall,
 }
 
-pub fn nearest_wall_intersection(walls: &[Line2D], raycast: &Ray2D) -> Option<WallCollision> {
+pub fn nearest_wall_intersection<'a>(
+    walls: &'a [Wall],
+    raycast: &Ray2D,
+) -> Option<WallCollision<'a>> {
     let mut closest_collision_distance: Option<f64> = None;
     let mut closest_collision: Option<WallCollision> = None;
 
@@ -63,7 +67,7 @@ pub fn nearest_wall_intersection(walls: &[Line2D], raycast: &Ray2D) -> Option<Wa
                 closest_collision_distance = Some(dist);
                 closest_collision = Some(WallCollision {
                     intersection: intersection_point,
-                    wall: *wall,
+                    wall,
                 })
             }
         }
@@ -72,7 +76,10 @@ pub fn nearest_wall_intersection(walls: &[Line2D], raycast: &Ray2D) -> Option<Wa
     closest_collision
 }
 
-pub fn nearest_wall_intersecting_line(walls: &[Line2D], line: &Line2D) -> Option<WallCollision> {
+pub fn nearest_wall_intersecting_line<'a>(
+    walls: &'a [Wall],
+    line: &Line2D,
+) -> Option<WallCollision<'a>> {
     let mut closest_collision_distance: Option<f64> = None;
     let mut closest_collision: Option<WallCollision> = None;
 
@@ -84,7 +91,7 @@ pub fn nearest_wall_intersecting_line(walls: &[Line2D], line: &Line2D) -> Option
                 closest_collision_distance = Some(dist);
                 closest_collision = Some(WallCollision {
                     intersection: intersection_point,
-                    wall: *wall,
+                    wall,
                 });
             }
         }
