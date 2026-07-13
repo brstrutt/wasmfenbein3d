@@ -1,7 +1,9 @@
-
 #debug_info {
     color: azure;
     background-color: rgba($color: #555, $alpha: 0.5);
+
+    display: flex;
+    justify-content: space-between;
 }
 
 #HUD {
@@ -39,9 +41,10 @@
             border-radius: 20px;
 
             font-weight: bold;
-            font-size:xx-large;
+            font-size: xx-large;
 
-            &:active, &.active {
+            &:active,
+            &.active {
                 background-color: #222;
             }
         }

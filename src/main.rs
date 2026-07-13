@@ -39,7 +39,7 @@ fn main() {
     )));
 
     controls::setup(state.clone());
-    hud::setup(state.clone());
+    hud::setup(state.clone(), screen_buffer.clone());
     web::window::run_function_every_animation_frame(move || {
         let render_start_time = web::window::now_in_ms();
         render_to_screen_buffer(&screen_buffer, &state, &textures);

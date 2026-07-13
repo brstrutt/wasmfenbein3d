@@ -1,12 +1,13 @@
 use std::{cell::RefCell, rc::Rc};
 
-use wasmfenbein3d::core::state::GameState;
+use wasmfenbein3d::core::{render::screen::ScreenBuffer, state::GameState};
 
 use crate::web;
 
-pub fn setup(state: Rc<RefCell<GameState>>) {
+pub fn setup(state: Rc<RefCell<GameState>>, screen: Rc<RefCell<ScreenBuffer>>) {
     setup_fps_tracking(state.clone());
     setup_fps_display(state);
+    setup_display_resolution(screen);
 }
 
 fn setup_fps_display(state: Rc<RefCell<GameState>>) {
@@ -49,4 +50,20 @@ fn setup_fps_tracking(state: Rc<RefCell<GameState>>) {
         state.last_frame_time_ms = current_time;
         state.last_time_between_frames_ms = time_since_last_frame_ms;
     });
+}
+
+fn setup_display_resolution(screen: Rc<RefCell<ScreenBuffer>>) {
+    let screen = screen.borrow();
+    let document = web::access::document();
+
+    let resolution_display_element = document
+        .get_element_by_id("resolution_display")
+        .expect("Failed to get resolution display div");
+
+    resolution_display_element
+        .first_child()
+        .expect("Couldnt get Resolution display child")
+        .set_text_content(Some(
+            format!("Render resolution: {}x{}", screen.width, screen.height).as_str(),
+        ));
 }

@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <title>WASMfenBein 3D</title>
-  <link data-trunk rel="scss" href="styles.scss" crossorigin="anonymous"/>
-  <link data-trunk rel="icon" href="assets/icons/favicon.ico" data-integrity="none"/>
+  <link data-trunk rel="scss" href="styles.scss" crossorigin="anonymous" />
+  <link data-trunk rel="icon" href="assets/icons/favicon.ico" data-integrity="none" />
 </head>
+
 <body>
   <canvas id="screen_canvas">
   </canvas>
   <div id="debug_info">
-    <div id="fps_display">FPS: ??</div>
-    <div id="time_to_render_display">Time to Render: ??ms</div>
+    <div>
+      <div id="fps_display">FPS: ??</div>
+      <div id="time_to_render_display">Time to Render: ??ms</div>
+    </div>
+    <div>
+      <div id="resolution_display">Render Resolution: ??x??</div>
+    </div>
   </div>
   <div id="HUD">
     <div id="screen_controls">
@@ -24,4 +31,5 @@
     </div>
   </div>
 </body>
+
 </html>
