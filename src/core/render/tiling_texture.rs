@@ -1,6 +1,5 @@
 use super::{rgb_palette::RgbPalette, rgbv::RGBV, texture::Texture};
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
-use std::ops;
 
 #[derive(Clone)]
 pub struct TilingTexture {

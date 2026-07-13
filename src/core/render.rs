@@ -1,6 +1,10 @@
 use crate::core::{
     primitives::point2d::Point2D,
-    render::{screen::ScreenBuffer, textures::Textures},
+    render::{
+        rgb_brightness_lookup_table::{BRIGHTNESS_STEPS_F64, MAX_BRIGHTNESS_INDEX},
+        screen::ScreenBuffer,
+        textures::Textures,
+    },
     state::GameState,
     world::walls::WALL_HEIGHT,
 };
@@ -38,7 +42,13 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState, textur
     for y in 0..screen_buffer.height {
         let dist_to_floor = ((1.0 / (y as f64 - half_screen_height)) * half_wall_height).abs();
 
-        screen_buffer.render_textured_row(&y, &camera, dist_to_floor, &textures.floor.borrow());
+        screen_buffer.render_textured_row(
+            &y,
+            &camera,
+            dist_to_floor,
+            &textures.floor.borrow(),
+            get_light_falloff(dist_to_floor),
+        );
     }
 }
 
@@ -65,9 +75,19 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
                 height,
                 &wall_intersection.wall.texture.borrow(),
                 &wall_intersection,
+                get_light_falloff(distance),
             );
         } else {
-            screen_buffer.render_solid_colour_column(&x, 0.0, &state.world.skybox_colour);
+            screen_buffer.render_solid_colour_column(
+                &x,
+                0.0,
+                &state.world.skybox_colour,
+                MAX_BRIGHTNESS_INDEX,
+            );
         }
     }
+}
+
+fn get_light_falloff(distance: f64) -> usize {
+    (BRIGHTNESS_STEPS_F64 - (distance * 8.0)) as usize
 }

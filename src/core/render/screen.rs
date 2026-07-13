@@ -29,8 +29,14 @@ impl ScreenBuffer {
         self.already_drawn.fill(false)
     }
 
-    pub fn render_solid_colour_column(&mut self, x: &usize, height: f64, colour: &RGBV) {
-        self.render_column(x, height, &|_wall_pixel_index| &colour)
+    pub fn render_solid_colour_column(
+        &mut self,
+        x: &usize,
+        height: f64,
+        colour: &RGBV,
+        brightness: usize,
+    ) {
+        self.render_column(x, height, &|_wall_pixel_index| &colour, brightness)
     }
 
     pub fn render_textured_column(
@@ -39,6 +45,7 @@ impl ScreenBuffer {
         height: f64,
         texture: &TilingTexture,
         wall_details: &WallCollision,
+        brightness: usize,
     ) {
         let texture_x_pos = texture.get_texel_column_on_line_with_scale(
             &wall_details.wall.position,
@@ -46,10 +53,15 @@ impl ScreenBuffer {
             1.0,
         ) as isize;
 
-        self.render_column(x, height, &|wall_pixel_index| {
-            let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height() as f64;
-            &texture.get_texel(texture_x_pos, (texture_y_pos * WALL_HEIGHT) as isize)
-        })
+        self.render_column(
+            x,
+            height,
+            &|wall_pixel_index| {
+                let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height() as f64;
+                &texture.get_texel(texture_x_pos, (texture_y_pos * WALL_HEIGHT) as isize)
+            },
+            brightness,
+        )
     }
 
     fn render_column<'a, F: Fn(usize) -> &'a RGBV>(
@@ -57,6 +69,7 @@ impl ScreenBuffer {
         x: &usize,
         height: f64,
         get_colour: &'a F,
+        brightness: usize,
     ) {
         let mut starting_wall_position = 0;
         let mut height = height as usize;
@@ -79,7 +92,7 @@ impl ScreenBuffer {
         let mut wall_pixel_index = starting_wall_position;
         let mut pixel_index = x + (bottom * pixel_increment);
         while rgb_pixel_index < top_rgb_pixel_index {
-            let colour = get_colour(wall_pixel_index).at_brightness(99);
+            let colour = get_colour(wall_pixel_index).at_brightness(brightness);
 
             self.pixels[rgb_pixel_index] = colour.red;
             self.pixels[rgb_pixel_index + 1] = colour.green;
@@ -98,6 +111,7 @@ impl ScreenBuffer {
         camera: &Camera,
         dist_to_floor: f64,
         texture: &TilingTexture,
+        brightness: usize,
     ) {
         let rgb_pixel_increment = 4;
         let row_length = self.width * 4;
@@ -113,7 +127,7 @@ impl ScreenBuffer {
                 let position = ray.origin + (ray.direction * dist_to_floor);
                 let colour = texture
                     .get_texel((position.x * 16.0) as isize, (position.y * 16.0) as isize)
-                    .at_brightness(99);
+                    .at_brightness(brightness);
 
                 self.pixels[rgb_pixel_index] = colour.red;
                 self.pixels[rgb_pixel_index + 1] = colour.green;

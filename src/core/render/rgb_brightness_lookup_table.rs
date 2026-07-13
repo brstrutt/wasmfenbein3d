@@ -1,16 +1,21 @@
 use super::rgb::{RGB, WHITE};
 
+pub const BRIGHTNESS_STEPS: usize = 100;
+pub const BRIGHTNESS_STEPS_F64: f64 = BRIGHTNESS_STEPS as f64;
+pub const MAX_BRIGHTNESS_INDEX: usize = BRIGHTNESS_STEPS - 1;
+
 #[derive(Clone)]
 pub struct RgbBrightnessLookupTable {
-    pub values: [RGB; 100],
+    pub values: [RGB; BRIGHTNESS_STEPS],
 }
 
 impl RgbBrightnessLookupTable {
     pub fn generate(max_value: &RGB) -> Self {
-        let mut values = [WHITE; 100];
+        let mut values = [WHITE; BRIGHTNESS_STEPS];
 
         for (index, value) in values.iter_mut().enumerate() {
-            *value = max_value / (100 - index) as f64;
+            let darkness_index = (BRIGHTNESS_STEPS - index) as f64 / 50.0;
+            *value = max_value / (1.0 + darkness_index);
         }
 
         RgbBrightnessLookupTable { values }
