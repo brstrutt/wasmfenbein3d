@@ -1,13 +1,12 @@
 use std::{cell::RefCell, rc::Rc};
 mod controls;
 mod hud;
+mod textures;
 mod web;
 mod world;
 
 use wasmfenbein3d::core::{
-    render::{
-        render_to_screen_buffer, rgb_palette::RgbPalette, screen::ScreenBuffer, textures::Textures,
-    },
+    render::{render_to_screen_buffer, rgb_palette::RgbPalette, screen::ScreenBuffer},
     state::GameState,
 };
 
@@ -34,18 +33,18 @@ fn main() {
     )));
 
     let mut palette = RgbPalette::new();
-    let textures = Rc::new(RefCell::new(Textures::load(&mut palette)));
+    let walls = load_walls(&mut palette);
+    let floor_texture = textures::big_floor::load_texture(&mut palette);
+    let ceiling_texture = textures::floor::load_texture(&mut palette);
 
-    let borrowed_textures = textures.borrow();
     let state = Rc::new(RefCell::new(GameState::setup(
         screen_width,
         screen_height,
-        load_walls(&borrowed_textures),
+        walls,
         &mut palette,
-        borrowed_textures.floor.clone(),
-        borrowed_textures.ceiling.clone(),
+        floor_texture,
+        ceiling_texture,
     )));
-    drop(borrowed_textures);
 
     controls::setup(state.clone());
     hud::setup(state.clone(), screen_buffer.clone());
