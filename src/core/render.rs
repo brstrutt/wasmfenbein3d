@@ -15,7 +15,6 @@ pub mod rgb_palette;
 pub mod rgbv;
 pub mod screen;
 pub mod texture;
-pub mod textures;
 pub mod tiling_texture;
 
 pub fn render_to_screen_buffer(
