@@ -54,4 +54,8 @@ impl TilingTexture {
     pub fn height(&self) -> usize {
         self.texture.height
     }
+
+    pub fn width(&self) -> usize {
+        self.texture.width
+    }
 }
