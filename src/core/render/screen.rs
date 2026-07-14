@@ -29,16 +29,6 @@ impl ScreenBuffer {
         self.already_drawn.fill(false)
     }
 
-    pub fn render_solid_colour_column(
-        &mut self,
-        x: &usize,
-        height: f64,
-        colour: &RGBV,
-        brightness: usize,
-    ) {
-        self.render_column(x, height, &|_wall_pixel_index| &colour, brightness)
-    }
-
     pub fn render_textured_column(
         &mut self,
         x: &usize,

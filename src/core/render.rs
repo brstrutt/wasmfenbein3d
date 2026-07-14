@@ -79,13 +79,6 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
                 &wall_intersection,
                 get_light_falloff(distance),
             );
-        } else {
-            screen_buffer.render_solid_colour_column(
-                &x,
-                0.0,
-                &state.world.skybox_colour,
-                MAX_BRIGHTNESS_INDEX,
-            );
         }
     }
 }
