@@ -12,6 +12,7 @@ pub struct Textures {
     pub wall_stone: Rc<RefCell<TilingTexture>>,
     pub wall_wood: Rc<RefCell<TilingTexture>>,
     pub floor: Rc<RefCell<TilingTexture>>,
+    pub ceiling: Rc<RefCell<TilingTexture>>,
 }
 
 impl Textures {
@@ -20,6 +21,7 @@ impl Textures {
             wall_stone: Rc::new(RefCell::new(wall_stone::load_texture(palette))),
             wall_wood: Rc::new(RefCell::new(wall_wood::load_texture(palette))),
             floor: Rc::new(RefCell::new(big_floor::load_texture(palette))),
+            ceiling: Rc::new(RefCell::new(floor::load_texture(palette))),
         }
     }
 }

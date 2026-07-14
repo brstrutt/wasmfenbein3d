@@ -3,7 +3,6 @@ use crate::core::{
     render::{
         rgb_brightness_lookup_table::{BRIGHTNESS_STEPS_F64, MAX_BRIGHTNESS_INDEX},
         screen::ScreenBuffer,
-        textures::Textures,
     },
     state::GameState,
     world::walls::WALL_HEIGHT,
@@ -22,31 +21,35 @@ pub mod tiling_texture;
 pub fn render_to_screen_buffer(
     screen_buffer: &Rc<RefCell<ScreenBuffer>>,
     state: &RefCell<GameState>,
-    textures: &Rc<RefCell<Textures>>,
 ) {
     let state = state.borrow_mut();
     let mut screen_buffer = screen_buffer.borrow_mut();
-    let textures = textures.borrow();
 
     screen_buffer.reset_draw_history();
     render_walls(&mut screen_buffer, &state);
-    render_background(&mut screen_buffer, &state, &textures);
+    render_background(&mut screen_buffer, &state);
 }
 
-fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState, textures: &Textures) {
+fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
     let camera = state.world.camera.clone();
     let half_screen_height = screen_buffer.height as f64 / 2.0;
 
     let half_wall_height = half_screen_height * WALL_HEIGHT;
 
     for y in 0..screen_buffer.height {
-        let dist_to_floor = ((1.0 / (y as f64 - half_screen_height)) * half_wall_height).abs();
+        let y_relative_to_center = y as f64 - half_screen_height;
+        let dist_to_floor = ((1.0 / y_relative_to_center) * half_wall_height).abs();
+        let texture = if y_relative_to_center.is_sign_positive() {
+            &state.world.floor.borrow()
+        } else {
+            &state.world.ceiling.borrow()
+        };
 
         screen_buffer.render_textured_row(
             &y,
             &camera,
             dist_to_floor,
-            &textures.floor.borrow(),
+            texture,
             get_light_falloff(dist_to_floor),
         );
     }
