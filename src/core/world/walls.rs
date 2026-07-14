@@ -7,8 +7,6 @@ use crate::core::{
     render::tiling_texture::TilingTexture,
 };
 
-pub const WALL_HEIGHT: f64 = 2.0;
-
 pub fn walls_from_point_path(
     points: &[Point2D],
     texture: &Rc<RefCell<TilingTexture>>,
