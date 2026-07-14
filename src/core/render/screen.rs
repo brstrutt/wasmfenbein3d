@@ -1,4 +1,4 @@
-use super::{rgbv::RGBV, tiling_texture::TilingTexture};
+use super::tiling_texture::TilingTexture;
 use crate::core::world::{
     camera::Camera,
     walls::{WALL_HEIGHT, WallCollision},
@@ -43,32 +43,14 @@ impl ScreenBuffer {
             1.0,
         ) as isize;
 
-        self.render_column(
-            x,
-            height,
-            &|wall_pixel_index| {
-                let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height() as f64;
-                &texture.get_texel(texture_x_pos, (texture_y_pos * WALL_HEIGHT) as isize)
-            },
-            brightness,
-        )
-    }
-
-    fn render_column<'a, F: Fn(usize) -> &'a RGBV>(
-        &mut self,
-        x: &usize,
-        height: f64,
-        get_colour: &'a F,
-        brightness: usize,
-    ) {
         let mut starting_wall_position = 0;
-        let mut height = height as usize;
-        if height > self.height {
-            starting_wall_position = (height - self.height) / 2;
-            height = self.height;
+        let mut height_usize = height as usize;
+        if height_usize > self.height {
+            starting_wall_position = (height_usize - self.height) / 2;
+            height_usize = self.height;
         }
 
-        let half_height = height / 2;
+        let half_height = height_usize / 2;
         let top = self.center + half_height;
         let bottom = self.center - half_height;
 
@@ -82,7 +64,11 @@ impl ScreenBuffer {
         let mut wall_pixel_index = starting_wall_position;
         let mut pixel_index = x + (bottom * pixel_increment);
         while rgb_pixel_index < top_rgb_pixel_index {
-            let colour = get_colour(wall_pixel_index).at_brightness(brightness);
+            let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height() as f64;
+
+            let colour = texture
+                .get_texel(texture_x_pos, (texture_y_pos * WALL_HEIGHT) as isize)
+                .at_brightness(brightness);
 
             self.pixels[rgb_pixel_index] = colour.red;
             self.pixels[rgb_pixel_index + 1] = colour.green;
