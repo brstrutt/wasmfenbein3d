@@ -1,5 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
+use super::painting::Painting;
 use super::wall::Wall;
 use crate::core::{
     primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D},
@@ -11,6 +12,7 @@ pub const WALL_HEIGHT: f64 = 2.0;
 pub fn walls_from_point_path(
     points: &[Point2D],
     texture: &Rc<RefCell<TilingTexture>>,
+    painting: Painting,
 ) -> Vec<Wall> {
     if points.len() < 2 {
         return vec![];
@@ -24,6 +26,7 @@ pub fn walls_from_point_path(
                 end: points[index + 1],
             },
             &texture,
+            painting.clone(),
         ));
     }
     lines

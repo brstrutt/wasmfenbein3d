@@ -1,4 +1,5 @@
 pub mod camera;
+pub mod painting;
 pub mod wall;
 pub mod walls;
 
