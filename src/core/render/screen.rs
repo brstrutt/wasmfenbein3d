@@ -33,12 +33,10 @@ impl ScreenBuffer {
         wall_details: &WallCollision,
         brightness: usize,
     ) {
-        let texture = wall_details.wall.texture.borrow();
-        let wall_x_pos = texture.get_texel_column_on_line_with_scale(
-            &wall_details.wall.position,
-            &wall_details.intersection,
-            1.0,
-        ) as isize;
+        let wall_x_pos = wall_details
+            .wall
+            .get_wall_space_x_position(&wall_details.intersection);
+        let texture = wall_details.wall.get_texture_at_point(wall_x_pos).borrow();
 
         let mut starting_wall_position = 0;
         let mut height_usize = height as usize;
@@ -64,11 +62,10 @@ impl ScreenBuffer {
             let wall_y_pos =
                 ((wall_pixel_index as f64 / height) * texture.height() as f64) as isize;
 
-            let texture = wall_details
-                .wall
-                .get_texture_at_point(wall_x_pos, wall_y_pos)
-                .borrow();
-            let texel = texture.get_texel(wall_x_pos, wall_y_pos as isize * WALL_HEIGHT as isize);
+            let texel = texture.get_texel(
+                (wall_x_pos * texture.width() as f64 / WALL_HEIGHT) as isize,
+                wall_y_pos as isize,
+            );
             let colour = texel.at_brightness(brightness);
 
             self.pixels[rgb_pixel_index] = colour.red;
