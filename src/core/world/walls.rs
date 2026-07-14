@@ -3,80 +3,15 @@ use std::{cell::RefCell, rc::Rc};
 use super::wall::Wall;
 use crate::core::{
     primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D},
-    render::{textures::Textures, tiling_texture::TilingTexture},
+    render::tiling_texture::TilingTexture,
 };
 
 pub const WALL_HEIGHT: f64 = 2.0;
 
-pub fn default_walls(textures: &Textures) -> Vec<Wall> {
-    let mut result = Vec::<Wall>::new();
-    result.append(&mut walls_from_point_path(
-        &vec![
-            Point2D::new(-5.0, -3.0),
-            Point2D::new(-5.0, 5.0),
-            Point2D::new(-1.0, 5.0),
-        ],
-        &textures.wall_wood,
-    ));
-    result.append(&mut walls_from_point_path(
-        &vec![
-            Point2D::new(-1.0, 5.0),
-            Point2D::new(-1.0, 20.0),
-            Point2D::new(8.0, 20.0),
-        ],
-        &textures.wall_stone,
-    ));
-    result.append(&mut walls_from_point_path(
-        &vec![
-            Point2D::new(8.0, 20.0),
-            Point2D::new(8.0, 23.0),
-            Point2D::new(15.0, 23.0),
-            Point2D::new(15.0, 15.0),
-            Point2D::new(8.0, 15.0),
-            Point2D::new(8.0, 18.0),
-        ],
-        &textures.wall_wood,
-    ));
-    result.append(&mut walls_from_point_path(
-        &vec![
-            Point2D::new(8.0, 18.0),
-            Point2D::new(1.0, 18.0),
-            Point2D::new(1.0, 5.0),
-        ],
-        &textures.wall_stone,
-    ));
-    result.append(&mut walls_from_point_path(
-        &vec![
-            Point2D::new(1.0, 5.0),
-            Point2D::new(5.0, 5.0),
-            Point2D::new(5.0, -5.0),
-            Point2D::new(-5.0, -5.0),
-        ],
-        &textures.wall_wood,
-    ));
-    result.append(&mut walls_from_point_path(
-        &vec![Point2D::new(-5.0, -5.0), Point2D::new(-10.0, -5.0)],
-        &textures.wall_stone,
-    ));
-    result.append(&mut walls_from_point_path(
-        &vec![
-            Point2D::new(-10.0, -5.0),
-            Point2D::new(-10.0, -7.0),
-            Point2D::new(-13.0, -7.0),
-            Point2D::new(-13.0, -1.0),
-            Point2D::new(-10.0, -1.0),
-            Point2D::new(-10.0, -3.0),
-        ],
-        &textures.wall_wood,
-    ));
-    result.append(&mut walls_from_point_path(
-        &vec![Point2D::new(-10.0, -3.0), Point2D::new(-5.0, -3.0)],
-        &textures.wall_stone,
-    ));
-    result
-}
-
-fn walls_from_point_path(points: &[Point2D], texture: &Rc<RefCell<TilingTexture>>) -> Vec<Wall> {
+pub fn walls_from_point_path(
+    points: &[Point2D],
+    texture: &Rc<RefCell<TilingTexture>>,
+) -> Vec<Wall> {
     if points.len() < 2 {
         return vec![];
     }

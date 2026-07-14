@@ -2,6 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 mod controls;
 mod hud;
 mod web;
+mod world;
 
 use wasmfenbein3d::core::{
     render::{
@@ -10,7 +11,10 @@ use wasmfenbein3d::core::{
     state::GameState,
 };
 
-use crate::web::{access, main_canvas};
+use crate::{
+    web::{access, main_canvas},
+    world::load_walls,
+};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -34,7 +38,7 @@ fn main() {
     let state = Rc::new(RefCell::new(GameState::setup(
         screen_width,
         screen_height,
-        &textures,
+        load_walls(&textures.borrow()),
         &mut palette,
     )));
 
