@@ -35,18 +35,23 @@ fn main() {
 
     let mut palette = RgbPalette::new();
     let textures = Rc::new(RefCell::new(Textures::load(&mut palette)));
+
+    let borrowed_textures = textures.borrow();
     let state = Rc::new(RefCell::new(GameState::setup(
         screen_width,
         screen_height,
-        load_walls(&textures.borrow()),
+        load_walls(&borrowed_textures),
         &mut palette,
+        borrowed_textures.floor.clone(),
+        borrowed_textures.ceiling.clone(),
     )));
+    drop(borrowed_textures);
 
     controls::setup(state.clone());
     hud::setup(state.clone(), screen_buffer.clone());
     web::window::run_function_every_animation_frame(move || {
         let render_start_time = web::window::now_in_ms();
-        render_to_screen_buffer(&screen_buffer, &state, &textures);
+        render_to_screen_buffer(&screen_buffer, &state);
         main_canvas::render_screen_buffer(&screen_buffer.borrow());
         let render_end_time = web::window::now_in_ms();
 

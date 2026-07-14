@@ -1,6 +1,8 @@
+use std::{cell::RefCell, rc::Rc};
+
 use crate::core::{
     controls::InputState,
-    render::rgb_palette::RgbPalette,
+    render::{rgb_palette::RgbPalette, tiling_texture::TilingTexture},
     world::{World, wall::Wall},
 };
 
@@ -18,9 +20,11 @@ impl GameState {
         screen_height: usize,
         walls: Vec<Wall>,
         palette: &mut RgbPalette,
+        floor: Rc<RefCell<TilingTexture>>,
+        ceiling: Rc<RefCell<TilingTexture>>,
     ) -> GameState {
         GameState {
-            world: World::new(screen_width, screen_height, walls, palette),
+            world: World::new(screen_width, screen_height, walls, palette, floor, ceiling),
             input: InputState::setup(),
             last_frame_time_ms: 0.0,
             last_time_between_frames_ms: 0.0,
