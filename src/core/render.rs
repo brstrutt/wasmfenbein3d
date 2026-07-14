@@ -1,11 +1,8 @@
 use crate::core::{
     primitives::point2d::Point2D,
-    render::{
-        rgb_brightness_lookup_table::{BRIGHTNESS_STEPS_F64, MAX_BRIGHTNESS_INDEX},
-        screen::ScreenBuffer,
-    },
+    render::{rgb_brightness_lookup_table::BRIGHTNESS_STEPS_F64, screen::ScreenBuffer},
     state::GameState,
-    world::walls::WALL_HEIGHT,
+    world::wall::WALL_HEIGHT,
 };
 use std::{cell::RefCell, rc::Rc};
 
@@ -75,7 +72,6 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
             screen_buffer.render_textured_column(
                 &x,
                 height,
-                &wall_intersection.wall.texture.borrow(),
                 &wall_intersection,
                 get_light_falloff(distance),
             );

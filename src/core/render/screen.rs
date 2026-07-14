@@ -1,8 +1,5 @@
 use super::tiling_texture::TilingTexture;
-use crate::core::world::{
-    camera::Camera,
-    walls::{WALL_HEIGHT, WallCollision},
-};
+use crate::core::world::{camera::Camera, wall::WALL_HEIGHT, walls::WallCollision};
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
 
@@ -33,11 +30,11 @@ impl ScreenBuffer {
         &mut self,
         x: &usize,
         height: f64,
-        texture: &TilingTexture,
         wall_details: &WallCollision,
         brightness: usize,
     ) {
-        let texture_x_pos = texture.get_texel_column_on_line_with_scale(
+        let texture = wall_details.wall.texture.borrow();
+        let wall_x_pos = texture.get_texel_column_on_line_with_scale(
             &wall_details.wall.position,
             &wall_details.intersection,
             1.0,
@@ -64,11 +61,15 @@ impl ScreenBuffer {
         let mut wall_pixel_index = starting_wall_position;
         let mut pixel_index = x + (bottom * pixel_increment);
         while rgb_pixel_index < top_rgb_pixel_index {
-            let texture_y_pos = (wall_pixel_index as f64 / height) * texture.height() as f64;
+            let wall_y_pos =
+                ((wall_pixel_index as f64 / height) * texture.height() as f64) as isize;
 
-            let colour = texture
-                .get_texel(texture_x_pos, (texture_y_pos * WALL_HEIGHT) as isize)
-                .at_brightness(brightness);
+            let texture = wall_details
+                .wall
+                .get_texture_at_point(wall_x_pos, wall_y_pos)
+                .borrow();
+            let texel = texture.get_texel(wall_x_pos, wall_y_pos as isize * WALL_HEIGHT as isize);
+            let colour = texel.at_brightness(brightness);
 
             self.pixels[rgb_pixel_index] = colour.red;
             self.pixels[rgb_pixel_index + 1] = colour.green;
