@@ -18,7 +18,7 @@ To setup the dev environment: use the devcontainer
 
 To build: `trunk build`
 
-To run a local dev server: `trunk serve`
+To run a local dev server: `trunk serve` (add `--enable-cooldown` to stop it building twice every time you save changes)
 
 To run the unit tests: `cargo test`
 
