@@ -22,7 +22,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(-5.0, -3.0),
         ],
         &wood_wall_texture,
-        default_painting.clone(),
+        Some(default_painting.clone()),
     ));
     result.append(&mut walls_from_point_path(
         &vec![
@@ -31,7 +31,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(-1.0, 5.0),
         ],
         &stone_wall_texture,
-        default_painting.clone(),
+        None,
     ));
     result.append(&mut walls_from_point_path(
         &vec![
@@ -43,7 +43,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(8.0, 20.0),
         ],
         &wood_wall_texture,
-        default_painting.clone(),
+        None,
     ));
     result.append(&mut walls_from_point_path(
         &vec![
@@ -52,7 +52,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(8.0, 18.0),
         ],
         &stone_wall_texture,
-        default_painting.clone(),
+        None,
     ));
     result.append(&mut walls_from_point_path(
         &vec![
@@ -62,12 +62,12 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(1.0, 5.0),
         ],
         &wood_wall_texture,
-        default_painting.clone(),
+        None,
     ));
     result.append(&mut walls_from_point_path(
         &vec![Point2D::new(-5.0, -5.0), Point2D::new(-10.0, -5.0)],
         &stone_wall_texture,
-        default_painting.clone(),
+        Some(default_painting.clone()),
     ));
     result.append(&mut walls_from_point_path(
         &vec![
@@ -79,12 +79,12 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(-10.0, -5.0),
         ],
         &wood_wall_texture,
-        default_painting.clone(),
+        None,
     ));
     result.append(&mut walls_from_point_path(
         &vec![Point2D::new(-5.0, -3.0), Point2D::new(-10.0, -3.0)],
         &stone_wall_texture,
-        default_painting.clone(),
+        None,
     ));
     result
 }
