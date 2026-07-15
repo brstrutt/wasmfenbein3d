@@ -1,9 +1,9 @@
 use std::{cell::RefCell, rc::Rc};
-use wasmfenbein3d::core::render::{rgb_palette::RgbPalette, tiling_texture::TilingTexture};
+use wasmfenbein3d::core::render::{rgb_palette::RgbPalette, texture::Texture};
 
 #[allow(unused)]
-pub fn load_texture(palette: &mut RgbPalette) -> Rc<RefCell<TilingTexture>> {
-    Rc::new(RefCell::new(TilingTexture::new_from_bmp_data(
+pub fn load_texture(palette: &mut RgbPalette) -> Rc<RefCell<Texture>> {
+    Rc::new(RefCell::new(Texture::new_from_bmp_data(
         include_bytes!("./vermintide_tapestry.bmp"),
         palette,
     )))
