@@ -15,11 +15,15 @@ pub const WALL_HEIGHT: f64 = 2.0;
 pub struct Wall {
     pub position: Line2D,
     pub texture: Rc<RefCell<TilingTexture>>,
-    pub painting: Painting,
+    pub painting: Option<Painting>,
 }
 
 impl Wall {
-    pub fn new(line: Line2D, texture: &Rc<RefCell<TilingTexture>>, painting: Painting) -> Self {
+    pub fn new(
+        line: Line2D,
+        texture: &Rc<RefCell<TilingTexture>>,
+        painting: Option<Painting>,
+    ) -> Self {
         Wall {
             position: line,
             texture: texture.clone(),
@@ -43,22 +47,24 @@ impl Wall {
         wall_space_x: f64,
         wall_space_y: f64,
     ) -> Ref<'_, RGBV> {
-        if wall_space_x < 2.0 {
-            return Ref::map(self.painting.texture.borrow(), |tex| {
-                let texture_y_pos = (wall_space_y * tex.height() as f64) as isize;
-                tex.get_texel(
-                    (wall_space_x * tex.width() as f64 / WALL_HEIGHT) as isize,
-                    texture_y_pos as isize,
-                )
-            });
-        } else {
-            return Ref::map(self.texture.borrow(), |tex| {
-                let texture_y_pos = (wall_space_y * tex.height() as f64) as isize;
-                tex.get_texel(
-                    (wall_space_x * tex.width() as f64 / WALL_HEIGHT) as isize,
-                    texture_y_pos as isize,
-                )
-            });
-        };
+        if let Some(painting) = &self.painting {
+            if wall_space_x < 2.0 {
+                return Ref::map(painting.texture.borrow(), |tex| {
+                    let texture_y_pos = (wall_space_y * tex.height() as f64) as isize;
+                    tex.get_texel(
+                        (wall_space_x * tex.width() as f64 / WALL_HEIGHT) as isize,
+                        texture_y_pos as isize,
+                    )
+                });
+            }
+        }
+
+        return Ref::map(self.texture.borrow(), |tex| {
+            let texture_y_pos = (wall_space_y * tex.height() as f64) as isize;
+            tex.get_texel(
+                (wall_space_x * tex.width() as f64 / WALL_HEIGHT) as isize,
+                texture_y_pos as isize,
+            )
+        });
     }
 }

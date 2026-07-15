@@ -10,7 +10,7 @@ use crate::core::{
 pub fn walls_from_point_path(
     points: &[Point2D],
     texture: &Rc<RefCell<TilingTexture>>,
-    painting: Painting,
+    painting: Option<Painting>,
 ) -> Vec<Wall> {
     if points.len() < 2 {
         return vec![];
