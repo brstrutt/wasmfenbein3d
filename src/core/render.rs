@@ -1,6 +1,6 @@
 use crate::core::{
     primitives::point2d::Point2D,
-    render::{rgb_brightness_lookup_table::BRIGHTNESS_STEPS_F64, screen::ScreenBuffer},
+    render::{rgb_brightness_lookup_table::BRIGHTNESS_STEPS_F64, screen_buffer::ScreenBuffer},
     state::GameState,
     world::wall::WALL_HEIGHT,
 };
@@ -10,7 +10,7 @@ pub mod rgb;
 pub mod rgb_brightness_lookup_table;
 pub mod rgb_palette;
 pub mod rgbv;
-pub mod screen;
+pub mod screen_buffer;
 pub mod texture;
 pub mod tiling_texture;
 

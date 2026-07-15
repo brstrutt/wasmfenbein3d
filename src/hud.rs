@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use wasmfenbein3d::core::{render::screen::ScreenBuffer, state::GameState};
+use wasmfenbein3d::core::{render::screen_buffer::ScreenBuffer, state::GameState};
 
 use crate::web;
 
