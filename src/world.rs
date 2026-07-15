@@ -65,7 +65,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
         None,
     ));
     result.append(&mut walls_from_point_path(
-        &vec![Point2D::new(-5.0, -5.0), Point2D::new(-10.0, -5.0)],
+        &vec![Point2D::new(-10.0, -5.0), Point2D::new(-5.0, -5.0)],
         &stone_wall_texture,
         Some(default_painting.clone()),
     ));
