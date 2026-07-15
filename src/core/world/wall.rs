@@ -59,18 +59,18 @@ impl Wall {
                 let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
 
                 return Ref::map(painting.texture.borrow(), |tex| {
-                    let texture_x_pos = wall_space_x * tex.width() as f64 / painting_width;
-                    let texture_y_pos = wall_space_y * tex.height() as f64 / painting_height;
-                    tex.get_texel(texture_x_pos as isize, texture_y_pos as isize)
+                    tex.get_texel(
+                        (wall_space_x * tex.width() as f64 / painting_width) as isize,
+                        (wall_space_y * tex.height() as f64 / painting_height) as isize,
+                    )
                 });
             }
         }
 
         return Ref::map(self.texture.borrow(), |tex| {
-            let texture_y_pos = (wall_space_y * tex.height() as f64 * WALL_HEIGHT) as isize;
             tex.get_texel(
                 (wall_space_x * tex.width() as f64) as isize,
-                texture_y_pos as isize,
+                (wall_space_y * tex.height() as f64 * WALL_HEIGHT) as isize,
             )
         });
     }
