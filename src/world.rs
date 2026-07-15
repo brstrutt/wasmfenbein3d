@@ -10,9 +10,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
     let wood_wall_texture = textures::wall_wood::load_texture(palette);
     let stone_wall_texture = textures::wall_stone::load_texture(palette);
     let vermintide_tapestry = textures::vermintide_tapestry::load_texture(palette);
-    let default_painting = Painting {
-        texture: vermintide_tapestry,
-    };
+    let default_painting = Painting::new(vermintide_tapestry, Point2D::new(0.5, 0.2));
 
     let mut result = Vec::<Wall>::new();
     result.append(&mut walls_from_point_path(

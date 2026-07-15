@@ -48,13 +48,20 @@ impl Wall {
         wall_space_y: f64,
     ) -> Ref<'_, RGBV> {
         if let Some(painting) = &self.painting {
-            if wall_space_x < 2.0 {
+            if wall_space_x >= painting.top_left_corner.x
+                && wall_space_x <= painting.bottom_right_corner.x
+                && wall_space_y >= painting.top_left_corner.y
+                && wall_space_y <= painting.bottom_right_corner.y
+            {
+                let wall_space_x = wall_space_x - painting.top_left_corner.x;
+                let wall_space_y = wall_space_y - painting.top_left_corner.y;
+                let painting_height = painting.bottom_right_corner.y - painting.top_left_corner.y;
+                let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
+
                 return Ref::map(painting.texture.borrow(), |tex| {
-                    let texture_y_pos = (wall_space_y * tex.height() as f64) as isize;
-                    tex.get_texel(
-                        (wall_space_x * tex.width() as f64 / WALL_HEIGHT) as isize,
-                        texture_y_pos as isize,
-                    )
+                    let texture_x_pos = wall_space_x * tex.width() as f64 / painting_width;
+                    let texture_y_pos = wall_space_y * tex.height() as f64 / painting_height;
+                    tex.get_texel(texture_x_pos as isize, texture_y_pos as isize)
                 });
             }
         }
