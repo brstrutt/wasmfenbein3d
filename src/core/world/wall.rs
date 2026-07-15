@@ -60,9 +60,9 @@ impl Wall {
         }
 
         return Ref::map(self.texture.borrow(), |tex| {
-            let texture_y_pos = (wall_space_y * tex.height() as f64) as isize;
+            let texture_y_pos = (wall_space_y * tex.height() as f64 * WALL_HEIGHT) as isize;
             tex.get_texel(
-                (wall_space_x * tex.width() as f64 / WALL_HEIGHT) as isize,
+                (wall_space_x * tex.width() as f64) as isize,
                 texture_y_pos as isize,
             )
         });
