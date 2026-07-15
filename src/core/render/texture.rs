@@ -60,4 +60,12 @@ impl Texture {
         let texture_x_pos = (wall_space_intersection.y / scale) * self.width as f64;
         texture_x_pos as usize
     }
+
+    pub fn height(&self) -> usize {
+        self.height
+    }
+
+    pub fn width(&self) -> usize {
+        self.width
+    }
 }
