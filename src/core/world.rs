@@ -3,7 +3,7 @@ pub mod painting;
 pub mod wall;
 pub mod walls;
 
-use std::{cell::RefCell, rc::Rc};
+use std::rc::Rc;
 
 use crate::core::{
     primitives::{line2d::Line2D, ray2d::Ray2D},
@@ -16,8 +16,8 @@ pub struct World {
     pub walls: Vec<Wall>,
     pub camera: Camera,
     pub skybox_colour: RGBV,
-    pub floor: Rc<RefCell<TilingTexture>>,
-    pub ceiling: Rc<RefCell<TilingTexture>>,
+    pub floor: Rc<TilingTexture>,
+    pub ceiling: Rc<TilingTexture>,
 }
 
 impl World {
@@ -26,8 +26,8 @@ impl World {
         screen_height: usize,
         walls: Vec<Wall>,
         palette: &mut RgbPalette,
-        floor: Rc<RefCell<TilingTexture>>,
-        ceiling: Rc<RefCell<TilingTexture>>,
+        floor: Rc<TilingTexture>,
+        ceiling: Rc<TilingTexture>,
     ) -> World {
         World {
             walls: walls,

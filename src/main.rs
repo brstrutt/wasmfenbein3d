@@ -42,7 +42,7 @@ fn main() {
         screen_height,
         walls,
         &mut palette,
-        floor_texture,
+        floor_texture.clone(),
         ceiling_texture,
     )));
 

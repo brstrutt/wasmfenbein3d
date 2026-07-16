@@ -36,9 +36,9 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
         let y_relative_to_center = y as f64 - half_screen_height;
         let dist_to_floor = ((1.0 / y_relative_to_center) * half_wall_height).abs();
         let texture = if y_relative_to_center.is_sign_positive() {
-            &state.world.floor.borrow()
+            &state.world.floor
         } else {
-            &state.world.ceiling.borrow()
+            &state.world.ceiling
         };
 
         screen_buffer.render_textured_row(

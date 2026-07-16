@@ -1,7 +1,4 @@
-use std::{
-    cell::{Ref, RefCell},
-    rc::Rc,
-};
+use std::rc::Rc;
 
 use super::painting::Painting;
 use crate::core::{
@@ -14,16 +11,12 @@ pub const WALL_HEIGHT: f64 = 2.0;
 #[derive(Clone)]
 pub struct Wall {
     pub position: Line2D,
-    pub texture: Rc<RefCell<TilingTexture>>,
+    pub texture: Rc<TilingTexture>,
     pub painting: Option<Painting>,
 }
 
 impl Wall {
-    pub fn new(
-        line: Line2D,
-        texture: &Rc<RefCell<TilingTexture>>,
-        painting: Option<Painting>,
-    ) -> Self {
+    pub fn new(line: Line2D, texture: &Rc<TilingTexture>, painting: Option<Painting>) -> Self {
         Wall {
             position: line,
             texture: texture.clone(),
@@ -42,11 +35,7 @@ impl Wall {
         wall_space_intersection.y
     }
 
-    pub fn get_wall_colour_at_position(
-        &self,
-        wall_space_x: f64,
-        wall_space_y: f64,
-    ) -> Ref<'_, RGBV> {
+    pub fn get_wall_colour_at_position(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
         if let Some(painting) = &self.painting {
             if wall_space_x >= painting.top_left_corner.x
                 && wall_space_x <= painting.bottom_right_corner.x
@@ -58,20 +47,16 @@ impl Wall {
                 let painting_height = painting.bottom_right_corner.y - painting.top_left_corner.y;
                 let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
 
-                return Ref::map(painting.texture.borrow(), |tex| {
-                    tex.get_texel(
-                        (wall_space_x * tex.width() as f64 / painting_width) as isize,
-                        (wall_space_y * tex.height() as f64 / painting_height) as isize,
-                    )
-                });
+                return painting.texture.get_texel(
+                    (wall_space_x * painting.texture.width() as f64 / painting_width) as isize,
+                    (wall_space_y * painting.texture.height() as f64 / painting_height) as isize,
+                );
             }
         }
 
-        return Ref::map(self.texture.borrow(), |tex| {
-            tex.get_texel(
-                (wall_space_x * tex.width() as f64) as isize,
-                (wall_space_y * tex.height() as f64 * WALL_HEIGHT) as isize,
-            )
-        });
+        return self.texture.get_texel(
+            (wall_space_x * self.texture.width() as f64) as isize,
+            (wall_space_y * self.texture.height() as f64 * WALL_HEIGHT) as isize,
+        );
     }
 }

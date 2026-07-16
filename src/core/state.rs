@@ -1,4 +1,4 @@
-use std::{cell::RefCell, rc::Rc};
+use std::rc::Rc;
 
 use crate::core::{
     controls::InputState,
@@ -20,8 +20,8 @@ impl GameState {
         screen_height: usize,
         walls: Vec<Wall>,
         palette: &mut RgbPalette,
-        floor: Rc<RefCell<TilingTexture>>,
-        ceiling: Rc<RefCell<TilingTexture>>,
+        floor: Rc<TilingTexture>,
+        ceiling: Rc<TilingTexture>,
     ) -> GameState {
         GameState {
             world: World::new(screen_width, screen_height, walls, palette, floor, ceiling),

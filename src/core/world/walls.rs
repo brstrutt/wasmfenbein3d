@@ -1,4 +1,4 @@
-use std::{cell::RefCell, rc::Rc};
+use std::rc::Rc;
 
 use super::painting::Painting;
 use super::wall::Wall;
@@ -9,7 +9,7 @@ use crate::core::{
 
 pub fn walls_from_point_path(
     points: &[Point2D],
-    texture: &Rc<RefCell<TilingTexture>>,
+    texture: &Rc<TilingTexture>,
     painting: Option<Painting>,
 ) -> Vec<Wall> {
     if points.len() < 2 {
