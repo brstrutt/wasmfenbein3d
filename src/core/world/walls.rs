@@ -10,7 +10,7 @@ use crate::core::{
 pub fn walls_from_point_path(
     points: &[Point2D],
     texture: &Rc<TilingTexture>,
-    painting: Option<Painting>,
+    paintings: Vec<Painting>,
 ) -> Vec<Wall> {
     if points.len() < 2 {
         return vec![];
@@ -24,7 +24,7 @@ pub fn walls_from_point_path(
                 end: points[index + 1],
             },
             &texture,
-            painting.clone(),
+            paintings.clone(),
         ));
     }
     lines

@@ -12,15 +12,15 @@ pub const WALL_HEIGHT: f64 = 2.0;
 pub struct Wall {
     pub position: Line2D,
     pub texture: Rc<TilingTexture>,
-    pub painting: Option<Painting>,
+    pub paintings: Vec<Painting>,
 }
 
 impl Wall {
-    pub fn new(line: Line2D, texture: &Rc<TilingTexture>, painting: Option<Painting>) -> Self {
+    pub fn new(line: Line2D, texture: &Rc<TilingTexture>, paintings: Vec<Painting>) -> Self {
         Wall {
             position: line,
             texture: texture.clone(),
-            painting,
+            paintings,
         }
     }
 
@@ -36,7 +36,7 @@ impl Wall {
     }
 
     pub fn get_wall_colour_at_position(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
-        if let Some(painting) = &self.painting {
+        for painting in self.paintings.iter() {
             if wall_space_x >= painting.top_left_corner.x
                 && wall_space_x <= painting.bottom_right_corner.x
                 && wall_space_y >= painting.top_left_corner.y
