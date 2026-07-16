@@ -35,25 +35,26 @@ impl Wall {
         wall_space_intersection.y
     }
 
-    pub fn get_painting_index_in_column(&self, wall_space_x: f64) -> Option<usize> {
+    pub fn get_painting_indexes_in_column(&self, wall_space_x: f64) -> Vec<usize> {
+        let mut paintings = vec![];
         for (index, painting) in self.paintings.iter().enumerate() {
             if wall_space_x >= painting.top_left_corner.x
                 && wall_space_x <= painting.bottom_right_corner.x
             {
-                return Some(index);
+                paintings.push(index);
             }
         }
-        None
+        paintings
     }
 
     pub fn get_wall_colour_or_painting_colour_at_position(
         &self,
         wall_space_x: f64,
         wall_space_y: f64,
-        painting_index: Option<usize>,
+        painting_indexes: &Vec<usize>,
     ) -> &RGBV {
-        if let Some(painting_index) = painting_index {
-            let painting = &self.paintings[painting_index];
+        for index in painting_indexes.iter() {
+            let painting = &self.paintings[*index];
             if wall_space_y >= painting.top_left_corner.y
                 && wall_space_y <= painting.bottom_right_corner.y
             {

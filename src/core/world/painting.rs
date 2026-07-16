@@ -10,7 +10,7 @@ pub struct Painting {
 }
 
 impl Painting {
-    pub fn new(texture: Rc<Texture>, top_left_corner: Point2D) -> Self {
+    pub fn new_to_scale(texture: Rc<Texture>, top_left_corner: Point2D) -> Self {
         let bottom = 1.0 - top_left_corner.y;
 
         let painting_height = bottom - top_left_corner.y;
@@ -22,6 +22,14 @@ impl Painting {
 
         let bottom_right_corner = Point2D::new(right, bottom);
 
+        Painting::new(texture, top_left_corner, bottom_right_corner)
+    }
+
+    pub fn new(
+        texture: Rc<Texture>,
+        top_left_corner: Point2D,
+        bottom_right_corner: Point2D,
+    ) -> Self {
         Painting {
             texture,
             top_left_corner,
