@@ -57,22 +57,11 @@ impl Wall {
             if wall_space_y >= painting.top_left_corner.y
                 && wall_space_y <= painting.bottom_right_corner.y
             {
-                let wall_space_x = wall_space_x - painting.top_left_corner.x;
-                let wall_space_y = wall_space_y - painting.top_left_corner.y;
-                let painting_height = painting.bottom_right_corner.y - painting.top_left_corner.y;
-                let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
-
-                return painting.texture.get_texel(
-                    (wall_space_x * painting.texture.width() as f64 / painting_width) as isize,
-                    (wall_space_y * painting.texture.height() as f64 / painting_height) as isize,
-                );
+                return self.get_painting_texel(wall_space_x, wall_space_y, painting);
             }
         }
 
-        return self.texture.get_texel(
-            (wall_space_x * self.texture.width() as f64) as isize,
-            (wall_space_y * self.texture.height() as f64 * WALL_HEIGHT) as isize,
-        );
+        return self.get_wall_texel(wall_space_x, wall_space_y);
     }
 
     pub fn get_wall_colour_at_position(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
@@ -82,21 +71,34 @@ impl Wall {
                 && wall_space_y >= painting.top_left_corner.y
                 && wall_space_y <= painting.bottom_right_corner.y
             {
-                let wall_space_x = wall_space_x - painting.top_left_corner.x;
-                let wall_space_y = wall_space_y - painting.top_left_corner.y;
-                let painting_height = painting.bottom_right_corner.y - painting.top_left_corner.y;
-                let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
-
-                return painting.texture.get_texel(
-                    (wall_space_x * painting.texture.width() as f64 / painting_width) as isize,
-                    (wall_space_y * painting.texture.height() as f64 / painting_height) as isize,
-                );
+                return self.get_painting_texel(wall_space_x, wall_space_y, painting);
             }
         }
 
-        return self.texture.get_texel(
+        return self.get_wall_texel(wall_space_x, wall_space_y);
+    }
+
+    fn get_wall_texel(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
+        self.texture.get_texel(
             (wall_space_x * self.texture.width() as f64) as isize,
             (wall_space_y * self.texture.height() as f64 * WALL_HEIGHT) as isize,
-        );
+        )
+    }
+
+    fn get_painting_texel<'a>(
+        &'a self,
+        wall_space_x: f64,
+        wall_space_y: f64,
+        painting: &'a Painting,
+    ) -> &'a RGBV {
+        let wall_space_x = wall_space_x - painting.top_left_corner.x;
+        let wall_space_y = wall_space_y - painting.top_left_corner.y;
+        let painting_height = painting.bottom_right_corner.y - painting.top_left_corner.y;
+        let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
+
+        painting.texture.get_texel(
+            (wall_space_x * painting.texture.width() as f64 / painting_width) as isize,
+            (wall_space_y * painting.texture.height() as f64 / painting_height) as isize,
+        )
     }
 }
