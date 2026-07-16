@@ -36,6 +36,7 @@ impl ScreenBuffer {
         let wall_x_pos = wall_details
             .wall
             .get_wall_space_x_position(&wall_details.intersection);
+        let wall_painting_index = wall_details.wall.get_painting_index_in_column(wall_x_pos);
 
         let mut starting_wall_position = 0;
         let mut height_usize = height as usize;
@@ -62,7 +63,11 @@ impl ScreenBuffer {
 
             let colour = wall_details
                 .wall
-                .get_wall_colour_at_position(wall_x_pos, wall_y_pos);
+                .get_wall_colour_or_painting_colour_at_position(
+                    wall_x_pos,
+                    wall_y_pos,
+                    wall_painting_index,
+                );
             let colour = colour.at_brightness(brightness);
 
             self.pixels[rgb_pixel_index] = colour.red;

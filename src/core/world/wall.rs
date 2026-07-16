@@ -35,6 +35,46 @@ impl Wall {
         wall_space_intersection.y
     }
 
+    pub fn get_painting_index_in_column(&self, wall_space_x: f64) -> Option<usize> {
+        for (index, painting) in self.paintings.iter().enumerate() {
+            if wall_space_x >= painting.top_left_corner.x
+                && wall_space_x <= painting.bottom_right_corner.x
+            {
+                return Some(index);
+            }
+        }
+        None
+    }
+
+    pub fn get_wall_colour_or_painting_colour_at_position(
+        &self,
+        wall_space_x: f64,
+        wall_space_y: f64,
+        painting_index: Option<usize>,
+    ) -> &RGBV {
+        if let Some(painting_index) = painting_index {
+            let painting = &self.paintings[painting_index];
+            if wall_space_y >= painting.top_left_corner.y
+                && wall_space_y <= painting.bottom_right_corner.y
+            {
+                let wall_space_x = wall_space_x - painting.top_left_corner.x;
+                let wall_space_y = wall_space_y - painting.top_left_corner.y;
+                let painting_height = painting.bottom_right_corner.y - painting.top_left_corner.y;
+                let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
+
+                return painting.texture.get_texel(
+                    (wall_space_x * painting.texture.width() as f64 / painting_width) as isize,
+                    (wall_space_y * painting.texture.height() as f64 / painting_height) as isize,
+                );
+            }
+        }
+
+        return self.texture.get_texel(
+            (wall_space_x * self.texture.width() as f64) as isize,
+            (wall_space_y * self.texture.height() as f64 * WALL_HEIGHT) as isize,
+        );
+    }
+
     pub fn get_wall_colour_at_position(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
         for painting in self.paintings.iter() {
             if wall_space_x >= painting.top_left_corner.x
