@@ -64,17 +64,12 @@ impl<'a> ColumnRenderer<'a> {
         let column_top_pixel = self.screen_half_height + column_half_height;
         let column_bottom_pixel = self.screen_half_height - column_half_height;
 
-        let pixel_increment = self.screen_width;
-        let rgb_pixel_increment = pixel_increment * 4;
-        let start_rgb_pixel_index = self.screen_x * 4;
-        let bottom_rgb_pixel_index =
-            start_rgb_pixel_index + (column_bottom_pixel * rgb_pixel_increment);
-        let top_rgb_pixel_index = start_rgb_pixel_index + (column_top_pixel * rgb_pixel_increment);
-        let mut rgb_pixel_index = bottom_rgb_pixel_index;
+        let bottom_pixel_index = self.screen_x + (column_bottom_pixel * self.screen_width);
+        let top_pixel_index = self.screen_x + (column_top_pixel * self.screen_width);
 
         let mut wall_pixel_index = starting_wall_position;
-        let mut pixel_index = self.screen_x + (column_bottom_pixel * pixel_increment);
-        while rgb_pixel_index < top_rgb_pixel_index {
+        let mut pixel_index = bottom_pixel_index;
+        while pixel_index < top_pixel_index {
             let wall_y_pos = wall_pixel_index as f64 / self.column_pixel_height;
 
             let colour = self
@@ -89,8 +84,7 @@ impl<'a> ColumnRenderer<'a> {
             screen_buffer.render_pixel(pixel_index, colour);
 
             wall_pixel_index += 1;
-            rgb_pixel_index += rgb_pixel_increment;
-            pixel_index += pixel_increment;
+            pixel_index += self.screen_width;
         }
 
         false
