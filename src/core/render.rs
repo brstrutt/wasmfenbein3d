@@ -1,11 +1,14 @@
 use crate::core::{
     primitives::point2d::Point2D,
-    render::{rgb_brightness_lookup_table::BRIGHTNESS_STEPS_F64, screen_buffer::ScreenBuffer},
+    render::{
+        distance_to_brightness_level::distance_to_brightness_level, screen_buffer::ScreenBuffer,
+    },
     state::GameState,
     world::wall::WALL_HEIGHT,
 };
 use std::{cell::RefCell, rc::Rc};
 
+mod distance_to_brightness_level;
 pub mod rgb;
 pub mod rgb_brightness_lookup_table;
 pub mod rgb_palette;
@@ -46,7 +49,7 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
             &camera,
             dist_to_floor,
             texture,
-            get_light_falloff(dist_to_floor),
+            distance_to_brightness_level(dist_to_floor),
         );
     }
 }
@@ -73,12 +76,8 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
                 &x,
                 height,
                 &wall_intersection,
-                get_light_falloff(distance),
+                distance_to_brightness_level(distance),
             );
         }
     }
-}
-
-fn get_light_falloff(distance: f64) -> usize {
-    (BRIGHTNESS_STEPS_F64 - (distance * 8.0)) as usize
 }
