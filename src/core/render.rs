@@ -53,7 +53,10 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
 }
 
 fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
-    let screen_height = screen_buffer.height as f64;
+    let screen_width = screen_buffer.width;
+    let screen_height_usize = screen_buffer.height;
+    let screen_half_height_usize = screen_height_usize / 2;
+    let screen_height_f64 = screen_height_usize as f64;
 
     for x in 0..screen_buffer.width {
         let ray = state.world.camera.ray_for_column(x);
@@ -62,9 +65,12 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
         if let Some(wall_intersection) = wall_intersection {
             let renderer = ColumnRenderer::init(
                 &x,
+                &screen_width,
+                &screen_height_usize,
+                &screen_height_f64,
+                &screen_half_height_usize,
                 &wall_intersection,
                 &state.world.camera.ray.origin,
-                &screen_height,
             );
             while renderer.render_next_pixel(screen_buffer) {}
         }

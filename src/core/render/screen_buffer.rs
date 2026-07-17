@@ -1,4 +1,4 @@
-use super::tiling_texture::TilingTexture;
+use super::{rgb::RGB, tiling_texture::TilingTexture};
 use crate::core::world::{camera::Camera, walls::WallCollision};
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
@@ -26,59 +26,11 @@ impl ScreenBuffer {
         self.already_drawn.fill(false)
     }
 
-    pub fn render_textured_column(
-        &mut self,
-        x: &usize,
-        height: f64,
-        wall_details: &WallCollision,
-        brightness: usize,
-    ) {
-        let wall_x_pos = wall_details
-            .wall
-            .get_wall_space_x_position(&wall_details.intersection);
-        let wall_painting_indexes = wall_details.wall.get_painting_indexes_in_column(wall_x_pos);
-
-        let mut starting_wall_position = 0;
-        let mut height_usize = height as usize;
-        if height_usize > self.height {
-            starting_wall_position = (height_usize - self.height) / 2;
-            height_usize = self.height;
-        }
-
-        let half_height = height_usize / 2;
-        let top = self.center + half_height;
-        let bottom = self.center - half_height;
-
-        let pixel_increment = self.width;
-        let rgb_pixel_increment = pixel_increment * 4;
-        let start_rgb_pixel_index = x * 4;
-        let bottom_rgb_pixel_index = start_rgb_pixel_index + (bottom * rgb_pixel_increment);
-        let top_rgb_pixel_index = start_rgb_pixel_index + (top * rgb_pixel_increment);
-        let mut rgb_pixel_index = bottom_rgb_pixel_index;
-
-        let mut wall_pixel_index = starting_wall_position;
-        let mut pixel_index = x + (bottom * pixel_increment);
-        while rgb_pixel_index < top_rgb_pixel_index {
-            let wall_y_pos = wall_pixel_index as f64 / height;
-
-            let colour = wall_details
-                .wall
-                .get_wall_colour_or_painting_colour_at_position(
-                    wall_x_pos,
-                    wall_y_pos,
-                    &wall_painting_indexes,
-                );
-            let colour = colour.at_brightness(brightness);
-
-            self.pixels[rgb_pixel_index] = colour.red;
-            self.pixels[rgb_pixel_index + 1] = colour.green;
-            self.pixels[rgb_pixel_index + 2] = colour.blue;
-            self.already_drawn[pixel_index] = true;
-
-            wall_pixel_index += 1;
-            rgb_pixel_index += rgb_pixel_increment;
-            pixel_index += pixel_increment;
-        }
+    pub fn render_pixel(&mut self, pixel_index: usize, colour: &RGB) {
+        self.pixels[(pixel_index << 2)] = colour.red;
+        self.pixels[(pixel_index << 2) + 1] = colour.green;
+        self.pixels[(pixel_index << 2) + 2] = colour.blue;
+        self.already_drawn[pixel_index] = true;
     }
 
     pub fn render_textured_row(
