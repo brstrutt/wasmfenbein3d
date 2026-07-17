@@ -16,7 +16,8 @@ pub struct Wall {
 }
 
 impl Wall {
-    pub fn new(line: Line2D, texture: &Rc<TilingTexture>, paintings: Vec<Painting>) -> Self {
+    pub fn new(line: Line2D, texture: &Rc<TilingTexture>, mut paintings: Vec<Painting>) -> Self {
+        paintings.sort_by(|a, b| a.top_left_corner.y.total_cmp(&b.top_left_corner.y));
         Wall {
             position: line,
             texture: texture.clone(),
