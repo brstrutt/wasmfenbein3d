@@ -17,13 +17,13 @@ struct ScreenSpace<'a> {
     width: &'a usize,
     column_height_f64: f64,
     column_top_pixel_index: usize,
-    column_bottom_pixel_index: usize,
+    current_pixel_index: usize,
 }
 
 struct WallSpace {
     x: f64,
-    starting_position: usize,
     painting_in_column_ids: Vec<usize>,
+    current_pixel_index: f64,
 }
 
 impl<'a> ColumnRenderer<'a> {
@@ -67,12 +67,12 @@ impl<'a> ColumnRenderer<'a> {
                 width: screen_width,
                 column_height_f64: height,
                 column_top_pixel_index: screen_x + (column_top_pixel * screen_width),
-                column_bottom_pixel_index: screen_x + (column_bottom_pixel * screen_width),
+                current_pixel_index: screen_x + (column_bottom_pixel * screen_width),
             },
             wall_space: WallSpace {
                 x: wall_x_pos,
-                starting_position: wall_starting_position,
                 painting_in_column_ids: wall_painting_indexes,
+                current_pixel_index: wall_starting_position as f64,
             },
             nearest_wall_intersection,
             brightness_level: distance_to_brightness_level(distance),
@@ -80,26 +80,22 @@ impl<'a> ColumnRenderer<'a> {
     }
 
     pub fn render_next_pixel(&mut self, screen_buffer: &mut ScreenBuffer) -> bool {
-        let mut wall_pixel_index = self.wall_space.starting_position;
-        let mut pixel_index = self.screen.column_bottom_pixel_index;
-        while pixel_index < self.screen.column_top_pixel_index {
-            let wall_y_pos = wall_pixel_index as f64 / self.screen.column_height_f64;
+        let wall_y_pos = self.wall_space.current_pixel_index / self.screen.column_height_f64;
 
-            let colour = self
-                .nearest_wall_intersection
-                .wall
-                .get_wall_colour_or_painting_colour_at_position(
-                    self.wall_space.x,
-                    wall_y_pos,
-                    &self.wall_space.painting_in_column_ids,
-                );
-            let colour = colour.at_brightness(self.brightness_level);
-            screen_buffer.render_pixel(pixel_index, colour);
+        let colour = self
+            .nearest_wall_intersection
+            .wall
+            .get_wall_colour_or_painting_colour_at_position(
+                self.wall_space.x,
+                wall_y_pos,
+                &self.wall_space.painting_in_column_ids,
+            );
+        let colour = colour.at_brightness(self.brightness_level);
+        screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
 
-            wall_pixel_index += 1;
-            pixel_index += self.screen.width;
-        }
+        self.wall_space.current_pixel_index += 1.0;
+        self.screen.current_pixel_index += self.screen.width;
 
-        false
+        self.screen.current_pixel_index < self.screen.column_top_pixel_index
     }
 }
