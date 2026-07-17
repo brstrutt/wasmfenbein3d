@@ -15,15 +15,15 @@ pub struct ColumnRenderer<'a> {
 
 struct ScreenSpace<'a> {
     width: &'a usize,
-    column_height_f64: f64,
     column_top_pixel_index: usize,
     current_pixel_index: usize,
 }
 
 struct WallSpace {
     x: f64,
+    y: f64,
+    y_increment: f64,
     painting_in_column_ids: Vec<usize>,
-    current_pixel_index: f64,
 }
 
 impl<'a> ColumnRenderer<'a> {
@@ -65,14 +65,14 @@ impl<'a> ColumnRenderer<'a> {
         ColumnRenderer {
             screen: ScreenSpace {
                 width: screen_width,
-                column_height_f64: height,
                 column_top_pixel_index: screen_x + (column_top_pixel * screen_width),
                 current_pixel_index: screen_x + (column_bottom_pixel * screen_width),
             },
             wall_space: WallSpace {
                 x: wall_x_pos,
+                y: wall_starting_position as f64 / height,
+                y_increment: 1.0 / height,
                 painting_in_column_ids: wall_painting_indexes,
-                current_pixel_index: wall_starting_position as f64,
             },
             nearest_wall_intersection,
             brightness_level: distance_to_brightness_level(distance),
@@ -80,20 +80,18 @@ impl<'a> ColumnRenderer<'a> {
     }
 
     pub fn render_next_pixel(&mut self, screen_buffer: &mut ScreenBuffer) -> bool {
-        let wall_y_pos = self.wall_space.current_pixel_index / self.screen.column_height_f64;
-
         let colour = self
             .nearest_wall_intersection
             .wall
             .get_wall_colour_or_painting_colour_at_position(
                 self.wall_space.x,
-                wall_y_pos,
+                self.wall_space.y,
                 &self.wall_space.painting_in_column_ids,
             );
         let colour = colour.at_brightness(self.brightness_level);
         screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
 
-        self.wall_space.current_pixel_index += 1.0;
+        self.wall_space.y += self.wall_space.y_increment;
         self.screen.current_pixel_index += self.screen.width;
 
         self.screen.current_pixel_index < self.screen.column_top_pixel_index
