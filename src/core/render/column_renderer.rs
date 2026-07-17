@@ -7,13 +7,23 @@ use crate::core::{
 };
 
 pub struct ColumnRenderer<'a> {
-    screen_x: &'a usize,
-    screen_width: &'a usize,
-    screen_height: &'a usize,
-    screen_half_height: &'a usize,
+    screen: ScreenSpace<'a>,
+    wall_space: WallSpace,
     nearest_wall_intersection: &'a WallCollision<'a>,
-    column_pixel_height: f64,
     brightness_level: usize,
+}
+
+struct ScreenSpace<'a> {
+    width: &'a usize,
+    column_height_f64: f64,
+    column_top_pixel_index: usize,
+    column_bottom_pixel_index: usize,
+}
+
+struct WallSpace {
+    x: f64,
+    starting_position: usize,
+    painting_in_column_ids: Vec<usize>,
 }
 
 impl<'a> ColumnRenderer<'a> {
@@ -32,59 +42,62 @@ impl<'a> ColumnRenderer<'a> {
         } else {
             0.0
         };
+
+        let wall_x_pos = nearest_wall_intersection
+            .wall
+            .get_wall_space_x_position(&nearest_wall_intersection.intersection);
+
+        let mut column_height_usize = height as usize;
+        let mut wall_starting_position = 0;
+        if column_height_usize > *screen_height_usize {
+            wall_starting_position = (column_height_usize - screen_height_usize) / 2;
+            column_height_usize = *screen_height_usize;
+        }
+
+        let column_half_height = column_height_usize / 2;
+        let column_top_pixel = screen_half_height + column_half_height;
+        let column_bottom_pixel = screen_half_height - column_half_height;
+
+        let wall_painting_indexes = nearest_wall_intersection
+            .wall
+            .get_painting_indexes_in_column(wall_x_pos);
+
         ColumnRenderer {
-            screen_x,
-            screen_width,
-            screen_height: screen_height_usize,
-            screen_half_height,
+            screen: ScreenSpace {
+                width: screen_width,
+                column_height_f64: height,
+                column_top_pixel_index: screen_x + (column_top_pixel * screen_width),
+                column_bottom_pixel_index: screen_x + (column_bottom_pixel * screen_width),
+            },
+            wall_space: WallSpace {
+                x: wall_x_pos,
+                starting_position: wall_starting_position,
+                painting_in_column_ids: wall_painting_indexes,
+            },
             nearest_wall_intersection,
-            column_pixel_height: height,
             brightness_level: distance_to_brightness_level(distance),
         }
     }
 
-    pub fn render_next_pixel(&self, screen_buffer: &mut ScreenBuffer) -> bool {
-        let wall_x_pos = self
-            .nearest_wall_intersection
-            .wall
-            .get_wall_space_x_position(&self.nearest_wall_intersection.intersection);
-        let wall_painting_indexes = self
-            .nearest_wall_intersection
-            .wall
-            .get_painting_indexes_in_column(wall_x_pos);
-
-        let mut starting_wall_position = 0;
-        let mut column_height_usize = self.column_pixel_height as usize;
-        if column_height_usize > *self.screen_height {
-            starting_wall_position = (column_height_usize - self.screen_height) / 2;
-            column_height_usize = *self.screen_height;
-        }
-
-        let column_half_height = column_height_usize / 2;
-        let column_top_pixel = self.screen_half_height + column_half_height;
-        let column_bottom_pixel = self.screen_half_height - column_half_height;
-
-        let bottom_pixel_index = self.screen_x + (column_bottom_pixel * self.screen_width);
-        let top_pixel_index = self.screen_x + (column_top_pixel * self.screen_width);
-
-        let mut wall_pixel_index = starting_wall_position;
-        let mut pixel_index = bottom_pixel_index;
-        while pixel_index < top_pixel_index {
-            let wall_y_pos = wall_pixel_index as f64 / self.column_pixel_height;
+    pub fn render_next_pixel(&mut self, screen_buffer: &mut ScreenBuffer) -> bool {
+        let mut wall_pixel_index = self.wall_space.starting_position;
+        let mut pixel_index = self.screen.column_bottom_pixel_index;
+        while pixel_index < self.screen.column_top_pixel_index {
+            let wall_y_pos = wall_pixel_index as f64 / self.screen.column_height_f64;
 
             let colour = self
                 .nearest_wall_intersection
                 .wall
                 .get_wall_colour_or_painting_colour_at_position(
-                    wall_x_pos,
+                    self.wall_space.x,
                     wall_y_pos,
-                    &wall_painting_indexes,
+                    &self.wall_space.painting_in_column_ids,
                 );
             let colour = colour.at_brightness(self.brightness_level);
             screen_buffer.render_pixel(pixel_index, colour);
 
             wall_pixel_index += 1;
-            pixel_index += self.screen_width;
+            pixel_index += self.screen.width;
         }
 
         false

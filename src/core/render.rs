@@ -63,7 +63,7 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
         let wall_intersection = state.world.nearest_wall_intersecting_ray(&ray);
 
         if let Some(wall_intersection) = wall_intersection {
-            let renderer = ColumnRenderer::init(
+            let mut renderer = ColumnRenderer::init(
                 &x,
                 &screen_width,
                 &screen_height_usize,

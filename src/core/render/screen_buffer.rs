@@ -1,5 +1,5 @@
 use super::{rgb::RGB, tiling_texture::TilingTexture};
-use crate::core::world::{camera::Camera, walls::WallCollision};
+use crate::core::world::camera::Camera;
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
 
@@ -8,7 +8,6 @@ pub struct ScreenBuffer {
     already_drawn: Vec<bool>,
     pub width: usize,
     pub height: usize,
-    center: usize,
 }
 
 impl ScreenBuffer {
@@ -18,7 +17,6 @@ impl ScreenBuffer {
             already_drawn: vec![false; width * height],
             width,
             height,
-            center: height / 2,
         }
     }
 
@@ -27,7 +25,7 @@ impl ScreenBuffer {
     }
 
     pub fn render_pixel(&mut self, pixel_index: usize, colour: &RGB) {
-        self.pixels[(pixel_index << 2)] = colour.red;
+        self.pixels[pixel_index << 2] = colour.red;
         self.pixels[(pixel_index << 2) + 1] = colour.green;
         self.pixels[(pixel_index << 2) + 2] = colour.blue;
         self.already_drawn[pixel_index] = true;
