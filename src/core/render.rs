@@ -1,13 +1,11 @@
-use crate::core::{
-    primitives::point2d::Point2D,
-    render::{
-        distance_to_brightness_level::distance_to_brightness_level, screen_buffer::ScreenBuffer,
-    },
-    state::GameState,
-    world::wall::WALL_HEIGHT,
-};
+use crate::core::{state::GameState, world::wall::WALL_HEIGHT};
+use column_renderer::ColumnRenderer;
+use distance_to_brightness_level::distance_to_brightness_level;
+use screen_buffer::ScreenBuffer;
+
 use std::{cell::RefCell, rc::Rc};
 
+mod column_renderer;
 mod distance_to_brightness_level;
 pub mod rgb;
 pub mod rgb_brightness_lookup_table;
@@ -61,23 +59,14 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
         let ray = state.world.camera.ray_for_column(x);
         let wall_intersection = state.world.nearest_wall_intersecting_ray(&ray);
 
-        let mut height = 0.0;
         if let Some(wall_intersection) = wall_intersection {
-            let distance = Point2D::dist(
-                &state.world.camera.ray.origin,
-                &wall_intersection.intersection,
-            );
-
-            if distance != 0.0 {
-                height = WALL_HEIGHT * screen_height / distance;
-            }
-
-            screen_buffer.render_textured_column(
+            let renderer = ColumnRenderer::init(
                 &x,
-                height,
                 &wall_intersection,
-                distance_to_brightness_level(distance),
+                &state.world.camera.ray.origin,
+                &screen_height,
             );
+            while renderer.render_next_pixel(screen_buffer) {}
         }
     }
 }
