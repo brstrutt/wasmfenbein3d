@@ -15,7 +15,7 @@
     #screen_controls {
 
         background-color: rgba($color: #555, $alpha: 0.5);
-        padding: 10px;
+        padding: 1vh;
 
         display: flex;
         justify-content: center;
@@ -25,20 +25,20 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 10px;
+            padding: 1vh;
 
             :first-child {
-                margin-bottom: 10px;
+                margin-bottom: 1vh;
             }
         }
 
         button {
-            height: 100px;
-            width: 100px;
+            height: 10vh;
+            width: 10vh;
 
             background-color: #999;
             border: 2px solid #933;
-            border-radius: 20px;
+            border-radius: 2vh;
 
             font-weight: bold;
             font-size: xx-large;
