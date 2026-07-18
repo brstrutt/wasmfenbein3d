@@ -70,7 +70,6 @@ impl<'a> ColumnRenderer<'a> {
     }
 
     pub fn render_next_pixel(&mut self, screen_buffer: &mut ScreenBuffer) -> bool {
-        let wall = &self.column.nearest_wall_intersection.wall;
         let colour = if let Some(current_painting) = &self.wall_space.current_painting {
             let wall_space_y = self.wall_space.y - current_painting.painting.top_left_corner.y;
             current_painting.painting.texture.get_texel(
@@ -80,10 +79,27 @@ impl<'a> ColumnRenderer<'a> {
                     / current_painting.painting.height) as isize,
             )
         } else {
-            wall.texture.get_texel(
-                (self.column.wall_x_pos * wall.texture.width_f64()) as isize,
-                (self.wall_space.y * wall.texture.height_f64() * WALL_HEIGHT) as isize,
-            )
+            self.column
+                .nearest_wall_intersection
+                .wall
+                .texture
+                .get_texel(
+                    (self.column.wall_x_pos
+                        * self
+                            .column
+                            .nearest_wall_intersection
+                            .wall
+                            .texture
+                            .width_f64()) as isize,
+                    (self.wall_space.y
+                        * self
+                            .column
+                            .nearest_wall_intersection
+                            .wall
+                            .texture
+                            .height_f64()
+                        * WALL_HEIGHT) as isize,
+                )
         };
         let colour = colour.at_brightness(self.brightness_level);
         screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
@@ -91,39 +107,29 @@ impl<'a> ColumnRenderer<'a> {
         self.wall_space.y += self.wall_space.y_increment;
         self.screen.current_pixel_index += self.screen.width;
 
-        Self::try_enter_next_painting(
-            self.column.wall_x_pos,
-            self.wall_space.y,
-            &mut self.wall_space.current_painting,
-            &mut self.wall_space.next_painting,
-        );
-        Self::try_leave_current_painting(self.wall_space.y, &mut self.wall_space.current_painting);
+        self.try_enter_next_painting();
+        self.try_leave_current_painting();
 
         self.screen.current_pixel_index < self.screen.column_top_pixel_index
     }
 
-    fn try_enter_next_painting<'t>(
-        wall_x: f64,
-        wall_y: f64,
-        current_painting: &mut Option<PaintingSpace<'t>>,
-        next_painting_iter: &mut Peekable<Iter<&'t Painting>>,
-    ) {
-        if let Some(next_painting) = &next_painting_iter.peek()
-            && wall_y >= next_painting.top_left_corner.y
+    fn try_enter_next_painting(&mut self) {
+        if let Some(next_painting_data) = &self.wall_space.next_painting.peek()
+            && self.wall_space.y >= next_painting_data.top_left_corner.y
         {
-            *current_painting = Some(PaintingSpace {
-                painting: next_painting,
-                x: wall_x - next_painting.top_left_corner.x,
+            self.wall_space.current_painting = Some(PaintingSpace {
+                painting: next_painting_data,
+                x: self.column.wall_x_pos - next_painting_data.top_left_corner.x,
             });
-            next_painting_iter.next();
+            self.wall_space.next_painting.next();
         }
     }
 
-    fn try_leave_current_painting(wall_y: f64, current_painting: &mut Option<PaintingSpace>) {
-        if let Some(current) = &current_painting
-            && wall_y >= current.painting.bottom_right_corner.y
+    fn try_leave_current_painting(&mut self) {
+        if let Some(current) = &self.wall_space.current_painting
+            && self.wall_space.y >= current.painting.bottom_right_corner.y
         {
-            *current_painting = None;
+            self.wall_space.current_painting = None;
         }
     }
 }
