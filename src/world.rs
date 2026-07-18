@@ -14,6 +14,12 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
     let nokia_jam_cat = textures::nokia_art_jam_3_keyboard_cat::load_texture(palette);
     let nokia_jam_worms = textures::nokia_art_jam_3_worms::load_texture(palette);
     let ubersreik_five = textures::ubersreik_five::load_texture(palette);
+    let blood_in_the_darkness = textures::blood_in_the_darkness::load_texture(palette);
+    let burplespue_halescourge = textures::burplespue_halescourge::load_texture(palette);
+    let castle_drachenfels = textures::castle_drachenfels::load_texture(palette);
+    let into_the_nest = textures::into_the_nest::load_texture(palette);
+    let righteous_stand = textures::righteous_stand::load_texture(palette);
+    let taals_horn_keep = textures::taals_horn_keep::load_texture(palette);
 
     let mut result = Vec::<Wall>::new();
     result.append(&mut walls_from_point_path(
@@ -49,10 +55,39 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             end: Point2D::new(15.0, 23.0),
         },
         &wood_wall_texture,
-        vec![Painting::new_to_scale(
-            vermintide_tapestry,
-            Point2D::new(2.85, 0.1),
-        )],
+        vec![
+            Painting::new_to_scale(vermintide_tapestry, Point2D::new(2.85, 0.1)),
+            Painting::new(
+                blood_in_the_darkness,
+                Point2D::new(2.50, 0.5),
+                Point2D::new(2.80, 0.8),
+            ),
+            Painting::new(
+                burplespue_halescourge,
+                Point2D::new(2.50, 1.3),
+                Point2D::new(2.80, 1.6),
+            ),
+            Painting::new(
+                castle_drachenfels,
+                Point2D::new(2.50, 0.9),
+                Point2D::new(2.80, 1.2),
+            ),
+            Painting::new(
+                into_the_nest,
+                Point2D::new(5.40, 0.5),
+                Point2D::new(5.70, 0.8),
+            ),
+            Painting::new(
+                righteous_stand,
+                Point2D::new(5.40, 1.3),
+                Point2D::new(5.70, 1.6),
+            ),
+            Painting::new(
+                taals_horn_keep,
+                Point2D::new(5.40, 0.9),
+                Point2D::new(5.70, 1.2),
+            ),
+        ],
     ));
     result.append(&mut walls_from_point_path(
         &vec![

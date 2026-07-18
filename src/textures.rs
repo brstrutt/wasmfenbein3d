@@ -1,8 +1,14 @@
 pub mod big_floor;
+pub mod blood_in_the_darkness;
+pub mod burplespue_halescourge;
+pub mod castle_drachenfels;
 pub mod floor;
+pub mod into_the_nest;
 pub mod nokia_art_jam_3_house;
 pub mod nokia_art_jam_3_keyboard_cat;
 pub mod nokia_art_jam_3_worms;
+pub mod righteous_stand;
+pub mod taals_horn_keep;
 pub mod ubersreik_five;
 pub mod vermintide_tapestry;
 pub mod wall_stone;
