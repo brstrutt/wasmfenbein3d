@@ -70,16 +70,28 @@ impl<'a> ColumnRenderer<'a> {
     }
 
     pub fn render_next_pixel(&mut self, screen_buffer: &mut ScreenBuffer) -> bool {
-        let colour = if let Some(current_painting) = &self.wall_space.current_painting {
+        let next_y = self.wall_space.y + self.wall_space.y_increment;
+        if let Some(current_painting) = &self.wall_space.current_painting {
             let wall_space_y = self.wall_space.y - current_painting.painting.top_left_corner.y;
-            current_painting.painting.texture.get_texel(
-                (current_painting.x * current_painting.painting.texture.width_f64()
-                    / current_painting.painting.width) as isize,
-                (wall_space_y * current_painting.painting.texture.height_f64()
-                    / current_painting.painting.height) as isize,
-            )
+            let colour = current_painting
+                .painting
+                .texture
+                .get_texel(
+                    (current_painting.x * current_painting.painting.texture.width_f64()
+                        / current_painting.painting.width) as isize,
+                    (wall_space_y * current_painting.painting.texture.height_f64()
+                        / current_painting.painting.height) as isize,
+                )
+                .at_brightness(self.brightness_level);
+
+            screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
+
+            if next_y >= current_painting.painting.bottom_right_corner.y {
+                self.wall_space.current_painting = None;
+            }
         } else {
-            self.column
+            let colour = self
+                .column
                 .nearest_wall_intersection
                 .wall
                 .texture
@@ -100,36 +112,24 @@ impl<'a> ColumnRenderer<'a> {
                             .height_f64()
                         * WALL_HEIGHT) as isize,
                 )
-        };
-        let colour = colour.at_brightness(self.brightness_level);
-        screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
+                .at_brightness(self.brightness_level);
 
-        self.wall_space.y += self.wall_space.y_increment;
+            screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
+
+            if let Some(next_painting_data) = &self.wall_space.next_painting.peek()
+                && next_y >= next_painting_data.top_left_corner.y
+            {
+                self.wall_space.current_painting = Some(PaintingSpace {
+                    painting: next_painting_data,
+                    x: self.column.wall_x_pos - next_painting_data.top_left_corner.x,
+                });
+                self.wall_space.next_painting.next();
+            }
+        };
+
+        self.wall_space.y = next_y;
         self.screen.current_pixel_index += self.screen.width;
 
-        self.try_enter_next_painting();
-        self.try_leave_current_painting();
-
         self.screen.current_pixel_index < self.screen.column_top_pixel_index
-    }
-
-    fn try_enter_next_painting(&mut self) {
-        if let Some(next_painting_data) = &self.wall_space.next_painting.peek()
-            && self.wall_space.y >= next_painting_data.top_left_corner.y
-        {
-            self.wall_space.current_painting = Some(PaintingSpace {
-                painting: next_painting_data,
-                x: self.column.wall_x_pos - next_painting_data.top_left_corner.x,
-            });
-            self.wall_space.next_painting.next();
-        }
-    }
-
-    fn try_leave_current_painting(&mut self) {
-        if let Some(current) = &self.wall_space.current_painting
-            && self.wall_space.y >= current.painting.bottom_right_corner.y
-        {
-            self.wall_space.current_painting = None;
-        }
     }
 }
