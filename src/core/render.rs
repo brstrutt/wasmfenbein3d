@@ -76,7 +76,7 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
                 &screen_half_height_usize,
                 &column_data,
             );
-            while renderer.render_next_pixel(screen_buffer) {}
+            renderer.render_column(screen_buffer);
         }
     }
 }

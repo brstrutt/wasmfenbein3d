@@ -69,67 +69,67 @@ impl<'a> ColumnRenderer<'a> {
         }
     }
 
-    pub fn render_next_pixel(&mut self, screen_buffer: &mut ScreenBuffer) -> bool {
-        let next_y = self.wall_space.y + self.wall_space.y_increment;
-        if let Some(current_painting) = &self.wall_space.current_painting {
-            let wall_space_y = self.wall_space.y - current_painting.painting.top_left_corner.y;
-            let colour = current_painting
-                .painting
-                .texture
-                .get_texel(
-                    (current_painting.x * current_painting.painting.texture.width_f64()
-                        / current_painting.painting.width) as isize,
-                    (wall_space_y * current_painting.painting.texture.height_f64()
-                        / current_painting.painting.height) as isize,
-                )
-                .at_brightness(self.brightness_level);
+    pub fn render_column(&mut self, screen_buffer: &mut ScreenBuffer) {
+        while self.screen.current_pixel_index < self.screen.column_top_pixel_index {
+            let next_y = self.wall_space.y + self.wall_space.y_increment;
+            if let Some(current_painting) = &self.wall_space.current_painting {
+                let wall_space_y = self.wall_space.y - current_painting.painting.top_left_corner.y;
+                let colour = current_painting
+                    .painting
+                    .texture
+                    .get_texel(
+                        (current_painting.x * current_painting.painting.texture.width_f64()
+                            / current_painting.painting.width) as isize,
+                        (wall_space_y * current_painting.painting.texture.height_f64()
+                            / current_painting.painting.height) as isize,
+                    )
+                    .at_brightness(self.brightness_level);
 
-            screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
+                screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
 
-            if next_y >= current_painting.painting.bottom_right_corner.y {
-                self.wall_space.current_painting = None;
-            }
-        } else {
-            let colour = self
-                .column
-                .nearest_wall_intersection
-                .wall
-                .texture
-                .get_texel(
-                    (self.column.wall_x_pos
-                        * self
-                            .column
-                            .nearest_wall_intersection
-                            .wall
-                            .texture
-                            .width_f64()) as isize,
-                    (self.wall_space.y
-                        * self
-                            .column
-                            .nearest_wall_intersection
-                            .wall
-                            .texture
-                            .height_f64()
-                        * WALL_HEIGHT) as isize,
-                )
-                .at_brightness(self.brightness_level);
+                if next_y >= current_painting.painting.bottom_right_corner.y {
+                    self.wall_space.current_painting = None;
+                }
+            } else {
+                let colour = self
+                    .column
+                    .nearest_wall_intersection
+                    .wall
+                    .texture
+                    .get_texel(
+                        (self.column.wall_x_pos
+                            * self
+                                .column
+                                .nearest_wall_intersection
+                                .wall
+                                .texture
+                                .width_f64()) as isize,
+                        (self.wall_space.y
+                            * self
+                                .column
+                                .nearest_wall_intersection
+                                .wall
+                                .texture
+                                .height_f64()
+                            * WALL_HEIGHT) as isize,
+                    )
+                    .at_brightness(self.brightness_level);
 
-            screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
+                screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
 
-            if let Some(next_painting_data) = &self.wall_space.next_painting.peek()
-                && next_y >= next_painting_data.top_left_corner.y
-            {
-                self.wall_space.current_painting = Some(PaintingSpace {
-                    painting: next_painting_data,
-                    x: self.column.wall_x_pos - next_painting_data.top_left_corner.x,
-                });
-                self.wall_space.next_painting.next();
-            }
-        };
+                if let Some(next_painting_data) = &self.wall_space.next_painting.peek()
+                    && next_y >= next_painting_data.top_left_corner.y
+                {
+                    self.wall_space.current_painting = Some(PaintingSpace {
+                        painting: next_painting_data,
+                        x: self.column.wall_x_pos - next_painting_data.top_left_corner.x,
+                    });
+                    self.wall_space.next_painting.next();
+                }
+            };
 
-        self.wall_space.y = next_y;
-        self.screen.current_pixel_index += self.screen.width;
-
-        self.screen.current_pixel_index < self.screen.column_top_pixel_index
+            self.wall_space.y = next_y;
+            self.screen.current_pixel_index += self.screen.width;
+        }
     }
 }
