@@ -1,10 +1,11 @@
-use crate::core::{state::GameState, world::wall::WALL_HEIGHT};
+use crate::core::{render::column_data::ColumnData, state::GameState, world::wall::WALL_HEIGHT};
 use column_renderer::ColumnRenderer;
 use distance_to_brightness_level::distance_to_brightness_level;
 use screen_buffer::ScreenBuffer;
 
 use std::{cell::RefCell, rc::Rc};
 
+mod column_data;
 mod column_renderer;
 mod distance_to_brightness_level;
 pub mod rgb;
@@ -63,14 +64,17 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
         let wall_intersection = state.world.nearest_wall_intersecting_ray(&ray);
 
         if let Some(wall_intersection) = wall_intersection {
+            let column_data = ColumnData::init(
+                &wall_intersection,
+                &state.world.camera.ray.origin,
+                &screen_height_f64,
+            );
             let mut renderer = ColumnRenderer::init(
                 &x,
                 &screen_width,
                 &screen_height_usize,
-                &screen_height_f64,
                 &screen_half_height_usize,
-                &wall_intersection,
-                &state.world.camera.ray.origin,
+                &column_data,
             );
             while renderer.render_next_pixel(screen_buffer) {}
         }
