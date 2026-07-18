@@ -13,6 +13,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
     let nokia_jam_house = textures::nokia_art_jam_3_house::load_texture(palette);
     let nokia_jam_cat = textures::nokia_art_jam_3_keyboard_cat::load_texture(palette);
     let nokia_jam_worms = textures::nokia_art_jam_3_worms::load_texture(palette);
+    let ubersreik_five = textures::ubersreik_five::load_texture(palette);
 
     let mut result = Vec::<Wall>::new();
     result.append(&mut walls_from_point_path(
@@ -105,7 +106,10 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
     result.append(&mut walls_from_point_path(
         &vec![Point2D::new(-5.0, -3.0), Point2D::new(-10.0, -3.0)],
         &stone_wall_texture,
-        vec![],
+        vec![Painting::new_to_scale(
+            ubersreik_five,
+            Point2D::new(3.5, 0.2),
+        )],
     ));
     result
 }
