@@ -51,11 +51,17 @@ impl TilingTexture {
             .get_texel_column_on_line_with_scale(line, point, scale)
     }
 
+    pub fn width(&self) -> usize {
+        self.texture.width
+    }
+    pub fn width_f64(&self) -> &f64 {
+        &self.texture.width_f64
+    }
+
     pub fn height(&self) -> usize {
         self.texture.height
     }
-
-    pub fn width(&self) -> usize {
-        self.texture.width
+    pub fn height_f64(&self) -> &f64 {
+        &self.texture.height_f64
     }
 }

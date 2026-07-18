@@ -11,7 +11,9 @@ use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 pub struct Texture {
     pub texels: Vec<RGBV>,
     pub width: usize,
+    pub width_f64: f64,
     pub height: usize,
+    pub height_f64: f64,
 }
 
 impl Texture {
@@ -34,9 +36,11 @@ impl Texture {
         }
 
         Texture {
-            width,
-            height,
             texels,
+            width,
+            width_f64: width as f64,
+            height,
+            height_f64: height as f64,
         }
     }
 
@@ -61,11 +65,17 @@ impl Texture {
         texture_x_pos as usize
     }
 
+    pub fn width(&self) -> usize {
+        self.width
+    }
+    pub fn width_f64(&self) -> &f64 {
+        &self.width_f64
+    }
+
     pub fn height(&self) -> usize {
         self.height
     }
-
-    pub fn width(&self) -> usize {
-        self.width
+    pub fn height_f64(&self) -> &f64 {
+        &self.height_f64
     }
 }

@@ -50,8 +50,8 @@ impl Wall {
 
     pub fn get_wall_texel(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
         self.texture.get_texel(
-            (wall_space_x * self.texture.width() as f64) as isize,
-            (wall_space_y * self.texture.height() as f64 * WALL_HEIGHT) as isize,
+            (wall_space_x * self.texture.width_f64()) as isize,
+            (wall_space_y * self.texture.height_f64() * WALL_HEIGHT) as isize,
         )
     }
 
@@ -67,8 +67,8 @@ impl Wall {
         let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
 
         painting.texture.get_texel(
-            (wall_space_x * painting.texture.width() as f64 / painting_width) as isize,
-            (wall_space_y * painting.texture.height() as f64 / painting_height) as isize,
+            (wall_space_x * painting.texture.width_f64() / painting_width) as isize,
+            (wall_space_y * painting.texture.height_f64() / painting_height) as isize,
         )
     }
 }
