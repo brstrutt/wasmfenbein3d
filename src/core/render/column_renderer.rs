@@ -1,5 +1,3 @@
-use std::{iter::Peekable, slice::Iter};
-
 use super::{
     column_data::ColumnData, distance_to_brightness_level::distance_to_brightness_level,
     screen_buffer::ScreenBuffer, texel_provider::TexelProvider,
@@ -9,127 +7,147 @@ use crate::core::world::{painting::Painting, wall::WALL_HEIGHT};
 pub struct ColumnRenderer<'a> {
     column: &'a ColumnData<'a>,
     screen: ScreenSpace<'a>,
-    wall_space: WallSpace<'a>,
+    wall_space: WallSpace,
     brightness_level: usize,
+    render_plan: Vec<ColumnSegment<'a>>,
 }
 
 struct ScreenSpace<'a> {
-    width: &'a usize,
-    column_top_pixel_index: usize,
     current_pixel_index: usize,
+    column_last_pixel_index: usize,
+    pixel_increment: &'a usize,
 }
 
-struct WallSpace<'a> {
+struct WallSpace {
+    x: f64,
     y: f64,
     y_increment: f64,
-    current_painting: Option<PaintingSpace<'a>>,
-    next_painting: Peekable<Iter<'a, &'a Painting>>,
 }
 
-struct PaintingSpace<'a> {
-    painting: &'a Painting,
-    x: f64,
+struct ColumnSegment<'a> {
+    texture: &'a dyn TexelProvider,
+    wall_space_start_y: f64,
+    wall_space_end_y: f64,
+    texture_space_x: f64,
+    texture_space_start_y: f64,
+    texture_space_end_y: f64,
+    texture_space_y_increment: f64,
 }
 
 impl<'a> ColumnRenderer<'a> {
     pub fn init(
         screen_x: &'a usize,
         screen_width: &'a usize,
-        screen_height_usize: &'a usize,
-        screen_half_height: &'a usize,
+        screen_height: &'a f64,
         column: &'a ColumnData<'a>,
     ) -> Self {
-        let mut column_height_usize = column.height_pixels as usize;
-        let mut wall_starting_position = 0;
-        if column_height_usize > *screen_height_usize {
-            wall_starting_position = (column_height_usize - screen_height_usize) / 2;
-            column_height_usize = *screen_height_usize;
+        let wall_space_pixel_height = WALL_HEIGHT / column.height_pixels;
+
+        let mut wall_start_y = 0.0;
+        let mut wall_end_y = WALL_HEIGHT;
+
+        let mut screen_start_y = 0.0;
+        let mut screen_end_y = screen_height.clone();
+
+        if column.height_pixels > *screen_height {
+            let offscreen_pixel_count = column.height_pixels - screen_height;
+            let half_offscreen_pixel_count = offscreen_pixel_count / 2.0;
+            let wallspace_adjustment = half_offscreen_pixel_count * wall_space_pixel_height;
+            wall_start_y += wallspace_adjustment;
+            wall_end_y -= wallspace_adjustment;
+        } else {
+            let pixels_from_edge = (screen_height - column.height_pixels) / 2.0;
+            screen_start_y += pixels_from_edge;
+            screen_end_y -= pixels_from_edge;
         }
 
-        let column_half_height = column_height_usize / 2;
-        let column_top_pixel = screen_half_height + column_half_height;
-        let column_bottom_pixel = screen_half_height - column_half_height;
+        let mut segment_start_y = wall_start_y;
+        let mut render_plan = vec![];
+        for painting in &column.paintings {
+            if painting.top_left_corner.y > segment_start_y {
+                let texture = column.nearest_wall_intersection.wall.texture.as_ref();
+                render_plan.push(ColumnSegment {
+                    texture: texture,
+                    wall_space_start_y: segment_start_y,
+                    wall_space_end_y: painting.top_left_corner.y,
+                    texture_space_x: column.wall_x_pos * texture.width_f64(),
+                    texture_space_start_y: segment_start_y * texture.height_f64(),
+                    texture_space_end_y: painting.top_left_corner.y * texture.height_f64()
+                        / WALL_HEIGHT,
+                    texture_space_y_increment: wall_space_pixel_height * texture.height_f64(),
+                });
+                segment_start_y = painting.top_left_corner.y;
+            }
+            if painting.bottom_right_corner.y > segment_start_y {
+                let wall_space_end_y = painting.bottom_right_corner.y.min(wall_end_y);
+                render_plan.push(ColumnSegment {
+                    texture: painting.texture.as_ref(),
+                    wall_space_start_y: segment_start_y,
+                    wall_space_end_y,
+                    texture_space_x: (column.wall_x_pos - painting.top_left_corner.x)
+                        * painting.texture.width_f64()
+                        / painting.width,
+                    texture_space_start_y: (segment_start_y - painting.top_left_corner.y)
+                        * painting.texture.height_f64()
+                        / painting.height,
+                    texture_space_end_y: (wall_space_end_y - painting.top_left_corner.y)
+                        * painting.texture.height_f64()
+                        / painting.height,
+                    texture_space_y_increment: wall_space_pixel_height
+                        * painting.texture.height_f64()
+                        / painting.height,
+                });
+                segment_start_y = wall_space_end_y;
+            }
+        }
 
-        let wall_y = wall_starting_position as f64 / column.height_pixels;
+        if segment_start_y < wall_end_y {
+            let texture = column.nearest_wall_intersection.wall.texture.as_ref();
+            render_plan.push(ColumnSegment {
+                texture: column.nearest_wall_intersection.wall.texture.as_ref(),
+                wall_space_start_y: segment_start_y,
+                wall_space_end_y: wall_end_y,
+                texture_space_x: column.wall_x_pos * texture.width_f64(),
+                texture_space_start_y: segment_start_y * texture.height_f64(),
+                texture_space_end_y: wall_end_y * texture.height_f64() / WALL_HEIGHT,
+                texture_space_y_increment: wall_space_pixel_height * texture.height_f64(),
+            });
+        }
 
         ColumnRenderer {
             column,
             screen: ScreenSpace {
-                width: screen_width,
-                column_top_pixel_index: screen_x + (column_top_pixel * screen_width),
-                current_pixel_index: screen_x + (column_bottom_pixel * screen_width),
+                current_pixel_index: screen_x + (screen_start_y as usize * screen_width),
+                column_last_pixel_index: screen_x + (screen_end_y as usize * screen_width),
+                pixel_increment: screen_width,
             },
             wall_space: WallSpace {
-                y: wall_y,
-                y_increment: 1.0 / column.height_pixels,
-                current_painting: None,
-                next_painting: column.paintings.iter().peekable(),
+                x: column.wall_x_pos,
+                y: wall_start_y,
+                y_increment: wall_space_pixel_height,
             },
             brightness_level: distance_to_brightness_level(column.distance_from_camera),
+            render_plan,
         }
     }
 
     pub fn render_column(&mut self, screen_buffer: &mut ScreenBuffer) {
-        while self.screen.current_pixel_index < self.screen.column_top_pixel_index {
-            let next_y = self.wall_space.y + self.wall_space.y_increment;
-            if let Some(current_painting) = &self.wall_space.current_painting {
-                let wall_space_y = self.wall_space.y - current_painting.painting.top_left_corner.y;
-                let colour = current_painting
-                    .painting
+        for segment in &self.render_plan {
+            let mut tex_space_y = segment.texture_space_start_y;
+            while self.wall_space.y < segment.wall_space_end_y
+                && self.screen.current_pixel_index < self.screen.column_last_pixel_index
+            {
+                let colour = segment
                     .texture
-                    .get_texel(
-                        (current_painting.x * current_painting.painting.texture.width_f64()
-                            / current_painting.painting.width) as isize,
-                        (wall_space_y * current_painting.painting.texture.height_f64()
-                            / current_painting.painting.height) as isize,
-                    )
+                    .get_texel(segment.texture_space_x as isize, tex_space_y as isize)
                     .at_brightness(self.brightness_level);
 
                 screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
 
-                if next_y >= current_painting.painting.bottom_right_corner.y {
-                    self.wall_space.current_painting = None;
-                }
-            } else {
-                let colour = self
-                    .column
-                    .nearest_wall_intersection
-                    .wall
-                    .texture
-                    .get_texel(
-                        (self.column.wall_x_pos
-                            * self
-                                .column
-                                .nearest_wall_intersection
-                                .wall
-                                .texture
-                                .width_f64()) as isize,
-                        (self.wall_space.y
-                            * self
-                                .column
-                                .nearest_wall_intersection
-                                .wall
-                                .texture
-                                .height_f64()
-                            * WALL_HEIGHT) as isize,
-                    )
-                    .at_brightness(self.brightness_level);
-
-                screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
-
-                if let Some(next_painting_data) = &self.wall_space.next_painting.peek()
-                    && next_y >= next_painting_data.top_left_corner.y
-                {
-                    self.wall_space.current_painting = Some(PaintingSpace {
-                        painting: next_painting_data,
-                        x: self.column.wall_x_pos - next_painting_data.top_left_corner.x,
-                    });
-                    self.wall_space.next_painting.next();
-                }
-            };
-
-            self.wall_space.y = next_y;
-            self.screen.current_pixel_index += self.screen.width;
+                self.screen.current_pixel_index += self.screen.pixel_increment;
+                self.wall_space.y += self.wall_space.y_increment;
+                tex_space_y += segment.texture_space_y_increment;
+            }
         }
     }
 }
