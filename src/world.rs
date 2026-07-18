@@ -51,7 +51,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
         &wood_wall_texture,
         vec![Painting::new_to_scale(
             vermintide_tapestry,
-            Point2D::new(3.5, 0.1),
+            Point2D::new(2.85, 0.1),
         )],
     ));
     result.append(&mut walls_from_point_path(
@@ -86,9 +86,9 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
         &vec![Point2D::new(-10.0, -5.0), Point2D::new(-5.0, -5.0)],
         &stone_wall_texture,
         vec![
-            Painting::new_to_scale(nokia_jam_house, Point2D::new(0.5, 0.2)),
-            Painting::new_to_scale(nokia_jam_cat, Point2D::new(1.75, 0.2)),
-            Painting::new_to_scale(nokia_jam_worms, Point2D::new(3.0, 0.2)),
+            Painting::new_to_scale(nokia_jam_house, Point2D::new(0.4, 0.6)),
+            Painting::new_to_scale(nokia_jam_cat, Point2D::new(2.0, 0.6)),
+            Painting::new_to_scale(nokia_jam_worms, Point2D::new(3.5, 0.6)),
         ],
     ));
     result.append(&mut walls_from_point_path(
@@ -108,7 +108,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
         &stone_wall_texture,
         vec![Painting::new_to_scale(
             ubersreik_five,
-            Point2D::new(3.5, 0.2),
+            Point2D::new(3.0, 0.2),
         )],
     ));
     result

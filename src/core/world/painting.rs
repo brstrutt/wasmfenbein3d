@@ -3,6 +3,7 @@ use std::rc::Rc;
 use crate::core::{
     primitives::point2d::Point2D,
     render::{texel_provider::TexelProvider, texture::Texture},
+    world::wall::WALL_HEIGHT,
 };
 
 #[derive(Clone)]
@@ -16,7 +17,7 @@ pub struct Painting {
 
 impl Painting {
     pub fn new_to_scale(texture: Rc<Texture>, top_left_corner: Point2D) -> Self {
-        let bottom = 1.0 - top_left_corner.y;
+        let bottom = WALL_HEIGHT - top_left_corner.y;
 
         let painting_height = bottom - top_left_corner.y;
 
