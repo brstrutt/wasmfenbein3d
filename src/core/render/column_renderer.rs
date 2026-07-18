@@ -2,10 +2,9 @@ use super::{
     column_data::ColumnData, distance_to_brightness_level::distance_to_brightness_level,
     screen_buffer::ScreenBuffer, texel_provider::TexelProvider,
 };
-use crate::core::world::{painting::Painting, wall::WALL_HEIGHT};
+use crate::core::world::wall::WALL_HEIGHT;
 
 pub struct ColumnRenderer<'a> {
-    column: &'a ColumnData<'a>,
     screen: ScreenSpace<'a>,
     wall_space: WallSpace,
     brightness_level: usize,
@@ -19,18 +18,15 @@ struct ScreenSpace<'a> {
 }
 
 struct WallSpace {
-    x: f64,
     y: f64,
     y_increment: f64,
 }
 
 struct ColumnSegment<'a> {
     texture: &'a dyn TexelProvider,
-    wall_space_start_y: f64,
     wall_space_end_y: f64,
     texture_space_x: f64,
     texture_space_start_y: f64,
-    texture_space_end_y: f64,
     texture_space_y_increment: f64,
 }
 
@@ -68,12 +64,9 @@ impl<'a> ColumnRenderer<'a> {
                 let texture = column.nearest_wall_intersection.wall.texture.as_ref();
                 render_plan.push(ColumnSegment {
                     texture: texture,
-                    wall_space_start_y: segment_start_y,
                     wall_space_end_y: painting.top_left_corner.y,
                     texture_space_x: column.wall_x_pos * texture.width_f64(),
                     texture_space_start_y: segment_start_y * texture.height_f64(),
-                    texture_space_end_y: painting.top_left_corner.y * texture.height_f64()
-                        / WALL_HEIGHT,
                     texture_space_y_increment: wall_space_pixel_height * texture.height_f64(),
                 });
                 segment_start_y = painting.top_left_corner.y;
@@ -82,15 +75,11 @@ impl<'a> ColumnRenderer<'a> {
                 let wall_space_end_y = painting.bottom_right_corner.y.min(wall_end_y);
                 render_plan.push(ColumnSegment {
                     texture: painting.texture.as_ref(),
-                    wall_space_start_y: segment_start_y,
                     wall_space_end_y,
                     texture_space_x: (column.wall_x_pos - painting.top_left_corner.x)
                         * painting.texture.width_f64()
                         / painting.width,
                     texture_space_start_y: (segment_start_y - painting.top_left_corner.y)
-                        * painting.texture.height_f64()
-                        / painting.height,
-                    texture_space_end_y: (wall_space_end_y - painting.top_left_corner.y)
                         * painting.texture.height_f64()
                         / painting.height,
                     texture_space_y_increment: wall_space_pixel_height
@@ -105,24 +94,20 @@ impl<'a> ColumnRenderer<'a> {
             let texture = column.nearest_wall_intersection.wall.texture.as_ref();
             render_plan.push(ColumnSegment {
                 texture: column.nearest_wall_intersection.wall.texture.as_ref(),
-                wall_space_start_y: segment_start_y,
                 wall_space_end_y: wall_end_y,
                 texture_space_x: column.wall_x_pos * texture.width_f64(),
                 texture_space_start_y: segment_start_y * texture.height_f64(),
-                texture_space_end_y: wall_end_y * texture.height_f64() / WALL_HEIGHT,
                 texture_space_y_increment: wall_space_pixel_height * texture.height_f64(),
             });
         }
 
         ColumnRenderer {
-            column,
             screen: ScreenSpace {
                 current_pixel_index: screen_x + (screen_start_y as usize * screen_width),
                 column_last_pixel_index: screen_x + (screen_end_y as usize * screen_width),
                 pixel_increment: screen_width,
             },
             wall_space: WallSpace {
-                x: column.wall_x_pos,
                 y: wall_start_y,
                 y_increment: wall_space_pixel_height,
             },
