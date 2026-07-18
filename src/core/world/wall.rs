@@ -36,58 +36,26 @@ impl Wall {
         wall_space_intersection.y
     }
 
-    pub fn get_painting_indexes_in_column(&self, wall_space_x: f64) -> Vec<usize> {
+    pub fn get_paintings_in_column(&self, wall_space_x: f64) -> Vec<&Painting> {
         let mut paintings = vec![];
-        for (index, painting) in self.paintings.iter().enumerate() {
+        for painting in self.paintings.iter() {
             if wall_space_x >= painting.top_left_corner.x
                 && wall_space_x <= painting.bottom_right_corner.x
             {
-                paintings.push(index);
+                paintings.push(painting);
             }
         }
         paintings
     }
 
-    pub fn get_wall_colour_or_painting_colour_at_position(
-        &self,
-        wall_space_x: f64,
-        wall_space_y: f64,
-        painting_indexes: &Vec<usize>,
-    ) -> &RGBV {
-        for index in painting_indexes.iter() {
-            let painting = &self.paintings[*index];
-            if wall_space_y >= painting.top_left_corner.y
-                && wall_space_y <= painting.bottom_right_corner.y
-            {
-                return self.get_painting_texel(wall_space_x, wall_space_y, painting);
-            }
-        }
-
-        return self.get_wall_texel(wall_space_x, wall_space_y);
-    }
-
-    pub fn get_wall_colour_at_position(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
-        for painting in self.paintings.iter() {
-            if wall_space_x >= painting.top_left_corner.x
-                && wall_space_x <= painting.bottom_right_corner.x
-                && wall_space_y >= painting.top_left_corner.y
-                && wall_space_y <= painting.bottom_right_corner.y
-            {
-                return self.get_painting_texel(wall_space_x, wall_space_y, painting);
-            }
-        }
-
-        return self.get_wall_texel(wall_space_x, wall_space_y);
-    }
-
-    fn get_wall_texel(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
+    pub fn get_wall_texel(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
         self.texture.get_texel(
             (wall_space_x * self.texture.width() as f64) as isize,
             (wall_space_y * self.texture.height() as f64 * WALL_HEIGHT) as isize,
         )
     }
 
-    fn get_painting_texel<'a>(
+    pub fn get_painting_texel<'a>(
         &'a self,
         wall_space_x: f64,
         wall_space_y: f64,
