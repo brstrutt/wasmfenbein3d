@@ -2,7 +2,7 @@ use std::{iter::Peekable, slice::Iter};
 
 use super::{
     column_data::ColumnData, distance_to_brightness_level::distance_to_brightness_level,
-    screen_buffer::ScreenBuffer,
+    screen_buffer::ScreenBuffer, texel_provider::TexelProvider,
 };
 use crate::core::world::{painting::Painting, wall::WALL_HEIGHT};
 

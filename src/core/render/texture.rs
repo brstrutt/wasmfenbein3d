@@ -5,6 +5,7 @@ use image::ImageReader;
 use super::rgb::WHITE;
 use super::rgb_palette::RgbPalette;
 use super::rgbv::RGBV;
+use super::texel_provider::TexelProvider;
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 
 #[derive(Clone)]
@@ -44,10 +45,6 @@ impl Texture {
         }
     }
 
-    pub fn get_texel(&self, x: isize, y: isize) -> &RGBV {
-        &self.texels[(y as usize * self.width) + x as usize]
-    }
-
     pub fn get_texel_column_on_line_with_scale(
         &self,
         line: &Line2D,
@@ -64,18 +61,24 @@ impl Texture {
         let texture_x_pos = (wall_space_intersection.y / scale) * self.width as f64;
         texture_x_pos as usize
     }
+}
 
-    pub fn width(&self) -> usize {
+impl TexelProvider for Texture {
+    fn get_texel(&self, x: isize, y: isize) -> &RGBV {
+        &self.texels[(y as usize * self.width) + x as usize]
+    }
+
+    fn width(&self) -> usize {
         self.width
     }
-    pub fn width_f64(&self) -> &f64 {
+    fn width_f64(&self) -> &f64 {
         &self.width_f64
     }
 
-    pub fn height(&self) -> usize {
+    fn height(&self) -> usize {
         self.height
     }
-    pub fn height_f64(&self) -> &f64 {
+    fn height_f64(&self) -> &f64 {
         &self.height_f64
     }
 }

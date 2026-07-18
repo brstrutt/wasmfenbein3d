@@ -1,4 +1,4 @@
-use super::{rgb_palette::RgbPalette, rgbv::RGBV, texture::Texture};
+use super::{rgb_palette::RgbPalette, rgbv::RGBV, texel_provider::TexelProvider, texture::Texture};
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 
 #[derive(Clone)]
@@ -62,6 +62,28 @@ impl TilingTexture {
         self.texture.height
     }
     pub fn height_f64(&self) -> &f64 {
+        &self.texture.height_f64
+    }
+}
+
+impl TexelProvider for TilingTexture {
+    fn get_texel(&self, x: isize, y: isize) -> &RGBV {
+        let x = x & self.size_bitwise_mask_i;
+        let y = y & self.size_bitwise_mask_i;
+        &self.texture.get_texel(x, y)
+    }
+
+    fn width(&self) -> usize {
+        self.texture.width
+    }
+    fn width_f64(&self) -> &f64 {
+        &self.texture.width_f64
+    }
+
+    fn height(&self) -> usize {
+        self.texture.height
+    }
+    fn height_f64(&self) -> &f64 {
         &self.texture.height_f64
     }
 }

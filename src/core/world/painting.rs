@@ -1,6 +1,9 @@
 use std::rc::Rc;
 
-use crate::core::{primitives::point2d::Point2D, render::texture::Texture};
+use crate::core::{
+    primitives::point2d::Point2D,
+    render::{texel_provider::TexelProvider, texture::Texture},
+};
 
 #[derive(Clone)]
 pub struct Painting {

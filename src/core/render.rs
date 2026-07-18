@@ -13,6 +13,7 @@ pub mod rgb_brightness_lookup_table;
 pub mod rgb_palette;
 pub mod rgbv;
 pub mod screen_buffer;
+pub mod texel_provider;
 pub mod texture;
 pub mod tiling_texture;
 
