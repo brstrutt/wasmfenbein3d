@@ -7,6 +7,8 @@ pub struct Painting {
     pub texture: Rc<Texture>,
     pub top_left_corner: Point2D,
     pub bottom_right_corner: Point2D,
+    pub width: f64,
+    pub height: f64,
 }
 
 impl Painting {
@@ -30,10 +32,13 @@ impl Painting {
         top_left_corner: Point2D,
         bottom_right_corner: Point2D,
     ) -> Self {
+        let size = bottom_right_corner - top_left_corner;
         Painting {
             texture,
             top_left_corner,
             bottom_right_corner,
+            width: size.x,
+            height: size.y,
         }
     }
 }

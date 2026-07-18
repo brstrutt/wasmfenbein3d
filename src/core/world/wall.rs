@@ -3,7 +3,7 @@ use std::rc::Rc;
 use super::painting::Painting;
 use crate::core::{
     primitives::{line2d::Line2D, point2d::Point2D},
-    render::{rgbv::RGBV, tiling_texture::TilingTexture},
+    render::tiling_texture::TilingTexture,
 };
 
 pub const WALL_HEIGHT: f64 = 2.0;
@@ -46,29 +46,5 @@ impl Wall {
             }
         }
         paintings
-    }
-
-    pub fn get_wall_texel(&self, wall_space_x: f64, wall_space_y: f64) -> &RGBV {
-        self.texture.get_texel(
-            (wall_space_x * self.texture.width_f64()) as isize,
-            (wall_space_y * self.texture.height_f64() * WALL_HEIGHT) as isize,
-        )
-    }
-
-    pub fn get_painting_texel<'a>(
-        &'a self,
-        wall_space_x: f64,
-        wall_space_y: f64,
-        painting: &'a Painting,
-    ) -> &'a RGBV {
-        let wall_space_x = wall_space_x - painting.top_left_corner.x;
-        let wall_space_y = wall_space_y - painting.top_left_corner.y;
-        let painting_height = painting.bottom_right_corner.y - painting.top_left_corner.y;
-        let painting_width = painting.bottom_right_corner.x - painting.top_left_corner.x;
-
-        painting.texture.get_texel(
-            (wall_space_x * painting.texture.width_f64() / painting_width) as isize,
-            (wall_space_y * painting.texture.height_f64() / painting_height) as isize,
-        )
     }
 }
