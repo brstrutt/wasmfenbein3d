@@ -30,10 +30,15 @@ impl Texture {
         let bytes = result.to_rgb8();
 
         let mut texels = vec![RGBV::from_rgb(&WHITE, palette); width * height];
-        let mut index = 0;
+        let mut x = 0;
+        let mut y = 0;
         for rgb in bytes.pixels() {
-            texels[index] = RGBV::from_u8(&rgb.0, palette);
-            index += 1;
+            texels[x * height + y] = RGBV::from_u8(&rgb.0, palette);
+            x += 1;
+            if x >= width {
+                x = 0;
+                y += 1;
+            }
         }
 
         Texture {
@@ -65,7 +70,7 @@ impl Texture {
 
 impl TexelProvider for Texture {
     fn get_texel(&self, x: isize, y: isize) -> &RGBV {
-        &self.texels[(y as usize * self.width) + x as usize]
+        &self.texels[(x as usize * self.height) + y as usize]
     }
 
     fn width(&self) -> usize {
