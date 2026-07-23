@@ -23,16 +23,19 @@ impl ScreenBuffer {
         self.already_drawn.fill(false)
     }
 
+    #[inline(always)]
     pub fn render_pixel(&mut self, pixel_index: usize, colour: &RGB) {
         self.pixels[pixel_index << 2] = colour.red;
         self.pixels[(pixel_index << 2) + 1] = colour.green;
         self.pixels[(pixel_index << 2) + 2] = colour.blue;
     }
 
+    #[inline(always)]
     pub fn mark_pixel_as_rendered(&mut self, pixel_index: usize) {
         self.already_drawn[pixel_index] = true;
     }
 
+    #[inline(always)]
     pub fn pixel_drawn(&self, pixel_index: usize) -> &bool {
         &self.already_drawn[pixel_index]
     }
