@@ -12,6 +12,7 @@ pub mod rgb;
 pub mod rgb_brightness_lookup_table;
 pub mod rgb_palette;
 pub mod rgbv;
+mod row_renderer;
 pub mod screen_buffer;
 pub mod texel_provider;
 pub mod texture;
@@ -44,12 +45,13 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
             &state.world.ceiling
         };
 
-        screen_buffer.render_textured_row(
+        row_renderer::render_row(
             &y,
             &camera,
             dist_to_floor,
             texture,
             distance_to_brightness_level(dist_to_floor),
+            screen_buffer,
         );
     }
 }

@@ -130,6 +130,7 @@ impl<'a> ColumnRenderer<'a> {
                     .at_brightness(self.brightness_level);
 
                 screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
+                screen_buffer.mark_pixel_as_rendered(self.screen.current_pixel_index);
 
                 self.screen.current_pixel_index += self.screen.pixel_increment;
                 self.wall_space.y += self.wall_space.y_increment;

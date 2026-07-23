@@ -1,5 +1,4 @@
-use super::{rgb::RGB, tiling_texture::TilingTexture};
-use crate::core::world::camera::Camera;
+use super::rgb::RGB;
 use wasm_bindgen::Clamped;
 use web_sys::ImageData;
 
@@ -28,42 +27,14 @@ impl ScreenBuffer {
         self.pixels[pixel_index << 2] = colour.red;
         self.pixels[(pixel_index << 2) + 1] = colour.green;
         self.pixels[(pixel_index << 2) + 2] = colour.blue;
+    }
+
+    pub fn mark_pixel_as_rendered(&mut self, pixel_index: usize) {
         self.already_drawn[pixel_index] = true;
     }
 
-    pub fn render_textured_row(
-        &mut self,
-        y: &usize,
-        camera: &Camera,
-        dist_to_floor: f64,
-        texture: &TilingTexture,
-        brightness: usize,
-    ) {
-        let rgb_pixel_increment = 4;
-        let row_length = self.width * 4;
-
-        let mut rgb_pixel_index = y * row_length;
-        let end_point = rgb_pixel_index + row_length;
-
-        let mut x = 0;
-        let mut pixel_index = y * self.width;
-        while rgb_pixel_index < end_point {
-            if !self.already_drawn[pixel_index] {
-                let ray = camera.ray_for_column(x);
-                let position = ray.origin + (ray.direction * dist_to_floor);
-                let colour = texture
-                    .get_texel((position.x * 16.0) as isize, (position.y * 16.0) as isize)
-                    .at_brightness(brightness);
-
-                self.pixels[rgb_pixel_index] = colour.red;
-                self.pixels[rgb_pixel_index + 1] = colour.green;
-                self.pixels[rgb_pixel_index + 2] = colour.blue;
-            }
-
-            rgb_pixel_index += rgb_pixel_increment;
-            x += 1;
-            pixel_index += 1;
-        }
+    pub fn pixel_drawn(&self, pixel_index: usize) -> &bool {
+        &self.already_drawn[pixel_index]
     }
 
     pub fn to_imagedata(&self) -> ImageData {
