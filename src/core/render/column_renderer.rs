@@ -57,17 +57,20 @@ impl<'a> ColumnRenderer<'a> {
             screen_end_y -= pixels_from_edge;
         }
 
+        let wall_texture = column.nearest_wall_intersection.wall.texture.as_ref();
+        let wall_texture_space_x = column.wall_x_pos * wall_texture.width_f64();
+        let wall_texture_space_y_increment = wall_space_pixel_height * wall_texture.height_f64();
+
         let mut segment_start_y = wall_start_y;
         let mut render_plan = vec![];
         for painting in &column.paintings {
             if painting.top_left_corner.y > segment_start_y {
-                let texture = column.nearest_wall_intersection.wall.texture.as_ref();
                 render_plan.push(ColumnSegment {
-                    texture: texture,
+                    texture: wall_texture,
                     wall_space_end_y: painting.top_left_corner.y,
-                    texture_space_x: column.wall_x_pos * texture.width_f64(),
-                    texture_space_start_y: segment_start_y * texture.height_f64(),
-                    texture_space_y_increment: wall_space_pixel_height * texture.height_f64(),
+                    texture_space_x: wall_texture_space_x,
+                    texture_space_start_y: segment_start_y * wall_texture.height_f64(),
+                    texture_space_y_increment: wall_texture_space_y_increment,
                 });
                 segment_start_y = painting.top_left_corner.y;
             }
@@ -91,13 +94,12 @@ impl<'a> ColumnRenderer<'a> {
         }
 
         if segment_start_y < wall_end_y {
-            let texture = column.nearest_wall_intersection.wall.texture.as_ref();
             render_plan.push(ColumnSegment {
-                texture: column.nearest_wall_intersection.wall.texture.as_ref(),
+                texture: wall_texture,
                 wall_space_end_y: wall_end_y,
-                texture_space_x: column.wall_x_pos * texture.width_f64(),
-                texture_space_start_y: segment_start_y * texture.height_f64(),
-                texture_space_y_increment: wall_space_pixel_height * texture.height_f64(),
+                texture_space_x: wall_texture_space_x,
+                texture_space_start_y: segment_start_y * wall_texture.height_f64(),
+                texture_space_y_increment: wall_texture_space_y_increment,
             });
         }
 
