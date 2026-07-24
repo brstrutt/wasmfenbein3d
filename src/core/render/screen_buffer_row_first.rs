@@ -11,6 +11,7 @@ pub struct ScreenBufferRowFirst {
     row_pixel_index_increment: usize,
     column_pixel_index_increment: usize,
 }
+
 impl ScreenBufferRowFirst {
     pub fn setup(width: usize, height: usize) -> Self {
         ScreenBufferRowFirst {
