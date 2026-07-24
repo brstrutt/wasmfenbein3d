@@ -1,7 +1,7 @@
 use crate::core::{render::column_data::ColumnData, state::GameState, world::wall::WALL_HEIGHT};
 use column_renderer::ColumnRenderer;
 use distance_to_brightness_level::distance_to_brightness_level;
-use screen_buffer::ScreenBuffer;
+use screen_buffer_row_first::ScreenBuffer;
 
 use std::{cell::RefCell, rc::Rc};
 
@@ -13,7 +13,8 @@ pub mod rgb_brightness_lookup_table;
 pub mod rgb_palette;
 pub mod rgbv;
 mod row_renderer;
-pub mod screen_buffer;
+pub mod screen_buffer_column_first;
+pub mod screen_buffer_row_first;
 pub mod texel_provider;
 pub mod texture;
 pub mod tiling_texture;

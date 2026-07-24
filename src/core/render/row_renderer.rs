@@ -1,6 +1,6 @@
 use crate::core::world::camera::Camera;
 
-use super::{screen_buffer::ScreenBuffer, tiling_texture::TilingTexture};
+use super::{screen_buffer_row_first::ScreenBuffer, tiling_texture::TilingTexture};
 
 pub fn render_row(
     y: &usize,

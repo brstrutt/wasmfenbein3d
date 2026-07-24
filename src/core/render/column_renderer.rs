@@ -1,6 +1,6 @@
 use super::{
     column_data::ColumnData, distance_to_brightness_level::distance_to_brightness_level,
-    screen_buffer::ScreenBuffer, texel_provider::TexelProvider,
+    screen_buffer_row_first::ScreenBuffer, texel_provider::TexelProvider,
 };
 use crate::core::world::wall::WALL_HEIGHT;
 

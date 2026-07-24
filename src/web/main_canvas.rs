@@ -1,5 +1,5 @@
 use super::access;
-use wasmfenbein3d::core::render::screen_buffer::ScreenBuffer;
+use wasmfenbein3d::core::render::screen_buffer_row_first::ScreenBuffer;
 
 const CANVAS_SCALE: u32 = 2;
 

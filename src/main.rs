@@ -6,7 +6,9 @@ mod web;
 mod world;
 
 use wasmfenbein3d::core::{
-    render::{render_to_screen_buffer, rgb_palette::RgbPalette, screen_buffer::ScreenBuffer},
+    render::{
+        render_to_screen_buffer, rgb_palette::RgbPalette, screen_buffer_row_first::ScreenBuffer,
+    },
     state::GameState,
 };
 
