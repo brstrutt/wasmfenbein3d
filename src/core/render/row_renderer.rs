@@ -1,14 +1,16 @@
+use std::cell::RefMut;
+
 use crate::core::world::camera::Camera;
 
-use super::{screen_buffer_row_first::ScreenBuffer, tiling_texture::TilingTexture};
+use super::{screen_buffer::ScreenBuffer, tiling_texture::TilingTexture};
 
-pub fn render_row(
+pub fn render_row<Screen: ScreenBuffer>(
     y: &usize,
     camera: &Camera,
     dist_to_floor: f64,
     texture: &TilingTexture,
     brightness: usize,
-    screen_buffer: &mut ScreenBuffer,
+    screen_buffer: &mut RefMut<Screen>,
 ) {
     let mut x = 0;
     let mut pixel_index = screen_buffer.coord_to_pixel_index(&x, &y);

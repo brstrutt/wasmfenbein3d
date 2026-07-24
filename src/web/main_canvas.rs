@@ -1,5 +1,7 @@
+use std::cell::Ref;
+
 use super::access;
-use wasmfenbein3d::core::render::screen_buffer_row_first::ScreenBuffer;
+use wasmfenbein3d::core::render::screen_buffer::ScreenBuffer;
 
 const CANVAS_SCALE: u32 = 2;
 
@@ -19,7 +21,7 @@ pub fn update_canvas_size() {
     element.set_height(height / CANVAS_SCALE);
 }
 
-pub fn render_screen_buffer(screen_buffer: &ScreenBuffer) {
+pub fn render_screen_buffer<Screen: ScreenBuffer>(screen_buffer: Ref<Screen>) {
     access::main_canvas_context()
         .put_image_data(&screen_buffer.to_imagedata(), 0.0, 0.0)
         .expect("Failed to copy Screen Buffer to canvas.");

@@ -1,9 +1,12 @@
 use crate::core::{render::column_data::ColumnData, state::GameState, world::wall::WALL_HEIGHT};
 use column_renderer::ColumnRenderer;
 use distance_to_brightness_level::distance_to_brightness_level;
-use screen_buffer_row_first::ScreenBuffer;
+use screen_buffer::ScreenBuffer;
 
-use std::{cell::RefCell, rc::Rc};
+use std::{
+    cell::{RefCell, RefMut},
+    rc::Rc,
+};
 
 mod column_data;
 mod column_renderer;
@@ -13,25 +16,27 @@ pub mod rgb_brightness_lookup_table;
 pub mod rgb_palette;
 pub mod rgbv;
 mod row_renderer;
+pub mod screen_buffer;
 pub mod screen_buffer_column_first;
 pub mod screen_buffer_row_first;
 pub mod texel_provider;
 pub mod texture;
 pub mod tiling_texture;
 
-pub fn render_to_screen_buffer(
-    screen_buffer: &Rc<RefCell<ScreenBuffer>>,
+pub fn render_to_screen_buffer<Screen: ScreenBuffer>(
+    screen_buffer: &Rc<RefCell<Screen>>,
     state: &RefCell<GameState>,
 ) {
     let state = state.borrow_mut();
-    let mut screen_buffer = screen_buffer.borrow_mut();
-
-    screen_buffer.reset_draw_history();
-    render_walls(&mut screen_buffer, &state);
-    render_background(&mut screen_buffer, &state);
+    {
+        screen_buffer.borrow_mut().reset_draw_history();
+    }
+    render_walls(screen_buffer, &state);
+    render_background(screen_buffer, &state);
 }
 
-fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
+fn render_background<Screen: ScreenBuffer>(screen_buffer: &Rc<RefCell<Screen>>, state: &GameState) {
+    let mut screen_buffer = screen_buffer.borrow_mut();
     let camera = state.world.camera.clone();
     let half_screen_height = screen_buffer.height() as f64 / 2.0;
 
@@ -52,12 +57,13 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
             dist_to_floor,
             texture,
             distance_to_brightness_level(dist_to_floor),
-            screen_buffer,
+            &mut screen_buffer,
         );
     }
 }
 
-fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
+fn render_walls<Screen: ScreenBuffer>(screen_buffer: &Rc<RefCell<Screen>>, state: &GameState) {
+    let mut screen_buffer = screen_buffer.borrow_mut();
     let screen_height_f64 = screen_buffer.height() as f64;
 
     for x in 0..screen_buffer.width() {
@@ -71,8 +77,8 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
                 &screen_height_f64,
             );
             let mut renderer =
-                ColumnRenderer::init(&x, &screen_height_f64, &column_data, screen_buffer);
-            renderer.render_column(screen_buffer);
+                ColumnRenderer::init(&x, &screen_height_f64, &column_data, &screen_buffer);
+            renderer.render_column(&mut screen_buffer);
         }
     }
 }

@@ -1,10 +1,10 @@
 use std::{cell::RefCell, rc::Rc};
 
-use wasmfenbein3d::core::{render::screen_buffer_row_first::ScreenBuffer, state::GameState};
+use wasmfenbein3d::core::{render::screen_buffer::ScreenBuffer, state::GameState};
 
 use crate::web;
 
-pub fn setup(state: Rc<RefCell<GameState>>, screen: Rc<RefCell<ScreenBuffer>>) {
+pub fn setup<Screen: ScreenBuffer>(state: Rc<RefCell<GameState>>, screen: Rc<RefCell<Screen>>) {
     setup_fps_tracking(state.clone());
     setup_fps_display(state);
     setup_display_resolution(screen);
@@ -52,7 +52,7 @@ fn setup_fps_tracking(state: Rc<RefCell<GameState>>) {
     });
 }
 
-fn setup_display_resolution(screen: Rc<RefCell<ScreenBuffer>>) {
+fn setup_display_resolution<Screen: ScreenBuffer>(screen: Rc<RefCell<Screen>>) {
     let screen = screen.borrow();
     let document = web::access::document();
 

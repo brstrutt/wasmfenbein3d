@@ -7,7 +7,8 @@ mod world;
 
 use wasmfenbein3d::core::{
     render::{
-        render_to_screen_buffer, rgb_palette::RgbPalette, screen_buffer_row_first::ScreenBuffer,
+        render_to_screen_buffer, rgb_palette::RgbPalette,
+        screen_buffer_row_first::ScreenBufferRowFirst,
     },
     state::GameState,
 };
@@ -29,7 +30,7 @@ fn main() {
     let screen_width = access::main_canvas().width() as usize;
     let screen_height = access::main_canvas().height() as usize;
 
-    let screen_buffer = Rc::new(RefCell::new(ScreenBuffer::setup(
+    let screen_buffer = Rc::new(RefCell::new(ScreenBufferRowFirst::setup(
         screen_width,
         screen_height,
     )));
@@ -53,7 +54,7 @@ fn main() {
     web::window::run_function_every_animation_frame(move || {
         let render_start_time = web::window::now_in_ms();
         render_to_screen_buffer(&screen_buffer, &state);
-        main_canvas::render_screen_buffer(&screen_buffer.borrow());
+        main_canvas::render_screen_buffer(screen_buffer.borrow());
         let render_end_time = web::window::now_in_ms();
 
         let mut state = state.borrow_mut();

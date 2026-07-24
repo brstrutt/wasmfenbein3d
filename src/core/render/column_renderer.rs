@@ -1,6 +1,8 @@
+use std::cell::RefMut;
+
 use super::{
     column_data::ColumnData, distance_to_brightness_level::distance_to_brightness_level,
-    screen_buffer_row_first::ScreenBuffer, texel_provider::TexelProvider,
+    screen_buffer::ScreenBuffer, texel_provider::TexelProvider,
 };
 use crate::core::world::wall::WALL_HEIGHT;
 
@@ -30,11 +32,11 @@ struct ColumnSegment<'a> {
 }
 
 impl<'a> ColumnRenderer<'a> {
-    pub fn init(
+    pub fn init<Screen: ScreenBuffer>(
         screen_x: &'a usize,
         screen_height: &'a f64,
         column: &'a ColumnData<'a>,
-        screen_buffer: &ScreenBuffer,
+        screen_buffer: &RefMut<Screen>,
     ) -> Self {
         let wall_space_pixel_height = WALL_HEIGHT / column.height_pixels;
 
@@ -117,7 +119,7 @@ impl<'a> ColumnRenderer<'a> {
         }
     }
 
-    pub fn render_column(&mut self, screen_buffer: &mut ScreenBuffer) {
+    pub fn render_column<Screen: ScreenBuffer>(&mut self, screen_buffer: &mut RefMut<Screen>) {
         for segment in &self.render_plan {
             let mut tex_space_y = segment.texture_space_start_y;
             while self.wall_space.y < segment.wall_space_end_y
