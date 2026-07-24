@@ -8,9 +8,7 @@ It's a proof of concept/mess around type repo to see if I can get something like
 
 Current live site can be seen at [https://brstrutt.github.io/wasmfenbein3d/](https://brstrutt.github.io/wasmfenbein3d/)
 
-
-<img width="2520" height="1245" alt="image" src="https://github.com/user-attachments/assets/e98b1dc8-07a6-4a60-bf9c-be35202f54b3" />
-
+<img width="2521" height="1214" alt="image" src="https://github.com/user-attachments/assets/dd06de18-54cc-4fb1-b34f-c4cc70a33033" />
 
 ## How to develop
 
