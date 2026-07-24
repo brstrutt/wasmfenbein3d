@@ -1,6 +1,6 @@
 [package]
 name = "wasmfenbein3d"
-version = "0.1.6"
+version = "0.1.7-test2"
 edition = "2024"
 
 [dependencies]
