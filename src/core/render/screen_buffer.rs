@@ -7,6 +7,8 @@ pub struct ScreenBuffer {
     already_drawn: Vec<bool>,
     pub width: usize,
     pub height: usize,
+    row_pixel_index_increment: usize,
+    column_pixel_index_increment: usize,
 }
 
 impl ScreenBuffer {
@@ -16,6 +18,8 @@ impl ScreenBuffer {
             already_drawn: vec![false; width * height],
             width,
             height,
+            row_pixel_index_increment: 1,
+            column_pixel_index_increment: width,
         }
     }
 
@@ -38,6 +42,16 @@ impl ScreenBuffer {
     #[inline(always)]
     pub fn pixel_drawn(&self, pixel_index: usize) -> &bool {
         &self.already_drawn[pixel_index]
+    }
+
+    #[inline(always)]
+    pub fn row_pixel_index_increment(&self) -> usize {
+        self.row_pixel_index_increment
+    }
+
+    #[inline(always)]
+    pub fn column_pixel_index_increment(&self) -> usize {
+        self.column_pixel_index_increment
     }
 
     pub fn to_imagedata(&self) -> ImageData {

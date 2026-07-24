@@ -25,6 +25,6 @@ pub fn render_row(
         }
 
         x += 1;
-        pixel_index += 1;
+        pixel_index += screen_buffer.row_pixel_index_increment();
     }
 }

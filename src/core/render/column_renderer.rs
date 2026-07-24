@@ -5,16 +5,15 @@ use super::{
 use crate::core::world::wall::WALL_HEIGHT;
 
 pub struct ColumnRenderer<'a> {
-    screen: ScreenSpace<'a>,
+    screen: ScreenSpace,
     wall_space: WallSpace,
     brightness_level: usize,
     render_plan: Vec<ColumnSegment<'a>>,
 }
 
-struct ScreenSpace<'a> {
+struct ScreenSpace {
     current_pixel_index: usize,
     column_last_pixel_index: usize,
-    pixel_increment: &'a usize,
 }
 
 struct WallSpace {
@@ -107,7 +106,6 @@ impl<'a> ColumnRenderer<'a> {
             screen: ScreenSpace {
                 current_pixel_index: screen_x + (screen_start_y as usize * screen_width),
                 column_last_pixel_index: screen_x + (screen_end_y as usize * screen_width),
-                pixel_increment: screen_width,
             },
             wall_space: WallSpace {
                 y: wall_start_y,
@@ -132,7 +130,7 @@ impl<'a> ColumnRenderer<'a> {
                 screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
                 screen_buffer.mark_pixel_as_rendered(self.screen.current_pixel_index);
 
-                self.screen.current_pixel_index += self.screen.pixel_increment;
+                self.screen.current_pixel_index += screen_buffer.column_pixel_index_increment();
                 self.wall_space.y += self.wall_space.y_increment;
                 tex_space_y += segment.texture_space_y_increment;
             }
