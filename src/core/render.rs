@@ -57,7 +57,6 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
 }
 
 fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
-    let screen_width = screen_buffer.width;
     let screen_height_usize = screen_buffer.height;
     let screen_height_f64 = screen_height_usize as f64;
 
@@ -71,13 +70,8 @@ fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
                 &state.world.camera.ray.origin,
                 &screen_height_f64,
             );
-            let mut renderer = ColumnRenderer::init(
-                &x,
-                &screen_width,
-                &screen_height_f64,
-                &column_data,
-                screen_buffer,
-            );
+            let mut renderer =
+                ColumnRenderer::init(&x, &screen_height_f64, &column_data, screen_buffer);
             renderer.render_column(screen_buffer);
         }
     }

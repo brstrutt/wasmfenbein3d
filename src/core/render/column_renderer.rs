@@ -32,7 +32,6 @@ struct ColumnSegment<'a> {
 impl<'a> ColumnRenderer<'a> {
     pub fn init(
         screen_x: &'a usize,
-        screen_width: &'a usize,
         screen_height: &'a f64,
         column: &'a ColumnData<'a>,
         screen_buffer: &ScreenBuffer,
