@@ -64,6 +64,6 @@ fn setup_display_resolution(screen: Rc<RefCell<ScreenBuffer>>) {
         .first_child()
         .expect("Couldnt get Resolution display child")
         .set_text_content(Some(
-            format!("Render resolution: {}x{}", screen.width, screen.height).as_str(),
+            format!("Render resolution: {}x{}", screen.width(), screen.height()).as_str(),
         ));
 }

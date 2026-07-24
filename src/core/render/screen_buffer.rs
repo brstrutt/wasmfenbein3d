@@ -5,8 +5,8 @@ use web_sys::ImageData;
 pub struct ScreenBuffer {
     pixels: Vec<u8>,
     already_drawn: Vec<bool>,
-    pub width: usize,
-    pub height: usize,
+    width: usize,
+    height: usize,
     row_pixel_index_increment: usize,
     column_pixel_index_increment: usize,
 }
@@ -52,6 +52,16 @@ impl ScreenBuffer {
     #[inline(always)]
     pub fn column_pixel_index_increment(&self) -> usize {
         self.column_pixel_index_increment
+    }
+
+    #[inline(always)]
+    pub fn width(&self) -> usize {
+        self.width
+    }
+
+    #[inline(always)]
+    pub fn height(&self) -> usize {
+        self.height
     }
 
     #[inline(always)]

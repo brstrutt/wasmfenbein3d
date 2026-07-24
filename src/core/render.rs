@@ -32,11 +32,11 @@ pub fn render_to_screen_buffer(
 
 fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
     let camera = state.world.camera.clone();
-    let half_screen_height = screen_buffer.height as f64 / 2.0;
+    let half_screen_height = screen_buffer.height() as f64 / 2.0;
 
     let half_wall_height = half_screen_height * WALL_HEIGHT;
 
-    for y in 0..screen_buffer.height {
+    for y in 0..screen_buffer.height() {
         let y_relative_to_center = y as f64 - half_screen_height;
         let dist_to_floor = ((1.0 / y_relative_to_center) * half_wall_height).abs();
         let texture = if y_relative_to_center.is_sign_positive() {
@@ -57,10 +57,9 @@ fn render_background(screen_buffer: &mut ScreenBuffer, state: &GameState) {
 }
 
 fn render_walls(screen_buffer: &mut ScreenBuffer, state: &GameState) {
-    let screen_height_usize = screen_buffer.height;
-    let screen_height_f64 = screen_height_usize as f64;
+    let screen_height_f64 = screen_buffer.height() as f64;
 
-    for x in 0..screen_buffer.width {
+    for x in 0..screen_buffer.width() {
         let ray = state.world.camera.ray_for_column(x);
         let wall_intersection = state.world.nearest_wall_intersecting_ray(&ray);
 

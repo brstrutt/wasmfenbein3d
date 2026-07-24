@@ -12,7 +12,7 @@ pub fn render_row(
 ) {
     let mut x = 0;
     let mut pixel_index = screen_buffer.coord_to_pixel_index(&x, &y);
-    let end_point = screen_buffer.coord_to_pixel_index(&screen_buffer.width, &y);
+    let end_point = screen_buffer.coord_to_pixel_index(&screen_buffer.width(), &y);
     while pixel_index < end_point {
         if !screen_buffer.pixel_drawn(pixel_index) {
             let ray = camera.ray_for_column(x);
