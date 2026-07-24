@@ -54,6 +54,11 @@ impl ScreenBuffer {
         self.column_pixel_index_increment
     }
 
+    #[inline(always)]
+    pub fn coord_to_pixel_index(&self, x: &usize, y: &usize) -> usize {
+        x + (y * self.column_pixel_index_increment)
+    }
+
     pub fn to_imagedata(&self) -> ImageData {
         ImageData::new_with_u8_clamped_array_and_sh(
             Clamped(&self.pixels), // Wrap the slice with Clamped

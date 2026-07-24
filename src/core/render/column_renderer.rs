@@ -35,14 +35,15 @@ impl<'a> ColumnRenderer<'a> {
         screen_width: &'a usize,
         screen_height: &'a f64,
         column: &'a ColumnData<'a>,
+        screen_buffer: &ScreenBuffer,
     ) -> Self {
         let wall_space_pixel_height = WALL_HEIGHT / column.height_pixels;
 
         let mut wall_start_y = 0.0;
         let mut wall_end_y = WALL_HEIGHT;
 
-        let mut screen_start_y = 0.0;
-        let mut screen_end_y = screen_height.clone();
+        let mut screen_start_y: usize = 0;
+        let mut screen_end_y: usize = *screen_height as usize;
 
         if column.height_pixels > *screen_height {
             let offscreen_pixel_count = column.height_pixels - screen_height;
@@ -51,7 +52,7 @@ impl<'a> ColumnRenderer<'a> {
             wall_start_y += wallspace_adjustment;
             wall_end_y -= wallspace_adjustment;
         } else {
-            let pixels_from_edge = (screen_height - column.height_pixels) / 2.0;
+            let pixels_from_edge = (screen_end_y - column.height_pixels as usize) / 2;
             screen_start_y += pixels_from_edge;
             screen_end_y -= pixels_from_edge;
         }
@@ -104,8 +105,9 @@ impl<'a> ColumnRenderer<'a> {
 
         ColumnRenderer {
             screen: ScreenSpace {
-                current_pixel_index: screen_x + (screen_start_y as usize * screen_width),
-                column_last_pixel_index: screen_x + (screen_end_y as usize * screen_width),
+                current_pixel_index: screen_buffer.coord_to_pixel_index(screen_x, &screen_start_y),
+                column_last_pixel_index: screen_buffer
+                    .coord_to_pixel_index(screen_x, &screen_end_y),
             },
             wall_space: WallSpace {
                 y: wall_start_y,
