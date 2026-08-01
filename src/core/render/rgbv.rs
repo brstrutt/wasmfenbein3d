@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use super::rgb::RGB;
 use super::rgb_brightness_lookup_table::RgbBrightnessLookupTable;
 use super::rgb_palette::RgbPalette;
@@ -5,22 +7,17 @@ use super::rgb_palette::RgbPalette;
 #[derive(Clone)]
 pub struct RGBV {
     pub base: RGB,
-    pub brightness_variants: RgbBrightnessLookupTable,
+    pub brightness_variants: Rc<RgbBrightnessLookupTable>,
 }
 
 impl RGBV {
     pub fn from_rgb(base: &RGB, palette: &mut RgbPalette) -> Self {
-        if !palette.contains_key(base) {
-            palette.insert(base.clone(), RgbBrightnessLookupTable::generate(base));
-        }
-        let brightness_variants = palette
-            .get(base)
-            .expect("Inserting a gradiant into the lookup")
-            .clone();
-
         RGBV {
             base: base.clone(),
-            brightness_variants,
+            brightness_variants: palette
+                .entry(base.clone())
+                .or_insert(Rc::new(RgbBrightnessLookupTable::generate(base)))
+                .clone(),
         }
     }
 
