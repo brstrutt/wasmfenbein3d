@@ -39,6 +39,7 @@ impl<'a> ColumnRenderer<'a> {
         screen_buffer: &RefMut<Screen>,
     ) -> Self {
         let wall_space_pixel_height = WALL_HEIGHT / column.height_pixels;
+        let mut wall_space_pixel_increment = wall_space_pixel_height;
 
         let mut wall_start_y = 0.0;
         let mut wall_end_y = WALL_HEIGHT;
@@ -53,14 +54,18 @@ impl<'a> ColumnRenderer<'a> {
             wall_start_y += wallspace_adjustment;
             wall_end_y -= wallspace_adjustment;
         } else {
-            let pixels_from_edge = (screen_end_y - column.height_pixels as usize) / 2;
+            // Ceil() the result to make the resulting wall height smaller. This avoids an issue where the wall is one pixel too tall and triggers index out of bounds errors when accessing the texture array
+            let pixels_from_edge = ((screen_height - column.height_pixels) / 2.0).ceil() as usize;
             screen_start_y += pixels_from_edge;
             screen_end_y -= pixels_from_edge;
+
+            //Update wall_space_pixel_increment as the start/end positions may not be exactly column_height distance apart
+            wall_space_pixel_increment = WALL_HEIGHT / (screen_end_y - screen_start_y) as f64;
         }
 
         let wall_texture = column.nearest_wall_intersection.wall.texture.as_ref();
         let wall_texture_space_x = column.wall_x_pos * wall_texture.width_f64();
-        let wall_texture_space_y_increment = wall_space_pixel_height * wall_texture.height_f64();
+        let wall_texture_space_y_increment = wall_space_pixel_increment * wall_texture.height_f64();
 
         let mut segment_start_y = wall_start_y;
         let mut render_plan = vec![];
@@ -112,7 +117,7 @@ impl<'a> ColumnRenderer<'a> {
             },
             wall_space: WallSpace {
                 y: wall_start_y,
-                y_increment: wall_space_pixel_height,
+                y_increment: wall_space_pixel_increment,
             },
             brightness_level: distance_to_brightness_level(column.distance_from_camera),
             render_plan,
