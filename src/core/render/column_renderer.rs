@@ -68,16 +68,22 @@ impl<'a> ColumnRenderer<'a> {
         let wall_texture_space_y_increment = wall_space_pixel_increment * wall_texture.height_f64();
 
         let mut segment_start_y = wall_start_y;
+
+        let create_wall_segment = |wall_space_start_y, wall_space_end_y| ColumnSegment {
+            texture: wall_texture,
+            wall_space_end_y: wall_space_end_y,
+            texture_space_x: wall_texture_space_x,
+            texture_space_start_y: wall_space_start_y * wall_texture.height_f64(),
+            texture_space_y_increment: wall_texture_space_y_increment,
+        };
+
         let mut render_plan = vec![];
         for painting in &column.paintings {
             if painting.top_left_corner.y > segment_start_y {
-                render_plan.push(ColumnSegment {
-                    texture: wall_texture,
-                    wall_space_end_y: painting.top_left_corner.y,
-                    texture_space_x: wall_texture_space_x,
-                    texture_space_start_y: segment_start_y * wall_texture.height_f64(),
-                    texture_space_y_increment: wall_texture_space_y_increment,
-                });
+                render_plan.push(create_wall_segment(
+                    segment_start_y.clone(),
+                    painting.top_left_corner.y,
+                ));
                 segment_start_y = painting.top_left_corner.y;
             }
             if painting.bottom_right_corner.y > segment_start_y {
@@ -100,13 +106,7 @@ impl<'a> ColumnRenderer<'a> {
         }
 
         if segment_start_y < wall_end_y {
-            render_plan.push(ColumnSegment {
-                texture: wall_texture,
-                wall_space_end_y: wall_end_y,
-                texture_space_x: wall_texture_space_x,
-                texture_space_start_y: segment_start_y * wall_texture.height_f64(),
-                texture_space_y_increment: wall_texture_space_y_increment,
-            });
+            render_plan.push(create_wall_segment(segment_start_y, wall_end_y));
         }
 
         ColumnRenderer {
