@@ -2,7 +2,9 @@ use std::cell::RefMut;
 
 use crate::core::world::camera::Camera;
 
-use super::{screen_buffer::ScreenBuffer, tiling_texture::TilingTexture};
+use super::{
+    screen_buffer::ScreenBuffer, texel_provider::TexelProvider, tiling_texture::TilingTexture,
+};
 
 pub fn render_row<Screen: ScreenBuffer>(
     y: &usize,
