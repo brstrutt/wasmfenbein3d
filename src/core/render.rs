@@ -5,6 +5,7 @@ use screen_buffer::ScreenBuffer;
 
 use std::{cell::RefCell, rc::Rc};
 
+mod colour;
 mod column_data;
 mod column_renderer;
 mod distance_to_brightness_level;

@@ -1,4 +1,6 @@
-use super::{rgb_palette::RgbPalette, rgbv::RGBV, texel_provider::TexelProvider, texture::Texture};
+use super::{
+    colour::Colour, rgb_palette::RgbPalette, texel_provider::TexelProvider, texture::Texture,
+};
 use crate::core::primitives::{line2d::Line2D, point2d::Point2D};
 
 #[derive(Clone)]
@@ -35,10 +37,10 @@ impl TilingTexture {
         }
     }
 
-    pub fn get_texel(&self, x: isize, y: isize) -> &RGBV {
+    pub fn get_texel(&self, x: isize, y: isize) -> &dyn Colour {
         let x = x & self.size_bitwise_mask_i;
         let y = y & self.size_bitwise_mask_i;
-        &self.texture.get_texel(x, y)
+        self.texture.get_texel(x, y)
     }
 
     pub fn get_texel_column_on_line_with_scale(
@@ -67,10 +69,10 @@ impl TilingTexture {
 }
 
 impl TexelProvider for TilingTexture {
-    fn get_texel(&self, x: isize, y: isize) -> &RGBV {
+    fn get_texel(&self, x: isize, y: isize) -> &dyn Colour {
         let x = x & self.size_bitwise_mask_i;
         let y = y & self.size_bitwise_mask_i;
-        &self.texture.get_texel(x, y)
+        self.texture.get_texel(x, y)
     }
 
     fn width(&self) -> usize {
