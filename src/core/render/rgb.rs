@@ -23,6 +23,12 @@ pub const WHITE: RGB = RGB {
     blue: 255,
 };
 
+pub const ERROR: RGB = RGB {
+    red: 255,
+    green: 0,
+    blue: 0,
+};
+
 impl ops::Div<f64> for RGB {
     type Output = RGB;
 
