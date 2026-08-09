@@ -37,12 +37,6 @@ impl TilingTexture {
         }
     }
 
-    pub fn get_texel(&self, x: isize, y: isize) -> &dyn Colour {
-        let x = x & self.size_bitwise_mask_i;
-        let y = y & self.size_bitwise_mask_i;
-        self.texture.get_texel(x, y)
-    }
-
     pub fn get_texel_column_on_line_with_scale(
         &self,
         line: &Line2D,
@@ -51,20 +45,6 @@ impl TilingTexture {
     ) -> usize {
         self.texture
             .get_texel_column_on_line_with_scale(line, point, scale)
-    }
-
-    pub fn width(&self) -> usize {
-        self.texture.width
-    }
-    pub fn width_f64(&self) -> &f64 {
-        &self.texture.width_f64
-    }
-
-    pub fn height(&self) -> usize {
-        self.texture.height
-    }
-    pub fn height_f64(&self) -> &f64 {
-        &self.texture.height_f64
     }
 }
 
