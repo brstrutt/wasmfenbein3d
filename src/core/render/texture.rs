@@ -71,6 +71,15 @@ impl Texture {
 
 impl TexelProvider for Texture {
     fn get_texel(&self, x: isize, y: isize) -> &dyn Colour {
+        #[cfg(debug_assertions)]
+        {
+            if x < 0 || y < 0 || x as usize >= self.width || y as usize >= self.height {
+                use crate::core::render::rgb;
+
+                return &rgb::ERROR;
+            }
+        }
+
         &self.texels[(x as usize * self.height) + y as usize]
     }
 
