@@ -133,7 +133,7 @@ impl<'a> ColumnRenderer<'a> {
                 let colour = segment
                     .texture
                     .get_texel(segment.texture_space_x as isize, tex_space_y as isize)
-                    .at_brightness(self.brightness_level);
+                    .at_brightness_as_rgb(self.brightness_level);
 
                 screen_buffer.render_pixel(self.screen.current_pixel_index, colour);
                 screen_buffer.mark_pixel_as_rendered(self.screen.current_pixel_index);

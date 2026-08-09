@@ -2,6 +2,7 @@ use std::io::Cursor;
 
 use image::ImageReader;
 
+use super::colour::Colour;
 use super::rgb::WHITE;
 use super::rgb_palette::RgbPalette;
 use super::rgbv::RGBV;
@@ -69,7 +70,7 @@ impl Texture {
 }
 
 impl TexelProvider for Texture {
-    fn get_texel(&self, x: isize, y: isize) -> &RGBV {
+    fn get_texel(&self, x: isize, y: isize) -> &dyn Colour {
         &self.texels[(x as usize * self.height) + y as usize]
     }
 

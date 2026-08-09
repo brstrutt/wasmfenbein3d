@@ -21,7 +21,7 @@ pub fn render_row<Screen: ScreenBuffer>(
             let position = ray.origin + (ray.direction * dist_to_floor);
             let colour = texture
                 .get_texel((position.x * 16.0) as isize, (position.y * 16.0) as isize)
-                .at_brightness(brightness);
+                .at_brightness_as_rgb(brightness);
 
             screen_buffer.render_pixel(pixel_index, colour);
         }

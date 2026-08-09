@@ -1,5 +1,7 @@
 use std::ops;
 
+use super::colour::Colour;
+
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct RGB {
     pub red: u8,
@@ -14,6 +16,12 @@ impl RGB {
             green: rgb_bytes[1],
             blue: rgb_bytes[2],
         }
+    }
+}
+
+impl Colour for RGB {
+    fn at_brightness_as_rgb(&self, _brightness: usize) -> &RGB {
+        &self
     }
 }
 

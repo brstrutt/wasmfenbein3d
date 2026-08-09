@@ -1,5 +1,6 @@
 use std::rc::Rc;
 
+use super::colour::Colour;
 use super::rgb::RGB;
 use super::rgb_brightness_lookup_table::RgbBrightnessLookupTable;
 use super::rgb_palette::RgbPalette;
@@ -24,8 +25,10 @@ impl RGBV {
     pub fn from_u8(rgb_bytes: &[u8; 3], palette: &mut RgbPalette) -> Self {
         RGBV::from_rgb(&RGB::from_u8(rgb_bytes), palette)
     }
+}
 
-    pub fn at_brightness(&self, brightness: usize) -> &RGB {
-        &self.brightness_variants.get_rgb_from_brightness(brightness)
+impl Colour for RGBV {
+    fn at_brightness_as_rgb(&self, brightness: usize) -> &RGB {
+        self.brightness_variants.get_rgb_from_brightness(brightness)
     }
 }
