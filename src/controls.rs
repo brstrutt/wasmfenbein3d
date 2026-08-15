@@ -43,6 +43,7 @@ pub fn setup(state: Rc<RefCell<GameState>>) {
 
     setup_mouse_capture_on_click(state.clone());
     setup_camera_mouse_control(state.clone());
+    setup_click_passthrough(state.clone());
 
     setup_camera_touch_control(state.clone());
 
@@ -133,6 +134,16 @@ fn setup_mouse_capture_on_click(state: Rc<RefCell<GameState>>) {
     web::document::add_event_listener_with_callback("pointerlockchange", move |_e: Event| {
         let mut state = state.borrow_mut();
         state.input.pointer_locked = web::access::document().pointer_lock_element().is_some();
+    });
+}
+
+fn setup_click_passthrough(state: Rc<RefCell<GameState>>) {
+    web::document::add_event_listener_with_callback("click", move |e: MouseEvent| {
+        let state = state.borrow();
+
+        if state.input.pointer_locked {
+            state.input.trigger_click();
+        }
     });
 }
 
