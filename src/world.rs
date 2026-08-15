@@ -5,7 +5,10 @@ use wasmfenbein3d::core::{
 };
 use web_sys::console::log;
 
-use crate::textures;
+use crate::{
+    textures,
+    web::{self, access::popup_page},
+};
 
 pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
     let wood_wall_texture = textures::wall_wood::load_texture(palette);
@@ -167,7 +170,10 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
         vec![Painting::new_to_scale(
             ubersreik_five,
             Point2D::new(3.0, 0.2),
-            Some(|| log::info!("DAAAWIIIII!")),
+            Some(|| {
+                let popup_page = web::access::popup_page();
+                popup_page.set_hidden(false);
+            }),
         )],
     ));
     result
