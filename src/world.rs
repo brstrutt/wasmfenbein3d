@@ -168,7 +168,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(3.0, 0.2),
             Some(|| {
                 let popup_page = web::access::popup_page();
-                popup_page.set_hidden(false);
+                popup_page.set_hidden(!popup_page.hidden());
             }),
         )],
     ));
