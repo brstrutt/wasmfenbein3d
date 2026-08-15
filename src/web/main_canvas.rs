@@ -5,13 +5,6 @@ use wasmfenbein3d::core::render::screen_buffer::ScreenBuffer;
 
 const CANVAS_SCALE: u32 = 2;
 
-pub fn setup() {
-    access::main_canvas()
-        .style()
-        .set_property("z-index", "-2")
-        .expect("Failed to move the canvas into the background");
-}
-
 pub fn update_canvas_size() {
     let element = access::main_canvas();
     let width: u32 = u32::try_from(element.offset_width()).unwrap();

@@ -24,7 +24,6 @@ fn main() {
 
     log::info!("Starting up!");
 
-    main_canvas::setup();
     main_canvas::update_canvas_size();
 
     let screen_width = access::main_canvas().height() as usize;
