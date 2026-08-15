@@ -3,12 +3,8 @@ use wasmfenbein3d::core::{
     render::rgb_palette::RgbPalette,
     world::{painting::Painting, wall::Wall, walls::walls_from_point_path},
 };
-use web_sys::console::log;
 
-use crate::{
-    textures,
-    web::{self, access::popup_page},
-};
+use crate::{textures, web};
 
 pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
     let wood_wall_texture = textures::wall_wood::load_texture(palette);
