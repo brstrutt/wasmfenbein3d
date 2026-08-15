@@ -42,4 +42,8 @@ impl InputState {
         }
         motion.normalise()
     }
+
+    pub fn trigger_click(&self) {
+        log::info!("Click ocurred!")
+    }
 }
