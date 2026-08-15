@@ -1,4 +1,4 @@
-use crate::core::primitives::point2d::Point2D;
+use crate::core::{primitives::point2d::Point2D, world::World};
 
 pub struct InputState {
     pub move_left: bool,
@@ -43,7 +43,18 @@ impl InputState {
         motion.normalise()
     }
 
-    pub fn trigger_click(&self) {
-        log::info!("Click ocurred!")
+    pub fn trigger_click(&self, environment: &World) {
+        if let Some(collision) = environment.nearest_wall_intersecting_ray(&environment.camera.ray)
+        {
+            if collision.wall.paintings.len() > 0 {
+                for _ in collision.wall.get_paintings_in_column(
+                    collision
+                        .wall
+                        .get_wall_space_x_position(&collision.intersection),
+                ) {
+                    log::info!("Click on painting ocurred!")
+                }
+            };
+        }
     }
 }
