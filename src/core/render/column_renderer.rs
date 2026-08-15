@@ -38,8 +38,8 @@ impl<'a> ColumnRenderer<'a> {
 
         let mut wall_start_y = 0.0;
 
-        let mut screen_start_y: usize = 0;
-        let mut screen_end_y: usize = *screen_height as usize;
+        let mut screen_start_y: isize = 0;
+        let mut screen_end_y: isize = *screen_height as isize;
 
         if column.height_pixels > *screen_height {
             let offscreen_pixel_count = column.height_pixels - screen_height;
@@ -48,7 +48,7 @@ impl<'a> ColumnRenderer<'a> {
             wall_start_y += wallspace_adjustment;
         } else {
             // Ceil() the result to make the resulting wall height smaller. This avoids an issue where the wall is one pixel too tall and triggers index out of bounds errors when accessing the texture array
-            let pixels_from_edge = ((screen_height - column.height_pixels) / 2.0).ceil() as usize;
+            let pixels_from_edge = ((screen_height - column.height_pixels) / 2.0).ceil() as isize;
             screen_start_y += pixels_from_edge;
             screen_end_y -= pixels_from_edge;
 
@@ -61,17 +61,17 @@ impl<'a> ColumnRenderer<'a> {
         let wall_texture_space_x = column.wall_x_pos * wall_texture.width_f64();
         let wall_texture_space_y_increment = wall_space_pixel_increment * wall_texture.height_f64();
 
-        let mut segment_start_y: usize = 0;
+        let mut segment_start_y: isize = 0;
         let wall_space_y_to_screen_space_y = |wall_space_y: f64| {
-            ((wall_space_y - wall_start_y) * screen_space_wall_increment).round() as usize
+            ((wall_space_y - wall_start_y) * screen_space_wall_increment).round() as isize
         };
-        let screen_space_y_to_wall_space_y = |screen_space_y: usize| {
+        let screen_space_y_to_wall_space_y = |screen_space_y: isize| {
             (screen_space_y as f64 / screen_space_wall_increment) + wall_start_y
         };
 
         let create_wall_segment = |screen_space_start, screen_space_end_y| ColumnSegment {
             texture: wall_texture,
-            screen_space_end_y,
+            screen_space_end_y: screen_space_end_y as usize,
             texture_space_x: wall_texture_space_x,
             texture_space_start_y: screen_space_y_to_wall_space_y(screen_space_start)
                 * wall_texture.height_f64(),
@@ -85,25 +85,30 @@ impl<'a> ColumnRenderer<'a> {
             let painting_bottom_screen_space =
                 wall_space_y_to_screen_space_y(painting.bottom_right_corner.y);
 
-            if painting_top_screen_space > segment_start_y {
+            let texture_space_y_increment = painting.texture.height_f64()
+                / (painting_bottom_screen_space - painting_top_screen_space) as f64;
+
+            let texture_space_start_y = if painting_top_screen_space > segment_start_y {
                 render_plan.push(create_wall_segment(
                     segment_start_y.clone(),
                     painting_top_screen_space,
                 ));
                 segment_start_y = painting_top_screen_space;
-            }
+                0.0
+            } else {
+                (painting_top_screen_space as f64 * -1.0) * texture_space_y_increment
+            };
+
             if painting_bottom_screen_space > segment_start_y {
-                let screen_space_end_y = painting_bottom_screen_space.min(screen_end_y);
-                let texture_space_y_increment = painting.texture.height_f64()
-                    / (painting_bottom_screen_space - segment_start_y) as f64;
+                let screen_space_end_y = painting_bottom_screen_space.min(screen_end_y as isize);
 
                 render_plan.push(ColumnSegment {
                     texture: painting.texture.as_ref(),
-                    screen_space_end_y: painting_bottom_screen_space,
+                    screen_space_end_y: painting_bottom_screen_space as usize,
                     texture_space_x: (column.wall_x_pos - painting.top_left_corner.x)
                         * painting.texture.width_f64()
                         / painting.width,
-                    texture_space_start_y: 0.0,
+                    texture_space_start_y: texture_space_start_y,
                     texture_space_y_increment,
                 });
                 segment_start_y = screen_space_end_y;
@@ -116,9 +121,10 @@ impl<'a> ColumnRenderer<'a> {
 
         ColumnRenderer {
             screen: ScreenSpace {
-                current_pixel_index: screen_buffer.coord_to_pixel_index(screen_x, &screen_start_y),
+                current_pixel_index: screen_buffer
+                    .coord_to_pixel_index(screen_x, &(screen_start_y as usize)),
                 column_last_pixel_index: screen_buffer
-                    .coord_to_pixel_index(screen_x, &screen_end_y),
+                    .coord_to_pixel_index(screen_x, &(screen_end_y as usize)),
             },
             brightness_level: distance_to_brightness_level(column.distance_from_camera),
             render_plan,
