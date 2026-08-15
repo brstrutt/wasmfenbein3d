@@ -142,7 +142,7 @@ fn setup_click_passthrough(state: Rc<RefCell<GameState>>) {
         let state = state.borrow();
 
         if state.input.pointer_locked {
-            state.input.trigger_click();
+            state.input.trigger_click(&state.world);
         }
     });
 }
