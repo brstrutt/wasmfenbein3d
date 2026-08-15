@@ -47,12 +47,14 @@ impl InputState {
         if let Some(collision) = environment.nearest_wall_intersecting_ray(&environment.camera.ray)
         {
             if collision.wall.paintings.len() > 0 {
-                for _ in collision.wall.get_paintings_in_column(
+                for painting in collision.wall.get_paintings_in_column(
                     collision
                         .wall
                         .get_wall_space_x_position(&collision.intersection),
                 ) {
-                    log::info!("Click on painting ocurred!")
+                    if let Some(on_click) = painting.on_click {
+                        on_click();
+                    }
                 }
             };
         }
