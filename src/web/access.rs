@@ -1,5 +1,5 @@
 use wasm_bindgen::JsCast;
-use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
+use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, HtmlElement};
 
 pub fn window() -> web_sys::Window {
     web_sys::window().expect("no global `window` exists")
@@ -38,4 +38,12 @@ pub fn main_canvas_context() -> web_sys::CanvasRenderingContext2d {
         .unwrap()
         .dyn_into::<CanvasRenderingContext2d>()
         .expect("Failed to get 2D context even MORE")
+}
+
+pub fn popup_page() -> web_sys::HtmlElement {
+    document()
+        .get_element_by_id("pop_up_page")
+        .expect("Couldn't find pop up page element")
+        .dyn_into::<HtmlElement>()
+        .expect("Failed to convert pop up page into HtmlElement")
 }
