@@ -97,26 +97,30 @@ fn setup_keyboard_movement(state: Rc<RefCell<GameState>>) {
     let cloned_state = state.clone();
     web::document::add_event_listener_with_callback("keydown", move |e: KeyboardEvent| {
         let mut state = cloned_state.borrow_mut();
-        state.input.sprint = e.shift_key();
-        match e.key().as_str() {
-            "a" | "A" => state.input.move_left = true,
-            "d" | "D" => state.input.move_right = true,
-            "w" | "W" => state.input.move_forward = true,
-            "s" | "S" => state.input.move_backward = true,
-            &_ => return,
+        if state.input.pointer_locked {
+            state.input.sprint = e.shift_key();
+            match e.key().as_str() {
+                "a" | "A" => state.input.move_left = true,
+                "d" | "D" => state.input.move_right = true,
+                "w" | "W" => state.input.move_forward = true,
+                "s" | "S" => state.input.move_backward = true,
+                &_ => return,
+            }
         }
     });
 
     let cloned_state = state.clone();
     web::document::add_event_listener_with_callback("keyup", move |e: KeyboardEvent| {
         let mut state = cloned_state.borrow_mut();
-        state.input.sprint = e.shift_key();
-        match e.key().as_str() {
-            "a" | "A" => state.input.move_left = false,
-            "d" | "D" => state.input.move_right = false,
-            "w" | "W" => state.input.move_forward = false,
-            "s" | "S" => state.input.move_backward = false,
-            &_ => return,
+        if state.input.pointer_locked {
+            state.input.sprint = e.shift_key();
+            match e.key().as_str() {
+                "a" | "A" => state.input.move_left = false,
+                "d" | "D" => state.input.move_right = false,
+                "w" | "W" => state.input.move_forward = false,
+                "s" | "S" => state.input.move_backward = false,
+                &_ => return,
+            }
         }
     });
 }
@@ -134,6 +138,13 @@ fn setup_mouse_capture_on_click(state: Rc<RefCell<GameState>>) {
     web::document::add_event_listener_with_callback("pointerlockchange", move |_e: Event| {
         let mut state = state.borrow_mut();
         state.input.pointer_locked = web::access::document().pointer_lock_element().is_some();
+        if !state.input.pointer_locked {
+            state.input.sprint = false;
+            state.input.move_left = false;
+            state.input.move_right = false;
+            state.input.move_forward = false;
+            state.input.move_backward = false;
+        }
     });
 }
 
