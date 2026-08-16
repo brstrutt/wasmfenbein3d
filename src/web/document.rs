@@ -1,13 +1,14 @@
-use wasm_bindgen::{JsCast, convert::FromWasmAbi, prelude::Closure};
+use wasm_bindgen::convert::FromWasmAbi;
+use web_sys::EventTarget;
+
+use crate::web::add_event_listener_with_callback;
 
 use super::access;
 
-pub fn add_event_listener_with_callback<E: FromWasmAbi, T: FnMut(E)>(event_name: &str, mut run: T) {
-    let callback = Closure::wrap(Box::new(move |e: E| {
-        run(e);
-    }) as Box<dyn FnMut(_)>);
-    access::document()
-        .add_event_listener_with_callback(event_name, callback.as_ref().unchecked_ref())
-        .expect("Failed to setup keydown event for controls");
-    callback.forget();
+pub fn add_event_listener_with_callback<E: FromWasmAbi, T: FnMut(E)>(event_name: &str, run: T) {
+    add_event_listener_with_callback::add_event_listener_with_callback(
+        &mut EventTarget::from(access::document()),
+        event_name,
+        run,
+    );
 }
