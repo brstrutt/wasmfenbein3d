@@ -149,9 +149,26 @@ fn setup_mouse_capture_on_click(state: Rc<RefCell<GameState>>) {
 }
 
 fn setup_click_passthrough(state: Rc<RefCell<GameState>>) {
+    let cloned_state = state.clone();
     web::document::add_event_listener_with_callback("click", move |_e: MouseEvent| {
-        let state = state.borrow();
+        let state = cloned_state.borrow();
         state.input.trigger_click(&state.world);
+    });
+
+    let cloned_state = state.clone();
+    web::document::add_event_listener_with_callback("touchmove", move |_e: TouchEvent| {
+        let mut state = cloned_state.borrow_mut();
+
+        state.input.touch_has_moved_camera = true;
+    });
+
+    web::document::add_event_listener_with_callback("touchend", move |_e: TouchEvent| {
+        let mut state = state.borrow_mut();
+
+        if !state.input.touch_has_moved_camera {
+            state.input.trigger_click(&state.world);
+        }
+        state.input.touch_has_moved_camera = false;
     });
 }
 
@@ -203,6 +220,7 @@ fn setup_camera_touch_control(state: Rc<RefCell<GameState>>) {
             }
 
             state.input.last_canvas_touch_point_x = Some(touch_x_position);
+            state.input.touch_has_moved_camera = true;
         }
     }) as Box<dyn FnMut(_)>);
     web::access::main_canvas().set_ontouchmove(Some(touch_move_closure.as_ref().unchecked_ref()));

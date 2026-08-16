@@ -9,6 +9,7 @@ pub struct InputState {
     pub camera_rotation: i32,
     pub pointer_locked: bool,
     pub last_canvas_touch_point_x: Option<i32>,
+    pub touch_has_moved_camera: bool,
 }
 
 impl InputState {
@@ -22,6 +23,7 @@ impl InputState {
             camera_rotation: 0,
             pointer_locked: false,
             last_canvas_touch_point_x: None,
+            touch_has_moved_camera: false,
         }
     }
 
