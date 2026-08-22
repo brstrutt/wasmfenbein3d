@@ -29,7 +29,6 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(-5.0, -3.0),
         ],
         &wood_wall_texture,
-        vec![],
     ));
     result.append(&mut walls_from_point_path(
         &vec![
@@ -38,7 +37,6 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(-1.0, 5.0),
         ],
         &stone_wall_texture,
-        vec![],
     ));
     result.append(&mut walls_from_point_path(
         &vec![
@@ -47,7 +45,6 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(15.0, 15.0),
         ],
         &wood_wall_texture,
-        vec![],
     ));
     result.push(Wall::new(
         Line2D {
@@ -106,7 +103,6 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(8.0, 20.0),
         ],
         &wood_wall_texture,
-        vec![],
     ));
     result.append(&mut walls_from_point_path(
         &vec![
@@ -115,7 +111,6 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(8.0, 18.0),
         ],
         &stone_wall_texture,
-        vec![],
     ));
     result.append(&mut walls_from_point_path(
         &vec![
