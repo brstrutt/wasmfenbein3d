@@ -54,7 +54,7 @@ impl InputState {
                         .wall
                         .get_wall_space_x_position(&collision.intersection),
                 ) {
-                    if let Some(on_click) = painting.on_click {
+                    if let Some(on_click) = &painting.on_click {
                         on_click();
                     }
                 }

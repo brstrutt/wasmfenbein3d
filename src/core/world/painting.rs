@@ -6,21 +6,20 @@ use crate::core::{
     world::wall::WALL_HEIGHT,
 };
 
-#[derive(Clone)]
 pub struct Painting {
     pub texture: Rc<Texture>,
     pub top_left_corner: Point2D,
     pub bottom_right_corner: Point2D,
     pub width: f64,
     pub height: f64,
-    pub on_click: Option<fn()>,
+    pub on_click: Option<Box<dyn Fn()>>,
 }
 
 impl Painting {
     pub fn new_to_scale(
         texture: Rc<Texture>,
         top_left_corner: Point2D,
-        on_click: Option<fn()>,
+        on_click: Option<Box<dyn Fn()>>,
     ) -> Self {
         let bottom = WALL_HEIGHT - top_left_corner.y;
 
@@ -40,7 +39,7 @@ impl Painting {
         texture: Rc<Texture>,
         top_left_corner: Point2D,
         bottom_right_corner: Point2D,
-        on_click: Option<fn()>,
+        on_click: Option<Box<dyn Fn()>>,
     ) -> Self {
         let size = bottom_right_corner - top_left_corner;
         Painting {

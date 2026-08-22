@@ -56,7 +56,7 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Painting::new_to_scale(
                 vermintide_tapestry,
                 Point2D::new(2.85, 0.1),
-                Some(|| log::info!("Clicked on the tapestry!")),
+                Some(Box::new(|| log::info!("Clicked on the tapestry!"))),
             ),
             Painting::new(
                 blood_in_the_darkness,
@@ -120,26 +120,28 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(1.0, 5.0),
         ],
         &wood_wall_texture,
-        vec![],
     ));
-    result.append(&mut walls_from_point_path(
-        &vec![Point2D::new(-10.0, -5.0), Point2D::new(-5.0, -5.0)],
+    result.push(Wall::new(
+        Line2D {
+            start: Point2D::new(-10.0, -5.0),
+            end: Point2D::new(-5.0, -5.0),
+        },
         &stone_wall_texture,
         vec![
             Painting::new_to_scale(
                 nokia_jam_house,
                 Point2D::new(0.4, 0.6),
-                Some(|| log::info!("House is thinking it's not Lupus!")),
+                Some(Box::new(|| log::info!("House is thinking it's not Lupus!"))),
             ),
             Painting::new_to_scale(
                 nokia_jam_cat,
                 Point2D::new(2.0, 0.6),
-                Some(|| log::info!("Look at that cat GO!")),
+                Some(Box::new(|| log::info!("Look at that cat GO!"))),
             ),
             Painting::new_to_scale(
                 nokia_jam_worms,
                 Point2D::new(3.5, 0.6),
-                Some(|| log::info!("Damn these worms are ANGRY!")),
+                Some(Box::new(|| log::info!("Damn these worms are ANGRY!"))),
             ),
         ],
     ));
@@ -153,21 +155,23 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
             Point2D::new(-10.0, -5.0),
         ],
         &wood_wall_texture,
-        vec![],
     ));
-    result.append(&mut walls_from_point_path(
-        &vec![Point2D::new(-5.0, -3.0), Point2D::new(-10.0, -3.0)],
+    result.push(Wall::new(
+        Line2D {
+            start: Point2D::new(-5.0, -3.0),
+            end: Point2D::new(-10.0, -3.0),
+        },
         &stone_wall_texture,
         vec![Painting::new_to_scale(
             ubersreik_five,
             Point2D::new(3.0, 0.2),
-            Some(|| {
+            Some(Box::new(|| {
                 let popup_page = web::access::popup_page();
                 if popup_page.hidden() {
                     web::access::document().exit_pointer_lock();
                 }
                 popup_page.set_hidden(!popup_page.hidden());
-            }),
+            })),
         )],
     ));
     result

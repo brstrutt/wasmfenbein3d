@@ -8,7 +8,6 @@ use crate::core::{
 
 pub const WALL_HEIGHT: f64 = 2.0;
 
-#[derive(Clone)]
 pub struct Wall {
     pub position: Line2D,
     pub texture: Rc<TilingTexture>,

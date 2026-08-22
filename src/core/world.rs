@@ -11,7 +11,6 @@ use crate::core::{
     world::{camera::Camera, wall::Wall, walls::WallCollision},
 };
 
-#[derive(Clone)]
 pub struct World {
     pub walls: Vec<Wall>,
     pub camera: Camera,
