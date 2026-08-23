@@ -4,7 +4,18 @@ use wasmfenbein3d::core::{
     world::{painting::Painting, wall::Wall, walls::walls_from_point_path},
 };
 
-use crate::{textures, web};
+use crate::textures;
+
+pub mod entity_ids {
+    pub const DUMMY_ID: &str = "no_on_click_behaviour";
+    pub const NOKIA_JAM_HOUSE_ID: &str = "nokia_jam_house";
+    pub const NOKIA_JAM_CAT_ID: &str = "nokia_jam_cat";
+    pub const NOKIA_JAM_WORMS_ID: &str = "nokia_jam_worms";
+    pub const UBERSREIK_FIVE_ID: &str = "ubersreik_five";
+    pub const VERMINTIDE_TAPESTRY_ID: &str = "vermintide_tapestry";
+}
+
+use entity_ids::*;
 
 pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
     let wood_wall_texture = textures::wall_wood::load_texture(palette);
@@ -54,45 +65,45 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
         &wood_wall_texture,
         vec![
             Painting::new_to_scale(
+                VERMINTIDE_TAPESTRY_ID,
                 vermintide_tapestry,
                 Point2D::new(2.85, 0.1),
-                Some(Box::new(|| log::info!("Clicked on the tapestry!"))),
             ),
             Painting::new(
+                DUMMY_ID,
                 blood_in_the_darkness,
                 Point2D::new(2.50, 0.5),
                 Point2D::new(2.80, 0.8),
-                None,
             ),
             Painting::new(
+                DUMMY_ID,
                 burplespue_halescourge,
                 Point2D::new(2.50, 1.3),
                 Point2D::new(2.80, 1.6),
-                None,
             ),
             Painting::new(
+                DUMMY_ID,
                 castle_drachenfels,
                 Point2D::new(2.50, 0.9),
                 Point2D::new(2.80, 1.2),
-                None,
             ),
             Painting::new(
+                DUMMY_ID,
                 into_the_nest,
                 Point2D::new(5.40, 0.5),
                 Point2D::new(5.70, 0.8),
-                None,
             ),
             Painting::new(
+                DUMMY_ID,
                 righteous_stand,
                 Point2D::new(5.40, 1.3),
                 Point2D::new(5.70, 1.6),
-                None,
             ),
             Painting::new(
+                DUMMY_ID,
                 taals_horn_keep,
                 Point2D::new(5.40, 0.9),
                 Point2D::new(5.70, 1.2),
-                None,
             ),
         ],
     ));
@@ -128,21 +139,9 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
         },
         &stone_wall_texture,
         vec![
-            Painting::new_to_scale(
-                nokia_jam_house,
-                Point2D::new(0.4, 0.6),
-                Some(Box::new(|| log::info!("House is thinking it's not Lupus!"))),
-            ),
-            Painting::new_to_scale(
-                nokia_jam_cat,
-                Point2D::new(2.0, 0.6),
-                Some(Box::new(|| log::info!("Look at that cat GO!"))),
-            ),
-            Painting::new_to_scale(
-                nokia_jam_worms,
-                Point2D::new(3.5, 0.6),
-                Some(Box::new(|| log::info!("Damn these worms are ANGRY!"))),
-            ),
+            Painting::new_to_scale(NOKIA_JAM_HOUSE_ID, nokia_jam_house, Point2D::new(0.4, 0.6)),
+            Painting::new_to_scale(NOKIA_JAM_CAT_ID, nokia_jam_cat, Point2D::new(2.0, 0.6)),
+            Painting::new_to_scale(NOKIA_JAM_WORMS_ID, nokia_jam_worms, Point2D::new(3.5, 0.6)),
         ],
     ));
     result.append(&mut walls_from_point_path(
@@ -163,15 +162,9 @@ pub fn load_walls(palette: &mut RgbPalette) -> Vec<Wall> {
         },
         &stone_wall_texture,
         vec![Painting::new_to_scale(
+            UBERSREIK_FIVE_ID,
             ubersreik_five,
             Point2D::new(3.0, 0.2),
-            Some(Box::new(|| {
-                let popup_page = web::access::popup_page();
-                if popup_page.hidden() {
-                    web::access::document().exit_pointer_lock();
-                }
-                popup_page.set_hidden(!popup_page.hidden());
-            })),
         )],
     ));
     result

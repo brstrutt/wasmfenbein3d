@@ -45,7 +45,8 @@ impl InputState {
         motion.normalise()
     }
 
-    pub fn trigger_click(&self, environment: &World) {
+    pub fn get_items_under_cursor(&self, environment: &World) -> Vec<String> {
+        let mut item_ids = vec![];
         if let Some(collision) = environment.nearest_wall_intersecting_ray(&environment.camera.ray)
         {
             if collision.wall.paintings.len() > 0 {
@@ -54,11 +55,10 @@ impl InputState {
                         .wall
                         .get_wall_space_x_position(&collision.intersection),
                 ) {
-                    if let Some(on_click) = &painting.on_click {
-                        on_click();
-                    }
+                    item_ids.push(painting.id.clone());
                 }
             };
         }
+        item_ids
     }
 }

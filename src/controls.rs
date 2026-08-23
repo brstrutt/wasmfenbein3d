@@ -7,7 +7,7 @@ use wasm_bindgen::{JsCast, prelude::Closure};
 use wasmfenbein3d::core::{motion, state::GameState};
 use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
-use crate::web;
+use crate::{web, world::entity_ids::*};
 
 pub fn setup(state: Rc<RefCell<GameState>>) {
     setup_keyboard_movement(state.clone());
@@ -146,7 +146,10 @@ fn setup_click_passthrough(state: Rc<RefCell<GameState>>) {
     let cloned_state = state.clone();
     web::main_canvas::add_event_listener_with_callback("click", move |_e: MouseEvent| {
         let state = cloned_state.borrow();
-        state.input.trigger_click(&state.world);
+        let item_ids = state.input.get_items_under_cursor(&state.world);
+        for id in item_ids {
+            on_click(id);
+        }
     });
 
     let cloned_state = state.clone();
@@ -160,10 +163,38 @@ fn setup_click_passthrough(state: Rc<RefCell<GameState>>) {
         let mut state = state.borrow_mut();
 
         if !state.input.touch_has_moved_camera {
-            state.input.trigger_click(&state.world);
+            let item_ids = state.input.get_items_under_cursor(&state.world);
+            for id in item_ids {
+                on_click(id);
+            }
         }
         state.input.touch_has_moved_camera = false;
     });
+}
+
+fn on_click(item_id: String) {
+    match item_id.as_str() {
+        NOKIA_JAM_HOUSE_ID => {
+            log::info!("House is thinking it's not Lupus!");
+        }
+        NOKIA_JAM_CAT_ID => {
+            log::info!("Look at that cat GO!");
+        }
+        NOKIA_JAM_WORMS_ID => {
+            log::info!("Damn these worms are ANGRY!");
+        }
+        VERMINTIDE_TAPESTRY_ID => {
+            log::info!("Clicked on the tapestry!");
+        }
+        UBERSREIK_FIVE_ID => {
+            let popup_page = web::access::popup_page();
+            if popup_page.hidden() {
+                web::access::document().exit_pointer_lock();
+            }
+            popup_page.set_hidden(!popup_page.hidden());
+        }
+        &_ => {}
+    }
 }
 
 fn setup_camera_mouse_control(state: Rc<RefCell<GameState>>) {
