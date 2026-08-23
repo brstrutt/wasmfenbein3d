@@ -34,7 +34,7 @@ jobs:
           run: cargo install --locked trunk
 
         - name: Build
-          run: trunk build --release
+          run: trunk build --release --public-url "/wasmfenbein3d/"
 
         - name: Setup Pages
           uses: actions/configure-pages@v5
