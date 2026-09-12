@@ -22,45 +22,43 @@ macro_rules! include_texture {
 
 pub struct TextureLibrary {
     textures: HashMap<String, Rc<Box<dyn TexelProvider>>>,
+    palette: RgbPalette,
 }
 
 impl TextureLibrary {
     pub fn new() -> Self {
         TextureLibrary {
             textures: HashMap::new(),
+            palette: RgbPalette::new(),
         }
     }
 
-    pub fn load(
-        palette: &mut RgbPalette,
-        tiling_textures: &[&RawTexture],
-        textures: &[&RawTexture],
-    ) -> Self {
+    pub fn load(tiling_textures: &[&RawTexture], textures: &[&RawTexture]) -> Self {
         let mut library = TextureLibrary::new();
         for raw_texture in tiling_textures {
-            library.insert_tiling_texture(&raw_texture, palette);
+            library.insert_tiling_texture(&raw_texture);
         }
         for raw_texture in textures {
-            library.insert_texture(&raw_texture, palette);
+            library.insert_texture(&raw_texture);
         }
         library
     }
 
-    pub fn insert_tiling_texture(&mut self, raw_data: &RawTexture, palette: &mut RgbPalette) {
+    pub fn insert_tiling_texture(&mut self, raw_data: &RawTexture) {
         self.textures.insert(
             String::from(raw_data.id),
             Rc::new(Box::new(TilingTexture::new_from_bmp_data(
                 raw_data.bytes,
-                palette,
+                &mut self.palette,
             ))),
         );
     }
-    pub fn insert_texture(&mut self, raw_data: &RawTexture, palette: &mut RgbPalette) {
+    pub fn insert_texture(&mut self, raw_data: &RawTexture) {
         self.textures.insert(
             String::from(raw_data.id),
             Rc::new(Box::new(Texture::new_from_bmp_data(
                 raw_data.bytes,
-                palette,
+                &mut self.palette,
             ))),
         );
     }

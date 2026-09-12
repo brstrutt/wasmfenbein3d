@@ -6,10 +6,7 @@ mod web;
 mod world;
 
 use wasmfenbein3d::core::{
-    render::{
-        render_to_screen_buffer, rgb_palette::RgbPalette,
-        screen_buffer_column_first::ScreenBufferColumnFirst,
-    },
+    render::{render_to_screen_buffer, screen_buffer_column_first::ScreenBufferColumnFirst},
     state::GameState,
 };
 
@@ -41,8 +38,7 @@ fn main() {
         canvas_finish_time - start_time
     );
 
-    let mut palette = RgbPalette::new();
-    let textures = textures::load(&mut palette);
+    let textures = textures::load();
     let walls = load_walls(&textures);
 
     let world_load_finish_time = web::window::now_in_ms();

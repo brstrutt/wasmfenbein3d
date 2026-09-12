@@ -1,8 +1,5 @@
 use wasmfenbein3d::{
-    core::{
-        render::rgb_palette::RgbPalette,
-        state::textures::{RawTexture, TextureLibrary},
-    },
+    core::state::textures::{RawTexture, TextureLibrary},
     include_texture,
 };
 
@@ -26,9 +23,8 @@ pub const TAALS_HORN_KEEP: RawTexture = include_texture!("taals_horn_keep");
 pub const UBERSREIK_FIVE: RawTexture = include_texture!("ubersreik_five");
 pub const VERMINTIDE_TAPESTRY: RawTexture = include_texture!("vermintide_tapestry");
 
-pub fn load(palette: &mut RgbPalette) -> TextureLibrary {
+pub fn load() -> TextureLibrary {
     TextureLibrary::load(
-        palette,
         &[&BIG_FLOOR, &FLOOR, &WALL_STONE, &WALL_WOOD],
         &[
             &BLOOD_IN_THE_DARKNESS,
