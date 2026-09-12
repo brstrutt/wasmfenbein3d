@@ -1,4 +1,6 @@
 {
+    "floor_texture_id": "big_floor",
+    "ceiling_texture_id": "floor",
     "walls": [
         {
             "start": {

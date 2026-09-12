@@ -3,12 +3,30 @@ use serde::Deserialize;
 use super::wall::Wall;
 use crate::core::{
     primitives::{line2d::Line2D, point2d::Point2D},
-    state::{textures::TextureLibrary, world::painting::Painting},
+    state::{
+        textures::TextureLibrary,
+        world::{World, painting::Painting},
+    },
 };
 
 #[derive(Deserialize)]
-struct JsonWorld {
+pub struct JsonWorld {
+    floor_texture_id: String,
+    ceiling_texture_id: String,
     walls: Vec<JsonWall>,
+}
+
+impl JsonWorld {
+    pub fn to_world(&self, textures: &TextureLibrary) -> World {
+        World::new(
+            self.walls
+                .iter()
+                .map(|wall| wall.to_wall(textures))
+                .collect(),
+            textures.get(&self.floor_texture_id),
+            textures.get(&self.ceiling_texture_id),
+        )
+    }
 }
 
 #[derive(Deserialize)]
@@ -62,13 +80,4 @@ impl JsonPainting {
             )
         }
     }
-}
-
-pub fn load_walls_from_json(textures: &TextureLibrary, json: &str) -> Vec<Wall> {
-    let world: JsonWorld = serde_json::from_str(json).expect("JSON was not well-formatted");
-    let mut walls = Vec::<Wall>::new();
-    for wall in world.walls {
-        walls.push(wall.to_wall(textures));
-    }
-    walls
 }

@@ -8,6 +8,7 @@ use std::rc::Rc;
 use crate::core::{
     primitives::{line2d::Line2D, ray2d::Ray2D},
     render::texel_provider::TexelProvider,
+    state::{textures::TextureLibrary, world::load_from_json::JsonWorld},
 };
 
 pub struct World {
@@ -17,6 +18,12 @@ pub struct World {
 }
 
 impl World {
+    pub fn load(textures: &TextureLibrary, json: &str) -> World {
+        serde_json::from_str::<JsonWorld>(json)
+            .expect("JSON was not well-formatted")
+            .to_world(textures)
+    }
+
     pub fn new(
         walls: Vec<wall::Wall>,
         floor: &Rc<Box<dyn TexelProvider>>,

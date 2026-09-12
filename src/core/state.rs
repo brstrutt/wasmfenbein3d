@@ -1,9 +1,4 @@
-use std::rc::Rc;
-
-use crate::core::{
-    controls::InputState,
-    render::{camera::Camera, texel_provider::TexelProvider},
-};
+use crate::core::{controls::InputState, render::camera::Camera};
 
 pub mod textures;
 pub mod world;
@@ -19,15 +14,9 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn setup(
-        screen_width: usize,
-        screen_height: usize,
-        walls: Vec<wall::Wall>,
-        floor: &Rc<Box<dyn TexelProvider>>,
-        ceiling: &Rc<Box<dyn TexelProvider>>,
-    ) -> GameState {
+    pub fn setup(screen_width: usize, screen_height: usize, world: World) -> GameState {
         GameState {
-            world: World::new(walls, floor, ceiling),
+            world,
             camera: Camera::new(screen_width, screen_height),
             input: InputState::setup(),
             last_frame_time_ms: 0.0,

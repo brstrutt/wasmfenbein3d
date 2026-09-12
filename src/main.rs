@@ -6,7 +6,7 @@ mod web;
 
 use wasmfenbein3d::core::{
     render::{render_to_screen_buffer, screen_buffer_column_first::ScreenBufferColumnFirst},
-    state::{GameState, world::load_from_json::load_walls_from_json},
+    state::{GameState, world},
 };
 
 use crate::web::{access, main_canvas};
@@ -35,7 +35,7 @@ fn main() {
     );
 
     let textures = textures::load();
-    let walls = load_walls_from_json(&textures, include_str!("./world/data.json"));
+    let world = world::World::load(&textures, include_str!("./world/data.json"));
 
     let world_load_finish_time = web::window::now_in_ms();
     log::info!(
@@ -46,9 +46,7 @@ fn main() {
     let state = Rc::new(RefCell::new(GameState::setup(
         screen_width,
         screen_height,
-        walls,
-        textures.get(textures::BIG_FLOOR.id),
-        textures.get(textures::FLOOR.id),
+        world,
     )));
 
     controls::setup(state.clone());
