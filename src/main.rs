@@ -3,17 +3,13 @@ mod controls;
 mod hud;
 mod textures;
 mod web;
-mod world;
 
 use wasmfenbein3d::core::{
     render::{render_to_screen_buffer, screen_buffer_column_first::ScreenBufferColumnFirst},
-    state::GameState,
+    state::{GameState, world::load_from_json::load_walls_from_json},
 };
 
-use crate::{
-    web::{access, main_canvas},
-    world::load_walls,
-};
+use crate::web::{access, main_canvas};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -39,7 +35,7 @@ fn main() {
     );
 
     let textures = textures::load();
-    let walls = load_walls(&textures);
+    let walls = load_walls_from_json(&textures, include_str!("./world/data.json"));
 
     let world_load_finish_time = web::window::now_in_ms();
     log::info!(
