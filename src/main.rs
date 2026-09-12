@@ -15,7 +15,7 @@ fn main() {
     console_error_panic_hook::set_once();
     wasm_logger::init(wasm_logger::Config::new(log::Level::Debug));
 
-    let start_time = web::window::now_in_ms();
+    let mut timing_logger = TimingLogger::new();
     log::info!("Starting up!");
 
     main_canvas::update_canvas_size();
@@ -28,20 +28,12 @@ fn main() {
         screen_height,
     )));
 
-    let canvas_finish_time = web::window::now_in_ms();
-    log::info!(
-        "Canvas setup! Time taken: {}ms",
-        canvas_finish_time - start_time
-    );
+    timing_logger.log_time("Canvas setup!");
 
     let textures = TextureLibrary::load(&textures::TILING_TEXTURES, &textures::TEXTURES);
     let world = world::World::load(&textures, include_str!("./world/data.json"));
 
-    let world_load_finish_time = web::window::now_in_ms();
-    log::info!(
-        "World loaded! Time taken: {}ms",
-        world_load_finish_time - canvas_finish_time
-    );
+    timing_logger.log_time("World loaded!!");
 
     let state = Rc::new(RefCell::new(GameState::setup(
         screen_width,
@@ -60,8 +52,28 @@ fn main() {
         let mut state = state.borrow_mut();
         state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
     });
-    log::info!(
-        "Setup complete! Total time taken: {}ms",
-        web::window::now_in_ms() - start_time
-    );
+
+    timing_logger.log_time("Setup complete!");
+}
+
+struct TimingLogger {
+    last_call_time_ms: f64,
+}
+
+impl TimingLogger {
+    pub fn new() -> TimingLogger {
+        TimingLogger {
+            last_call_time_ms: web::window::now_in_ms(),
+        }
+    }
+
+    pub fn log_time(&mut self, msg: &str) {
+        let current_time = web::window::now_in_ms();
+        log::info!(
+            "Time taken: {}ms, Msg: {}",
+            current_time - self.last_call_time_ms,
+            msg
+        );
+        self.last_call_time_ms = current_time;
+    }
 }
