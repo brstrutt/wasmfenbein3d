@@ -1,6 +1,6 @@
 use super::rgb::{RGB, WHITE};
 
-pub const BRIGHTNESS_STEPS: usize = 100;
+pub const BRIGHTNESS_STEPS: usize = 10;
 pub const BRIGHTNESS_STEPS_F64: f64 = BRIGHTNESS_STEPS as f64;
 pub const MAX_BRIGHTNESS_INDEX: usize = BRIGHTNESS_STEPS - 1;
 
