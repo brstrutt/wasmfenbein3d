@@ -6,7 +6,7 @@ mod web;
 
 use wasmfenbein3d::core::{
     render::{render_to_screen_buffer, screen_buffer_column_first::ScreenBufferColumnFirst},
-    state::{GameState, world},
+    state::{GameState, textures::TextureLibrary, world},
 };
 
 use crate::web::{access, main_canvas};
@@ -34,7 +34,7 @@ fn main() {
         canvas_finish_time - start_time
     );
 
-    let textures = textures::load();
+    let textures = TextureLibrary::load(&textures::TILING_TEXTURES, &textures::TEXTURES);
     let world = world::World::load(&textures, include_str!("./world/data.json"));
 
     let world_load_finish_time = web::window::now_in_ms();

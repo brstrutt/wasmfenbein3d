@@ -1,13 +1,12 @@
-use wasmfenbein3d::{
-    core::state::textures::{RawTexture, TextureLibrary},
-    include_texture,
-};
+use wasmfenbein3d::{core::state::textures::RawTexture, include_texture};
 
 // Tiling
 pub const BIG_FLOOR: RawTexture = include_texture!("big_floor");
 pub const FLOOR: RawTexture = include_texture!("floor");
 pub const WALL_STONE: RawTexture = include_texture!("wall_stone");
 pub const WALL_WOOD: RawTexture = include_texture!("wall_wood");
+
+pub const TILING_TEXTURES: [&RawTexture; 4] = [&BIG_FLOOR, &FLOOR, &WALL_STONE, &WALL_WOOD];
 
 // Non-tiling
 pub const BLOOD_IN_THE_DARKNESS: RawTexture = include_texture!("blood_in_the_darkness");
@@ -23,21 +22,16 @@ pub const TAALS_HORN_KEEP: RawTexture = include_texture!("taals_horn_keep");
 pub const UBERSREIK_FIVE: RawTexture = include_texture!("ubersreik_five");
 pub const VERMINTIDE_TAPESTRY: RawTexture = include_texture!("vermintide_tapestry");
 
-pub fn load() -> TextureLibrary {
-    TextureLibrary::load(
-        &[&BIG_FLOOR, &FLOOR, &WALL_STONE, &WALL_WOOD],
-        &[
-            &BLOOD_IN_THE_DARKNESS,
-            &BURPLESPUE_HALESCOURGE,
-            &CASTLE_DRACHENFELS,
-            &INTO_THE_NEST,
-            &NOKIA_ART_JAM_3_HOUSE,
-            &NOKIA_ART_JAM_3_KEYBOARD_CAT,
-            &NOKIA_ART_JAM_3_WORMS,
-            &RIGHTEOUS_STAND,
-            &TAALS_HORN_KEEP,
-            &UBERSREIK_FIVE,
-            &VERMINTIDE_TAPESTRY,
-        ],
-    )
-}
+pub const TEXTURES: [&RawTexture; 11] = [
+    &BLOOD_IN_THE_DARKNESS,
+    &BURPLESPUE_HALESCOURGE,
+    &CASTLE_DRACHENFELS,
+    &INTO_THE_NEST,
+    &NOKIA_ART_JAM_3_HOUSE,
+    &NOKIA_ART_JAM_3_KEYBOARD_CAT,
+    &NOKIA_ART_JAM_3_WORMS,
+    &RIGHTEOUS_STAND,
+    &TAALS_HORN_KEEP,
+    &UBERSREIK_FIVE,
+    &VERMINTIDE_TAPESTRY,
+];
