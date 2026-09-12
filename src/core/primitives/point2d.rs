@@ -1,3 +1,5 @@
+use serde::Deserialize;
+
 mod distance;
 mod get_angle;
 mod length;
@@ -5,7 +7,7 @@ mod normalise;
 mod operators;
 mod rotate;
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy, Deserialize)]
 pub struct Point2D {
     pub x: f64,
     pub y: f64,

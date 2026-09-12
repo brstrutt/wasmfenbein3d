@@ -1,3 +1,4 @@
+pub mod load_from_json;
 pub mod painting;
 pub mod wall;
 pub mod walls;

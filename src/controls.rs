@@ -7,7 +7,7 @@ use wasm_bindgen::{JsCast, prelude::Closure};
 use wasmfenbein3d::core::{motion, state::GameState};
 use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
-use crate::{web, world::entity_ids::*};
+use crate::{textures, web};
 
 pub fn setup(state: Rc<RefCell<GameState>>) {
     setup_keyboard_movement(state.clone());
@@ -174,19 +174,19 @@ fn setup_click_passthrough(state: Rc<RefCell<GameState>>) {
 
 fn on_click(item_id: String) {
     match item_id.as_str() {
-        NOKIA_JAM_HOUSE_ID => {
+        val if val == textures::NOKIA_ART_JAM_3_HOUSE.id => {
             log::info!("House is thinking it's not Lupus!");
         }
-        NOKIA_JAM_CAT_ID => {
+        val if val == textures::NOKIA_ART_JAM_3_KEYBOARD_CAT.id => {
             log::info!("Look at that cat GO!");
         }
-        NOKIA_JAM_WORMS_ID => {
+        val if val == textures::NOKIA_ART_JAM_3_WORMS.id => {
             log::info!("Damn these worms are ANGRY!");
         }
-        VERMINTIDE_TAPESTRY_ID => {
+        val if val == textures::VERMINTIDE_TAPESTRY.id => {
             log::info!("Clicked on the tapestry!");
         }
-        UBERSREIK_FIVE_ID => {
+        val if val == textures::UBERSREIK_FIVE.id => {
             let popup_page = web::access::popup_page();
             if popup_page.hidden() {
                 web::access::document().exit_pointer_lock();
