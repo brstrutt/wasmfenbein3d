@@ -1,8 +1,9 @@
 use super::rgb::{RGB, WHITE};
 
-pub const BRIGHTNESS_STEPS: usize = 10;
+pub const BRIGHTNESS_STEPS: usize = 20;
 pub const BRIGHTNESS_STEPS_F64: f64 = BRIGHTNESS_STEPS as f64;
 pub const MAX_BRIGHTNESS_INDEX: usize = BRIGHTNESS_STEPS - 1;
+const DARKNESS_SCALE_FACTOR: f64 = 5.0 / BRIGHTNESS_STEPS_F64;
 
 #[derive(Clone)]
 pub struct RgbBrightnessLookupTable {
@@ -14,8 +15,8 @@ impl RgbBrightnessLookupTable {
         let mut values = [WHITE; BRIGHTNESS_STEPS];
 
         for (index, value) in values.iter_mut().enumerate() {
-            let darkness_index = (BRIGHTNESS_STEPS - index) as f64 / 50.0;
-            *value = max_value / (1.0 + darkness_index);
+            let lightness_index = BRIGHTNESS_STEPS_F64 - index as f64;
+            *value = max_value / f64::max(DARKNESS_SCALE_FACTOR * lightness_index, 1.0);
         }
 
         RgbBrightnessLookupTable { values }
