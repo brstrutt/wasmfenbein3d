@@ -22,6 +22,7 @@ fn main() {
     console_error_panic_hook::set_once();
     wasm_logger::init(wasm_logger::Config::new(log::Level::Debug));
 
+    let start_time = web::window::now_in_ms();
     log::info!("Starting up!");
 
     main_canvas::update_canvas_size();
@@ -34,10 +35,22 @@ fn main() {
         screen_height,
     )));
 
+    let canvas_finish_time = web::window::now_in_ms();
+    log::info!(
+        "Canvas setup! Time taken: {}ms",
+        canvas_finish_time - start_time
+    );
+
     let mut palette = RgbPalette::new();
     let walls = load_walls(&mut palette);
     let floor_texture = textures::big_floor::load_texture(&mut palette);
     let ceiling_texture = textures::floor::load_texture(&mut palette);
+
+    let world_load_finish_time = web::window::now_in_ms();
+    log::info!(
+        "World loaded! Time taken: {}ms",
+        world_load_finish_time - canvas_finish_time
+    );
 
     let state = Rc::new(RefCell::new(GameState::setup(
         screen_width,
@@ -59,4 +72,8 @@ fn main() {
         let mut state = state.borrow_mut();
         state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
     });
+    log::info!(
+        "Setup complete! Total time taken: {}ms",
+        web::window::now_in_ms() - start_time
+    );
 }
