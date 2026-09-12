@@ -1,4 +1,4 @@
-use crate::core::{primitives::point2d::Point2D, world::World};
+use crate::core::{primitives::point2d::Point2D, state::GameState};
 
 pub struct InputState {
     pub move_left: bool,
@@ -45,10 +45,9 @@ impl InputState {
         motion.normalise()
     }
 
-    pub fn get_items_under_cursor(&self, environment: &World) -> Vec<String> {
+    pub fn get_items_under_cursor(&self, state: &GameState) -> Vec<String> {
         let mut item_ids = vec![];
-        if let Some(collision) = environment.nearest_wall_intersecting_ray(&environment.camera.ray)
-        {
+        if let Some(collision) = state.world.nearest_wall_intersecting_ray(&state.camera.ray) {
             if collision.wall.paintings.len() > 0 {
                 for painting in collision.wall.get_paintings_in_column(
                     collision

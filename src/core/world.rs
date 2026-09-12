@@ -1,4 +1,3 @@
-pub mod camera;
 pub mod painting;
 pub mod wall;
 pub mod walls;
@@ -8,12 +7,11 @@ use std::rc::Rc;
 use crate::core::{
     primitives::{line2d::Line2D, ray2d::Ray2D},
     render::{rgb::WHITE, rgb_palette::RgbPalette, rgbv::RGBV, tiling_texture::TilingTexture},
-    world::{camera::Camera, wall::Wall, walls::WallCollision},
+    world::{wall::Wall, walls::WallCollision},
 };
 
 pub struct World {
     pub walls: Vec<Wall>,
-    pub camera: Camera,
     pub skybox_colour: RGBV,
     pub floor: Rc<TilingTexture>,
     pub ceiling: Rc<TilingTexture>,
@@ -21,8 +19,6 @@ pub struct World {
 
 impl World {
     pub fn new(
-        screen_width: usize,
-        screen_height: usize,
         walls: Vec<Wall>,
         palette: &mut RgbPalette,
         floor: Rc<TilingTexture>,
@@ -30,7 +26,6 @@ impl World {
     ) -> World {
         World {
             walls: walls,
-            camera: Camera::new(screen_width, screen_height),
             skybox_colour: RGBV::from_rgb(&WHITE, palette),
             floor,
             ceiling,

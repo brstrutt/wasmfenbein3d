@@ -5,6 +5,7 @@ use screen_buffer::ScreenBuffer;
 
 use std::{cell::RefCell, rc::Rc};
 
+pub mod camera;
 mod colour;
 mod column_data;
 mod column_renderer;
@@ -35,7 +36,7 @@ pub fn render_to_screen_buffer<Screen: ScreenBuffer>(
 
 fn render_background<Screen: ScreenBuffer>(screen_buffer: &Rc<RefCell<Screen>>, state: &GameState) {
     let mut screen_buffer = screen_buffer.borrow_mut();
-    let camera = state.world.camera.clone();
+    let camera = state.camera.clone();
     let half_screen_height = screen_buffer.height() as f64 / 2.0;
 
     let half_wall_height = half_screen_height * WALL_HEIGHT;
@@ -65,13 +66,13 @@ fn render_walls<Screen: ScreenBuffer>(screen_buffer: &Rc<RefCell<Screen>>, state
     let screen_height_f64 = screen_buffer.height() as f64;
 
     for x in 0..screen_buffer.width() {
-        let ray = state.world.camera.ray_for_column(x);
+        let ray = state.camera.ray_for_column(x);
         let wall_intersection = state.world.nearest_wall_intersecting_ray(&ray);
 
         if let Some(wall_intersection) = wall_intersection {
             let column_data = ColumnData::init(
                 &wall_intersection,
-                &state.world.camera.ray.origin,
+                &state.camera.ray.origin,
                 &screen_height_f64,
             );
             let mut renderer =

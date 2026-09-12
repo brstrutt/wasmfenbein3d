@@ -146,7 +146,7 @@ fn setup_click_passthrough(state: Rc<RefCell<GameState>>) {
     let cloned_state = state.clone();
     web::main_canvas::add_event_listener_with_callback("click", move |_e: MouseEvent| {
         let state = cloned_state.borrow();
-        let item_ids = state.input.get_items_under_cursor(&state.world);
+        let item_ids = state.input.get_items_under_cursor(&state);
         for id in item_ids {
             on_click(id);
         }
@@ -163,7 +163,7 @@ fn setup_click_passthrough(state: Rc<RefCell<GameState>>) {
         let mut state = state.borrow_mut();
 
         if !state.input.touch_has_moved_camera {
-            let item_ids = state.input.get_items_under_cursor(&state.world);
+            let item_ids = state.input.get_items_under_cursor(&state);
             for id in item_ids {
                 on_click(id);
             }
@@ -266,16 +266,16 @@ fn setup_character_motion_loop(state: Rc<RefCell<GameState>>) {
         let velocity_per_s = if state.input.sprint { 12.0 } else { 4.0 };
         let velocity = velocity_per_s * time_since_last_frame_s;
 
-        let camera_rotation = state.world.camera.ray.get_angle();
+        let camera_rotation = state.camera.ray.get_angle();
         let motion = state
             .input
             .get_cameraspace_movement_direction()
             .rotate(camera_rotation)
             * velocity;
 
-        state.world.camera.ray.origin =
-            motion::move_object(state.world.camera.ray.origin, &motion, &state.world);
-        state.world.camera.refresh_screen_rays();
+        state.camera.ray.origin =
+            motion::move_object(state.camera.ray.origin, &motion, &state.world);
+        state.camera.refresh_screen_rays();
     });
 }
 
@@ -289,11 +289,8 @@ fn setup_camera_motion_loop(state: Rc<RefCell<GameState>>) {
         state.input.camera_rotation = 0;
 
         if camera_rotation != 0 {
-            state.world.camera = state
-                .world
-                .camera
-                .rotate(camera_rotation as f64 * ROTATION_SPEED);
-            state.world.camera.refresh_screen_rays();
+            state.camera = state.camera.rotate(camera_rotation as f64 * ROTATION_SPEED);
+            state.camera.refresh_screen_rays();
         }
     });
 }

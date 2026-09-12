@@ -2,12 +2,13 @@ use std::rc::Rc;
 
 use crate::core::{
     controls::InputState,
-    render::{rgb_palette::RgbPalette, tiling_texture::TilingTexture},
+    render::{camera::Camera, rgb_palette::RgbPalette, tiling_texture::TilingTexture},
     world::{World, wall::Wall},
 };
 
 pub struct GameState {
     pub world: World,
+    pub camera: Camera,
     pub input: InputState,
     pub last_frame_time_ms: f64,
     pub last_time_between_frames_ms: f64,
@@ -24,7 +25,8 @@ impl GameState {
         ceiling: Rc<TilingTexture>,
     ) -> GameState {
         GameState {
-            world: World::new(screen_width, screen_height, walls, palette, floor, ceiling),
+            world: World::new(walls, palette, floor, ceiling),
+            camera: Camera::new(screen_width, screen_height),
             input: InputState::setup(),
             last_frame_time_ms: 0.0,
             last_time_between_frames_ms: 0.0,
