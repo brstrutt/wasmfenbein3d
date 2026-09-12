@@ -6,27 +6,20 @@ use std::rc::Rc;
 
 use crate::core::{
     primitives::{line2d::Line2D, ray2d::Ray2D},
-    render::{rgb::WHITE, rgb_palette::RgbPalette, rgbv::RGBV, tiling_texture::TilingTexture},
+    render::tiling_texture::TilingTexture,
     world::{wall::Wall, walls::WallCollision},
 };
 
 pub struct World {
     pub walls: Vec<Wall>,
-    pub skybox_colour: RGBV,
     pub floor: Rc<TilingTexture>,
     pub ceiling: Rc<TilingTexture>,
 }
 
 impl World {
-    pub fn new(
-        walls: Vec<Wall>,
-        palette: &mut RgbPalette,
-        floor: Rc<TilingTexture>,
-        ceiling: Rc<TilingTexture>,
-    ) -> World {
+    pub fn new(walls: Vec<Wall>, floor: Rc<TilingTexture>, ceiling: Rc<TilingTexture>) -> World {
         World {
             walls: walls,
-            skybox_colour: RGBV::from_rgb(&WHITE, palette),
             floor,
             ceiling,
         }

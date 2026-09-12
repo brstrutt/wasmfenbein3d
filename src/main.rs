@@ -56,7 +56,6 @@ fn main() {
         screen_width,
         screen_height,
         walls,
-        &mut palette,
         floor_texture.clone(),
         ceiling_texture,
     )));
