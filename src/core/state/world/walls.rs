@@ -3,10 +3,13 @@ use std::rc::Rc;
 use super::wall::Wall;
 use crate::core::{
     primitives::{line2d::Line2D, point2d::Point2D, ray2d::Ray2D},
-    render::tiling_texture::TilingTexture,
+    render::texel_provider::TexelProvider,
 };
 
-pub fn walls_from_point_path(points: &[Point2D], texture: &Rc<TilingTexture>) -> Vec<Wall> {
+pub fn walls_from_point_path(
+    points: &[Point2D],
+    texture: &Rc<Box<dyn TexelProvider>>,
+) -> Vec<Wall> {
     if points.len() < 2 {
         return vec![];
     }

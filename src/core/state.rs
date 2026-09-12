@@ -2,9 +2,10 @@ use std::rc::Rc;
 
 use crate::core::{
     controls::InputState,
-    render::{camera::Camera, tiling_texture::TilingTexture},
+    render::{camera::Camera, texel_provider::TexelProvider},
 };
 
+pub mod textures;
 pub mod world;
 use world::*;
 
@@ -22,8 +23,8 @@ impl GameState {
         screen_width: usize,
         screen_height: usize,
         walls: Vec<wall::Wall>,
-        floor: Rc<TilingTexture>,
-        ceiling: Rc<TilingTexture>,
+        floor: &Rc<Box<dyn TexelProvider>>,
+        ceiling: &Rc<Box<dyn TexelProvider>>,
     ) -> GameState {
         GameState {
             world: World::new(walls, floor, ceiling),

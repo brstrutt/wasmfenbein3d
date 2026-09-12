@@ -3,19 +3,23 @@ use std::rc::Rc;
 use super::painting::Painting;
 use crate::core::{
     primitives::{line2d::Line2D, point2d::Point2D},
-    render::tiling_texture::TilingTexture,
+    render::texel_provider::TexelProvider,
 };
 
 pub const WALL_HEIGHT: f64 = 2.0;
 
 pub struct Wall {
     pub position: Line2D,
-    pub texture: Rc<TilingTexture>,
+    pub texture: Rc<Box<dyn TexelProvider>>,
     pub paintings: Vec<Painting>,
 }
 
 impl Wall {
-    pub fn new(line: Line2D, texture: &Rc<TilingTexture>, mut paintings: Vec<Painting>) -> Self {
+    pub fn new(
+        line: Line2D,
+        texture: &Rc<Box<dyn TexelProvider>>,
+        mut paintings: Vec<Painting>,
+    ) -> Self {
         paintings.sort_by(|a, b| a.top_left_corner.y.total_cmp(&b.top_left_corner.y));
         Wall {
             position: line,

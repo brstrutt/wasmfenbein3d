@@ -1,14 +1,11 @@
 use std::rc::Rc;
 
 use super::wall::WALL_HEIGHT;
-use crate::core::{
-    primitives::point2d::Point2D,
-    render::{texel_provider::TexelProvider, texture::Texture},
-};
+use crate::core::{primitives::point2d::Point2D, render::texel_provider::TexelProvider};
 
 pub struct Painting {
     pub id: String,
-    pub texture: Rc<Texture>,
+    pub texture: Rc<Box<dyn TexelProvider>>,
     pub top_left_corner: Point2D,
     pub bottom_right_corner: Point2D,
     pub width: f64,
@@ -16,7 +13,11 @@ pub struct Painting {
 }
 
 impl Painting {
-    pub fn new_to_scale(id: &str, texture: Rc<Texture>, top_left_corner: Point2D) -> Self {
+    pub fn new_to_scale(
+        id: &str,
+        texture: &Rc<Box<dyn TexelProvider>>,
+        top_left_corner: Point2D,
+    ) -> Self {
         let bottom = WALL_HEIGHT - top_left_corner.y;
 
         let painting_height = bottom - top_left_corner.y;
@@ -33,14 +34,14 @@ impl Painting {
 
     pub fn new(
         id: &str,
-        texture: Rc<Texture>,
+        texture: &Rc<Box<dyn TexelProvider>>,
         top_left_corner: Point2D,
         bottom_right_corner: Point2D,
     ) -> Self {
         let size = bottom_right_corner - top_left_corner;
         Painting {
             id: String::from(id),
-            texture,
+            texture: texture.clone(),
             top_left_corner,
             bottom_right_corner,
             width: size.x,

@@ -42,9 +42,8 @@ fn main() {
     );
 
     let mut palette = RgbPalette::new();
-    let walls = load_walls(&mut palette);
-    let floor_texture = textures::big_floor::load_texture(&mut palette);
-    let ceiling_texture = textures::floor::load_texture(&mut palette);
+    let textures = textures::load(&mut palette);
+    let walls = load_walls(&textures);
 
     let world_load_finish_time = web::window::now_in_ms();
     log::info!(
@@ -56,8 +55,8 @@ fn main() {
         screen_width,
         screen_height,
         walls,
-        floor_texture.clone(),
-        ceiling_texture,
+        textures.get(textures::BIG_FLOOR.id),
+        textures.get(textures::FLOOR.id),
     )));
 
     controls::setup(state.clone());

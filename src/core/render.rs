@@ -56,7 +56,7 @@ fn render_background<Screen: ScreenBuffer>(screen_buffer: &Rc<RefCell<Screen>>, 
             &y,
             &camera,
             dist_to_floor,
-            texture,
+            texture.as_ref().as_ref(),
             distance_to_brightness_level(dist_to_floor),
             &mut screen_buffer,
         );

@@ -6,25 +6,25 @@ use std::rc::Rc;
 
 use crate::core::{
     primitives::{line2d::Line2D, ray2d::Ray2D},
-    render::tiling_texture::TilingTexture,
+    render::texel_provider::TexelProvider,
 };
 
 pub struct World {
     pub walls: Vec<wall::Wall>,
-    pub floor: Rc<TilingTexture>,
-    pub ceiling: Rc<TilingTexture>,
+    pub floor: Rc<Box<dyn TexelProvider>>,
+    pub ceiling: Rc<Box<dyn TexelProvider>>,
 }
 
 impl World {
     pub fn new(
         walls: Vec<wall::Wall>,
-        floor: Rc<TilingTexture>,
-        ceiling: Rc<TilingTexture>,
+        floor: &Rc<Box<dyn TexelProvider>>,
+        ceiling: &Rc<Box<dyn TexelProvider>>,
     ) -> World {
         World {
             walls: walls,
-            floor,
-            ceiling,
+            floor: floor.clone(),
+            ceiling: ceiling.clone(),
         }
     }
 

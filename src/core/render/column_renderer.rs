@@ -70,7 +70,7 @@ impl<'a> ColumnRenderer<'a> {
         };
 
         let create_wall_segment = |screen_space_start, screen_space_end_y| ColumnSegment {
-            texture: wall_texture,
+            texture: wall_texture.as_ref(),
             screen_space_end_y: screen_space_end_y as usize,
             texture_space_x: wall_texture_space_x,
             texture_space_start_y: screen_space_y_to_wall_space_y(screen_space_start)
@@ -103,7 +103,7 @@ impl<'a> ColumnRenderer<'a> {
                 let screen_space_end_y = painting_bottom_screen_space.min(screen_end_y as isize);
 
                 render_plan.push(ColumnSegment {
-                    texture: painting.texture.as_ref(),
+                    texture: painting.texture.as_ref().as_ref(),
                     screen_space_end_y: painting_bottom_screen_space as usize,
                     texture_space_x: (column.wall_x_pos - painting.top_left_corner.x)
                         * painting.texture.width_f64()

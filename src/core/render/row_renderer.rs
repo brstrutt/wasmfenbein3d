@@ -1,15 +1,12 @@
 use std::cell::RefMut;
 
-use super::{
-    camera::Camera, screen_buffer::ScreenBuffer, texel_provider::TexelProvider,
-    tiling_texture::TilingTexture,
-};
+use super::{camera::Camera, screen_buffer::ScreenBuffer, texel_provider::TexelProvider};
 
 pub fn render_row<Screen: ScreenBuffer>(
     y: &usize,
     camera: &Camera,
     dist_to_floor: f64,
-    texture: &TilingTexture,
+    texture: &dyn TexelProvider,
     brightness: usize,
     screen_buffer: &mut RefMut<Screen>,
 ) {
