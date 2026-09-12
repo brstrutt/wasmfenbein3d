@@ -1,7 +1,7 @@
 use wasmfenbein3d::core::{
     primitives::{line2d::Line2D, point2d::Point2D},
     render::rgb_palette::RgbPalette,
-    world::{painting::Painting, wall::Wall, walls::walls_from_point_path},
+    state::world::{painting::Painting, wall::Wall, walls::walls_from_point_path},
 };
 
 use crate::textures;

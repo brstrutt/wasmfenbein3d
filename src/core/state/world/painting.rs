@@ -1,9 +1,9 @@
 use std::rc::Rc;
 
+use super::wall::WALL_HEIGHT;
 use crate::core::{
     primitives::point2d::Point2D,
     render::{texel_provider::TexelProvider, texture::Texture},
-    world::wall::WALL_HEIGHT,
 };
 
 pub struct Painting {

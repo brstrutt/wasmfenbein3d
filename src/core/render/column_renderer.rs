@@ -4,7 +4,7 @@ use super::{
     column_data::ColumnData, distance_to_brightness_level::distance_to_brightness_level,
     screen_buffer::ScreenBuffer, texel_provider::TexelProvider,
 };
-use crate::core::world::wall::WALL_HEIGHT;
+use crate::core::state::world::wall::WALL_HEIGHT;
 
 pub struct ColumnRenderer<'a> {
     screen: ScreenSpace,

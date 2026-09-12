@@ -1,4 +1,6 @@
-use crate::core::{render::column_data::ColumnData, state::GameState, world::wall::WALL_HEIGHT};
+use crate::core::{
+    render::column_data::ColumnData, state::GameState, state::world::wall::WALL_HEIGHT,
+};
 use column_renderer::ColumnRenderer;
 use distance_to_brightness_level::distance_to_brightness_level;
 use screen_buffer::ScreenBuffer;

@@ -1,6 +1,6 @@
 use crate::core::{
     primitives::{line2d::Line2D, point2d::Point2D},
-    world::World,
+    state::world::World,
 };
 
 pub fn move_object(start_position: Point2D, velocity: &Point2D, world: &World) -> Point2D {

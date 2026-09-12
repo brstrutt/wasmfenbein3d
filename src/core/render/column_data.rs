@@ -1,6 +1,6 @@
 use crate::core::{
     primitives::point2d::Point2D,
-    world::{painting::Painting, wall::WALL_HEIGHT, walls::WallCollision},
+    state::world::{painting::Painting, wall::WALL_HEIGHT, walls::WallCollision},
 };
 
 pub struct ColumnData<'a> {

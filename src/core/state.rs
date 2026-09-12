@@ -3,11 +3,13 @@ use std::rc::Rc;
 use crate::core::{
     controls::InputState,
     render::{camera::Camera, tiling_texture::TilingTexture},
-    world::{World, wall::Wall},
 };
 
+pub mod world;
+use world::*;
+
 pub struct GameState {
-    pub world: World,
+    pub world: world::World,
     pub camera: Camera,
     pub input: InputState,
     pub last_frame_time_ms: f64,
@@ -19,7 +21,7 @@ impl GameState {
     pub fn setup(
         screen_width: usize,
         screen_height: usize,
-        walls: Vec<Wall>,
+        walls: Vec<wall::Wall>,
         floor: Rc<TilingTexture>,
         ceiling: Rc<TilingTexture>,
     ) -> GameState {
