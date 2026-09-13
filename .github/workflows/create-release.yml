@@ -52,12 +52,13 @@ jobs:
           run: cargo install --locked trunk
 
         - name: Build
-          run: trunk build --release
+          run: |
+            cargo build
 
         - name: Create release archives
           run: |
             # Create tarball for Unix systems
-            tar -czvf wasmfenbein3d-${{ github.ref_name }}.tar.gz -C dist .
+            tar -czvf wasmfenbein3d-${{ github.ref_name }}.tar.gz -C target .
 
         - name: Create GitHub Release
           uses: softprops/action-gh-release@v3
