@@ -7,7 +7,7 @@ pub mod textures;
 pub mod world;
 use world::*;
 
-pub struct GameState {
+pub struct State {
     pub screen_buffer: Box<dyn ScreenBuffer>,
     pub world: world::World,
     pub camera: Camera,
@@ -17,9 +17,9 @@ pub struct GameState {
     pub last_time_to_render_one_frame_ms: f64,
 }
 
-impl GameState {
-    pub fn setup(screen_buffer: Box<dyn ScreenBuffer>, world: World) -> GameState {
-        GameState {
+impl State {
+    pub fn setup(screen_buffer: Box<dyn ScreenBuffer>, world: World) -> State {
+        State {
             camera: Camera::new(screen_buffer.width(), screen_buffer.height()),
             screen_buffer,
             world,

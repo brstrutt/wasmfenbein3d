@@ -1,4 +1,4 @@
-use crate::{render::column_data::ColumnData, state::GameState, state::world::wall::WALL_HEIGHT};
+use crate::{render::column_data::ColumnData, state::State, state::world::wall::WALL_HEIGHT};
 use column_renderer::ColumnRenderer;
 use distance_to_brightness_level::distance_to_brightness_level;
 
@@ -21,14 +21,14 @@ pub mod texel_provider;
 pub mod texture;
 pub mod tiling_texture;
 
-pub fn render_to_screen_buffer(state: &RefCell<GameState>) {
+pub fn render_to_screen_buffer(state: &RefCell<State>) {
     let mut state = state.borrow_mut();
     state.screen_buffer.reset_draw_history();
     render_walls(&mut state);
     render_background(&mut state);
 }
 
-fn render_background(state: &mut GameState) {
+fn render_background(state: &mut State) {
     let screen_buffer = &state.screen_buffer;
     let camera = state.camera.clone();
     let half_screen_height = screen_buffer.height() as f64 / 2.0;
@@ -55,7 +55,7 @@ fn render_background(state: &mut GameState) {
     }
 }
 
-fn render_walls(state: &mut GameState) {
+fn render_walls(state: &mut State) {
     let screen_buffer = &state.screen_buffer;
     let screen_height_f64 = screen_buffer.height() as f64;
 

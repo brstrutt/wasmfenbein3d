@@ -1,16 +1,16 @@
 use std::{cell::RefCell, rc::Rc};
 
-use wasmfenbein3d::state::GameState;
+use wasmfenbein3d::state::State;
 
 use crate::web;
 
-pub fn setup(state: Rc<RefCell<GameState>>) {
+pub fn setup(state: Rc<RefCell<State>>) {
     setup_fps_tracking(state.clone());
     setup_fps_display(state.clone());
     setup_display_resolution(state);
 }
 
-fn setup_fps_display(state: Rc<RefCell<GameState>>) {
+fn setup_fps_display(state: Rc<RefCell<State>>) {
     let document = web::access::document();
 
     let fps_display_element = document
@@ -42,7 +42,7 @@ fn setup_fps_display(state: Rc<RefCell<GameState>>) {
     });
 }
 
-fn setup_fps_tracking(state: Rc<RefCell<GameState>>) {
+fn setup_fps_tracking(state: Rc<RefCell<State>>) {
     web::window::run_function_every_animation_frame(move || {
         let mut state = state.borrow_mut();
         let current_time = web::window::now_in_ms();
@@ -52,7 +52,7 @@ fn setup_fps_tracking(state: Rc<RefCell<GameState>>) {
     });
 }
 
-fn setup_display_resolution(state: Rc<RefCell<GameState>>) {
+fn setup_display_resolution(state: Rc<RefCell<State>>) {
     let screen = &state.borrow().screen_buffer;
     let document = web::access::document();
 

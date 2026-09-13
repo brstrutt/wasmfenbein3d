@@ -6,7 +6,7 @@ mod web;
 
 use wasmfenbein3d::{
     render::render_to_screen_buffer,
-    state::{GameState, textures::TextureLibrary, world},
+    state::{State, textures::TextureLibrary, world},
 };
 
 use crate::web::main_canvas;
@@ -18,7 +18,7 @@ fn main() {
     let mut timing_logger = TimingLogger::new();
     log::info!("Starting up!");
 
-    let state = Rc::new(RefCell::new(GameState::setup(
+    let state = Rc::new(RefCell::new(State::setup(
         main_canvas::setup_screen_buffer(),
         world::World::load(
             &TextureLibrary::load(&textures::TILING_TEXTURES, &textures::TEXTURES),
