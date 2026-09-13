@@ -3,6 +3,7 @@ use crate::{
     render::{camera::Camera, screen_buffer::ScreenBuffer},
 };
 
+pub mod stats;
 pub mod textures;
 pub mod world;
 use world::*;
@@ -12,9 +13,7 @@ pub struct State {
     pub world: world::World,
     pub camera: Camera,
     pub input: InputState,
-    pub last_frame_time_ms: f64,
-    pub last_time_between_frames_ms: f64,
-    pub last_time_to_render_one_frame_ms: f64,
+    pub stats: stats::Stats,
 }
 
 impl State {
@@ -24,9 +23,7 @@ impl State {
             screen_buffer,
             world,
             input: InputState::setup(),
-            last_frame_time_ms: 0.0,
-            last_time_between_frames_ms: 0.0,
-            last_time_to_render_one_frame_ms: 0.0,
+            stats: stats::Stats::new(),
         }
     }
 }

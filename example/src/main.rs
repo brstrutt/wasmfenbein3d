@@ -37,7 +37,7 @@ fn main() {
         main_canvas::render_screen_buffer(&state.screen_buffer);
         let render_end_time = web::window::now_in_ms();
 
-        state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
+        state.stats.render_frame.last_duration_ms = render_end_time - render_start_time;
     });
 
     timing_logger.log_time("Setup complete!");

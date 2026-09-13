@@ -259,9 +259,11 @@ fn setup_character_motion_loop(state: Rc<RefCell<State>>) {
     web::window::run_function_every_animation_frame(move || {
         let mut state = state.borrow_mut();
         let current_time = web::window::now_in_ms();
-        let time_since_last_frame_ms = current_time - state.last_frame_time_ms;
+        state.stats.physics_frame.last_duration_ms =
+            current_time - state.stats.physics_frame.last_time_ms;
+        state.stats.physics_frame.last_time_ms = current_time;
 
-        let time_since_last_frame_s = time_since_last_frame_ms / 1000.0;
+        let time_since_last_frame_s = state.stats.physics_frame.last_duration_ms / 1000.0;
 
         let velocity_per_s = if state.input.sprint { 12.0 } else { 4.0 };
         let velocity = velocity_per_s * time_since_last_frame_s;

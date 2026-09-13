@@ -23,7 +23,7 @@ fn setup_fps_display(state: Rc<RefCell<State>>) {
 
     web::window::run_function_every_animation_frame(move || {
         let state = state.borrow();
-        let fps = 1000.0 / state.last_time_between_frames_ms;
+        let fps = 1000.0 / state.stats.render_frame.last_duration_ms;
 
         fps_display_element
             .first_child()
@@ -35,7 +35,7 @@ fn setup_fps_display(state: Rc<RefCell<State>>) {
             .set_text_content(Some(
                 format!(
                     "Time to Render: {}ms",
-                    state.last_time_to_render_one_frame_ms.round()
+                    state.stats.render_frame.last_duration_ms.round()
                 )
                 .as_str(),
             ));
@@ -46,9 +46,9 @@ fn setup_fps_tracking(state: Rc<RefCell<State>>) {
     web::window::run_function_every_animation_frame(move || {
         let mut state = state.borrow_mut();
         let current_time = web::window::now_in_ms();
-        let time_since_last_frame_ms = current_time - state.last_frame_time_ms;
-        state.last_frame_time_ms = current_time;
-        state.last_time_between_frames_ms = time_since_last_frame_ms;
+        state.stats.render_frame.last_duration_ms =
+            current_time - state.stats.render_frame.last_time_ms;
+        state.stats.render_frame.last_time_ms = current_time;
     });
 }
 
