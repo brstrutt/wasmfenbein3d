@@ -5,7 +5,6 @@ use wasmfenbein3d::state::State;
 use crate::web;
 
 pub fn setup(state: Rc<RefCell<State>>) {
-    setup_fps_tracking(state.clone());
     setup_fps_display(state.clone());
     setup_display_resolution(state);
 }
@@ -39,16 +38,6 @@ fn setup_fps_display(state: Rc<RefCell<State>>) {
                 )
                 .as_str(),
             ));
-    });
-}
-
-fn setup_fps_tracking(state: Rc<RefCell<State>>) {
-    web::window::run_function_every_animation_frame(move || {
-        let mut state = state.borrow_mut();
-        let current_time = web::window::now_in_ms();
-        state.stats.render_frame.last_duration_ms =
-            current_time - state.stats.render_frame.last_time_ms;
-        state.stats.render_frame.last_time_ms = current_time;
     });
 }
 

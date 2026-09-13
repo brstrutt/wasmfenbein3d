@@ -38,6 +38,7 @@ fn main() {
         let render_end_time = web::window::now_in_ms();
 
         state.stats.render_frame.last_duration_ms = render_end_time - render_start_time;
+        state.stats.render_frame.last_time_ms = render_start_time;
     });
 
     timing_logger.log_time("Setup complete!");
