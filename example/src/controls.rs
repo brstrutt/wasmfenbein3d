@@ -4,39 +4,39 @@ use std::{
 };
 
 use wasm_bindgen::{JsCast, prelude::Closure};
-use wasmfenbein3d::{motion, state::State};
+use wasmfenbein3d::{motion, render::screen_buffer::ScreenBuffer, state::State};
 use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
 use crate::{textures, web};
 
-pub fn setup(state: Rc<RefCell<State>>) {
+pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     setup_keyboard_movement(state.clone());
 
     setup_movement_button(
         state.clone(),
         "move_forward",
-        |state: &mut RefMut<State>, new_value: bool| {
+        |state: &mut RefMut<State<Screen>>, new_value: bool| {
             state.input.move_forward = new_value;
         },
     );
     setup_movement_button(
         state.clone(),
         "move_backward",
-        |state: &mut RefMut<State>, new_value: bool| {
+        |state: &mut RefMut<State<Screen>>, new_value: bool| {
             state.input.move_backward = new_value;
         },
     );
     setup_movement_button(
         state.clone(),
         "move_left",
-        |state: &mut RefMut<State>, new_value: bool| {
+        |state: &mut RefMut<State<Screen>>, new_value: bool| {
             state.input.move_left = new_value;
         },
     );
     setup_movement_button(
         state.clone(),
         "move_right",
-        |state: &mut RefMut<State>, new_value: bool| {
+        |state: &mut RefMut<State<Screen>>, new_value: bool| {
             state.input.move_right = new_value;
         },
     );
@@ -51,8 +51,11 @@ pub fn setup(state: Rc<RefCell<State>>) {
     setup_camera_motion_loop(state.clone());
 }
 
-fn setup_movement_button<T: FnMut(&mut RefMut<State>, bool) + Clone>(
-    state: Rc<RefCell<State>>,
+fn setup_movement_button<
+    Screen: ScreenBuffer + 'static,
+    T: FnMut(&mut RefMut<State<Screen>>, bool) + Clone,
+>(
+    state: Rc<RefCell<State<Screen>>>,
     button_id: &str,
     state_change: T,
 ) {
@@ -93,7 +96,7 @@ fn setup_movement_button<T: FnMut(&mut RefMut<State>, bool) + Clone>(
     }
 }
 
-fn setup_keyboard_movement(state: Rc<RefCell<State>>) {
+fn setup_keyboard_movement<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     let cloned_state = state.clone();
     web::document::add_event_listener_with_callback("keydown", move |e: KeyboardEvent| {
         let mut state = cloned_state.borrow_mut();
@@ -125,7 +128,7 @@ fn setup_keyboard_movement(state: Rc<RefCell<State>>) {
     });
 }
 
-fn setup_mouse_capture_on_click(state: Rc<RefCell<State>>) {
+fn setup_mouse_capture_on_click<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     web::main_canvas::add_event_listener_with_callback("click", move |_e: Event| {
         web::access::main_canvas().request_pointer_lock();
     });
@@ -142,7 +145,7 @@ fn setup_mouse_capture_on_click(state: Rc<RefCell<State>>) {
     });
 }
 
-fn setup_click_passthrough(state: Rc<RefCell<State>>) {
+fn setup_click_passthrough<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     let cloned_state = state.clone();
     web::main_canvas::add_event_listener_with_callback("click", move |_e: MouseEvent| {
         let state = cloned_state.borrow();
@@ -197,7 +200,7 @@ fn on_click(item_id: String) {
     }
 }
 
-fn setup_camera_mouse_control(state: Rc<RefCell<State>>) {
+fn setup_camera_mouse_control<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     web::document::add_event_listener_with_callback("mousemove", move |e: MouseEvent| {
         let mut state = state.borrow_mut();
 
@@ -207,7 +210,7 @@ fn setup_camera_mouse_control(state: Rc<RefCell<State>>) {
     });
 }
 
-fn setup_camera_touch_control(state: Rc<RefCell<State>>) {
+fn setup_camera_touch_control<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     let cloned_state = state.clone();
     web::main_canvas::add_event_listener_with_callback("touchstart", move |e: TouchEvent| {
         e.prevent_default();
@@ -255,7 +258,7 @@ fn setup_camera_touch_control(state: Rc<RefCell<State>>) {
     });
 }
 
-fn setup_character_motion_loop(state: Rc<RefCell<State>>) {
+fn setup_character_motion_loop<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     web::window::run_function_every_animation_frame(move || {
         let mut state = state.borrow_mut();
         let current_time = web::window::now_in_ms();
@@ -281,7 +284,7 @@ fn setup_character_motion_loop(state: Rc<RefCell<State>>) {
     });
 }
 
-fn setup_camera_motion_loop(state: Rc<RefCell<State>>) {
+fn setup_camera_motion_loop<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     web::window::run_function_every_animation_frame(move || {
         let mut state = state.borrow_mut();
 

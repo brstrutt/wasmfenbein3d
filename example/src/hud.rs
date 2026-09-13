@@ -1,15 +1,15 @@
 use std::{cell::RefCell, rc::Rc};
 
-use wasmfenbein3d::state::State;
+use wasmfenbein3d::{render::screen_buffer::ScreenBuffer, state::State};
 
 use crate::web;
 
-pub fn setup(state: Rc<RefCell<State>>) {
+pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     setup_fps_display(state.clone());
     setup_display_resolution(state);
 }
 
-fn setup_fps_display(state: Rc<RefCell<State>>) {
+fn setup_fps_display<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     let document = web::access::document();
 
     let fps_display_element = document
@@ -41,7 +41,7 @@ fn setup_fps_display(state: Rc<RefCell<State>>) {
     });
 }
 
-fn setup_display_resolution(state: Rc<RefCell<State>>) {
+fn setup_display_resolution<Screen: ScreenBuffer>(state: Rc<RefCell<State<Screen>>>) {
     let screen = &state.borrow().screen_buffer;
     let document = web::access::document();
 
