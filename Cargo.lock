@@ -259,6 +259,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "example"
+version = "0.1.7"
+dependencies = [
+ "console_error_panic_hook",
+ "log",
+ "wasm-bindgen",
+ "wasm-logger",
+ "wasmfenbein3d",
+ "web-sys",
+]
+
+[[package]]
 name = "exr"
 version = "1.74.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1136,14 +1148,9 @@ dependencies = [
 name = "wasmfenbein3d"
 version = "0.1.7"
 dependencies = [
- "console_error_panic_hook",
  "image",
- "log",
  "serde",
  "serde_json",
- "wasm-bindgen",
- "wasm-logger",
- "web-sys",
 ]
 
 [[package]]

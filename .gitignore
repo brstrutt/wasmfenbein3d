@@ -1,2 +1,6 @@
 /target
 /dist
+/example/target
+/example/dist
+/core/target
+/core/dist
