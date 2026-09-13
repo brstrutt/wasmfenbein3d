@@ -1,14 +1,12 @@
-use std::cell::RefMut;
-
 use super::{camera::Camera, screen_buffer::ScreenBuffer, texel_provider::TexelProvider};
 
-pub fn render_row<Screen: ScreenBuffer>(
+pub fn render_row(
     y: &usize,
     camera: &Camera,
     dist_to_floor: f64,
     texture: &dyn TexelProvider,
     brightness: usize,
-    screen_buffer: &mut RefMut<Screen>,
+    screen_buffer: &mut Box<dyn ScreenBuffer>,
 ) {
     let mut x = 0;
     let mut pixel_index = screen_buffer.coord_to_pixel_index(&x, &y);

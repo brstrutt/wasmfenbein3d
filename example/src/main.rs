@@ -5,11 +5,11 @@ mod textures;
 mod web;
 
 use wasmfenbein3d::{
-    render::{render_to_screen_buffer, screen_buffer_column_first::ScreenBufferColumnFirst},
+    render::render_to_screen_buffer,
     state::{GameState, textures::TextureLibrary, world},
 };
 
-use crate::web::{access, main_canvas};
+use crate::web::main_canvas;
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -18,38 +18,25 @@ fn main() {
     let mut timing_logger = TimingLogger::new();
     log::info!("Starting up!");
 
-    main_canvas::update_canvas_size();
-
-    let screen_width = access::main_canvas().height() as usize;
-    let screen_height = access::main_canvas().width() as usize;
-
-    let screen_buffer = Rc::new(RefCell::new(ScreenBufferColumnFirst::setup(
-        screen_width,
-        screen_height,
-    )));
-
-    timing_logger.log_time("Canvas setup!");
-
-    let textures = TextureLibrary::load(&textures::TILING_TEXTURES, &textures::TEXTURES);
-    let world = world::World::load(&textures, include_str!("./world/data.json"));
-
-    timing_logger.log_time("World loaded!!");
-
     let state = Rc::new(RefCell::new(GameState::setup(
-        screen_width,
-        screen_height,
-        world,
+        main_canvas::setup_screen_buffer(),
+        world::World::load(
+            &TextureLibrary::load(&textures::TILING_TEXTURES, &textures::TEXTURES),
+            include_str!("./world/data.json"),
+        ),
     )));
+
+    timing_logger.log_time("State Setup!!");
 
     controls::setup(state.clone());
-    hud::setup(state.clone(), screen_buffer.clone());
+    hud::setup(state.clone());
     web::window::run_function_every_animation_frame(move || {
         let render_start_time = web::window::now_in_ms();
-        render_to_screen_buffer(&screen_buffer, &state);
-        main_canvas::render_screen_buffer(screen_buffer.borrow());
+        render_to_screen_buffer(&state);
+        let mut state = state.borrow_mut();
+        main_canvas::render_screen_buffer(&state.screen_buffer);
         let render_end_time = web::window::now_in_ms();
 
-        let mut state = state.borrow_mut();
         state.last_time_to_render_one_frame_ms = render_end_time - render_start_time;
     });
 

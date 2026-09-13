@@ -1,10 +1,14 @@
-use crate::{controls::InputState, render::camera::Camera};
+use crate::{
+    controls::InputState,
+    render::{camera::Camera, screen_buffer::ScreenBuffer},
+};
 
 pub mod textures;
 pub mod world;
 use world::*;
 
 pub struct GameState {
+    pub screen_buffer: Box<dyn ScreenBuffer>,
     pub world: world::World,
     pub camera: Camera,
     pub input: InputState,
@@ -14,10 +18,11 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn setup(screen_width: usize, screen_height: usize, world: World) -> GameState {
+    pub fn setup(screen_buffer: Box<dyn ScreenBuffer>, world: World) -> GameState {
         GameState {
+            camera: Camera::new(screen_buffer.width(), screen_buffer.height()),
+            screen_buffer,
             world,
-            camera: Camera::new(screen_width, screen_height),
             input: InputState::setup(),
             last_frame_time_ms: 0.0,
             last_time_between_frames_ms: 0.0,
