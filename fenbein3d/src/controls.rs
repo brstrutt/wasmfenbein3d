@@ -12,6 +12,20 @@ pub struct InputState {
     pub touch_has_moved_camera: bool,
 }
 
+#[derive(PartialEq, Clone)]
+pub enum Direction {
+    Left,
+    Right,
+    Forward,
+    Backward,
+}
+
+#[derive(PartialEq)]
+pub enum MovementEvent {
+    Start,
+    Stop,
+}
+
 impl InputState {
     pub fn setup() -> InputState {
         InputState {
@@ -62,5 +76,23 @@ impl InputState {
             };
         }
         item_ids
+    }
+
+    pub fn reset_movement(&mut self) {
+        self.sprint = false;
+        self.move_left = false;
+        self.move_right = false;
+        self.move_forward = false;
+        self.move_backward = false;
+    }
+
+    pub fn change_direction(&mut self, direction: &Direction, event_type: MovementEvent) {
+        let start_move = event_type == MovementEvent::Start;
+        match direction {
+            Direction::Left => self.move_left = start_move,
+            Direction::Right => self.move_right = start_move,
+            Direction::Forward => self.move_forward = start_move,
+            Direction::Backward => self.move_backward = start_move,
+        }
     }
 }

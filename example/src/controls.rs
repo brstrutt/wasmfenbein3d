@@ -1,9 +1,5 @@
-use std::{
-    cell::{RefCell, RefMut},
-    rc::Rc,
-};
+use std::{cell::RefCell, rc::Rc};
 
-use wasm_bindgen::{JsCast, prelude::Closure};
 use wasmfenbein3d::{motion, render::screen_buffer::ScreenBuffer, state::State};
 use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
 
@@ -11,35 +7,6 @@ use crate::{textures, web};
 
 pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     setup_keyboard_movement(state.clone());
-
-    setup_movement_button(
-        state.clone(),
-        "move_forward",
-        |state: &mut RefMut<State<Screen>>, new_value: bool| {
-            state.input.move_forward = new_value;
-        },
-    );
-    setup_movement_button(
-        state.clone(),
-        "move_backward",
-        |state: &mut RefMut<State<Screen>>, new_value: bool| {
-            state.input.move_backward = new_value;
-        },
-    );
-    setup_movement_button(
-        state.clone(),
-        "move_left",
-        |state: &mut RefMut<State<Screen>>, new_value: bool| {
-            state.input.move_left = new_value;
-        },
-    );
-    setup_movement_button(
-        state.clone(),
-        "move_right",
-        |state: &mut RefMut<State<Screen>>, new_value: bool| {
-            state.input.move_right = new_value;
-        },
-    );
 
     setup_mouse_capture_on_click(state.clone());
     setup_camera_mouse_control(state.clone());
@@ -49,51 +16,6 @@ pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) 
 
     setup_character_motion_loop(state.clone());
     setup_camera_motion_loop(state.clone());
-}
-
-fn setup_movement_button<
-    Screen: ScreenBuffer + 'static,
-    T: FnMut(&mut RefMut<State<Screen>>, bool) + Clone,
->(
-    state: Rc<RefCell<State<Screen>>>,
-    button_id: &str,
-    state_change: T,
-) {
-    let button = web::access::button(button_id);
-
-    {
-        let state = state.clone();
-        let mut state_change = state_change.clone();
-
-        let button_clone = button.clone();
-        let callback = Closure::wrap(Box::new(move |e: Event| {
-            e.prevent_default();
-            button_clone.set_class_name("active");
-
-            let mut state = state.borrow_mut();
-            state_change(&mut state, true);
-        }) as Box<dyn FnMut(_)>);
-        button.set_onmousedown(Some(callback.as_ref().unchecked_ref()));
-        button.set_ontouchstart(Some(callback.as_ref().unchecked_ref()));
-        callback.forget();
-    }
-
-    {
-        let state = state.clone();
-        let mut state_change = state_change.clone();
-
-        let button_clone = button.clone();
-        let callback = Closure::wrap(Box::new(move |e: Event| {
-            e.prevent_default();
-            button_clone.set_class_name("");
-
-            let mut state = state.borrow_mut();
-            state_change(&mut state, false);
-        }) as Box<dyn FnMut(_)>);
-        button.set_onmouseup(Some(callback.as_ref().unchecked_ref()));
-        button.set_ontouchend(Some(callback.as_ref().unchecked_ref()));
-        callback.forget();
-    }
 }
 
 fn setup_keyboard_movement<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
