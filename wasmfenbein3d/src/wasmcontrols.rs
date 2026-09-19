@@ -2,6 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use fenbein3d::{render::screen_buffer::ScreenBuffer, state::State};
 
+mod mouse_keyboard_controls;
 mod phsyics_loop;
 mod screen_controls;
 
@@ -12,7 +13,11 @@ pub mod data_action {
     pub const MOVE_BACK: &str = "wasmfenbein3d_character_input_move_back";
 }
 
-pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
+pub fn setup<Screen: ScreenBuffer + 'static>(
+    state: Rc<RefCell<State<Screen>>>,
+    canvas: web_sys::HtmlCanvasElement,
+) {
     screen_controls::setup(state.clone());
-    phsyics_loop::setup_character_motion_loop(state);
+    mouse_keyboard_controls::setup(state.clone(), canvas);
+    phsyics_loop::setup(state);
 }

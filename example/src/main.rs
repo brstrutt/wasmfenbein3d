@@ -27,7 +27,7 @@ fn main() {
 
     hud::setup(state.clone());
     controls::setup(state.clone());
-    wasmfenbein3d::wasmcontrols::setup(state.clone());
+    wasmfenbein3d::wasmcontrols::setup(state.clone(), access::main_canvas());
     wasmfenbein3d::wasmrender::setup(state, access::main_canvas());
 
     timing_logger.log_time("Setup complete!");

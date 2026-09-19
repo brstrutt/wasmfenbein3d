@@ -1,21 +1,14 @@
 use std::{cell::RefCell, rc::Rc};
 
-use wasmfenbein3d::{motion, render::screen_buffer::ScreenBuffer, state::State};
-use web_sys::{Event, KeyboardEvent, MouseEvent, TouchEvent};
+use wasmfenbein3d::{render::screen_buffer::ScreenBuffer, state::State};
+use web_sys::{KeyboardEvent, MouseEvent, TouchEvent};
 
 use crate::{textures, web};
 
 pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     setup_keyboard_movement(state.clone());
-
-    setup_mouse_capture_on_click(state.clone());
-    setup_camera_mouse_control(state.clone());
     setup_click_passthrough(state.clone());
-
     setup_camera_touch_control(state.clone());
-
-    setup_character_motion_loop(state.clone());
-    setup_camera_motion_loop(state.clone());
 }
 
 fn setup_keyboard_movement<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
@@ -46,23 +39,6 @@ fn setup_keyboard_movement<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<Sta
                 "s" | "S" => state.input.move_backward = false,
                 &_ => return,
             }
-        }
-    });
-}
-
-fn setup_mouse_capture_on_click<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
-    web::main_canvas::add_event_listener_with_callback("click", move |_e: Event| {
-        web::access::main_canvas().request_pointer_lock();
-    });
-    web::document::add_event_listener_with_callback("pointerlockchange", move |_e: Event| {
-        let mut state = state.borrow_mut();
-        state.input.pointer_locked = web::access::document().pointer_lock_element().is_some();
-        if !state.input.pointer_locked {
-            state.input.sprint = false;
-            state.input.move_left = false;
-            state.input.move_right = false;
-            state.input.move_forward = false;
-            state.input.move_backward = false;
         }
     });
 }
@@ -122,16 +98,6 @@ fn on_click(item_id: String) {
     }
 }
 
-fn setup_camera_mouse_control<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
-    web::document::add_event_listener_with_callback("mousemove", move |e: MouseEvent| {
-        let mut state = state.borrow_mut();
-
-        if state.input.pointer_locked {
-            state.input.camera_rotation += e.movement_x();
-        }
-    });
-}
-
 fn setup_camera_touch_control<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
     let cloned_state = state.clone();
     web::main_canvas::add_event_listener_with_callback("touchstart", move |e: TouchEvent| {
@@ -177,47 +143,5 @@ fn setup_camera_touch_control<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<
         e.prevent_default();
         let mut state = cloned_state.borrow_mut();
         state.input.last_canvas_touch_point_x = None;
-    });
-}
-
-fn setup_character_motion_loop<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
-    web::window::run_function_every_animation_frame(move || {
-        let mut state = state.borrow_mut();
-        let current_time = web::window::now_in_ms();
-        state.stats.physics_frame.last_duration_ms =
-            current_time - state.stats.physics_frame.last_time_ms;
-        state.stats.physics_frame.last_time_ms = current_time;
-
-        let time_since_last_frame_s = state.stats.physics_frame.last_duration_ms / 1000.0;
-
-        let velocity_per_s = if state.input.sprint { 12.0 } else { 4.0 };
-        let velocity = velocity_per_s * time_since_last_frame_s;
-
-        let camera_rotation = state.camera.ray.get_angle();
-        let motion = state
-            .input
-            .get_cameraspace_movement_direction()
-            .rotate(camera_rotation)
-            * velocity;
-
-        state.camera.ray.origin =
-            motion::move_object(state.camera.ray.origin, &motion, &state.world);
-        state.camera.refresh_screen_rays();
-    });
-}
-
-fn setup_camera_motion_loop<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
-    web::window::run_function_every_animation_frame(move || {
-        let mut state = state.borrow_mut();
-
-        const ROTATION_SPEED: f64 = 0.001;
-
-        let camera_rotation = state.input.camera_rotation;
-        state.input.camera_rotation = 0;
-
-        if camera_rotation != 0 {
-            state.camera = state.camera.rotate(camera_rotation as f64 * ROTATION_SPEED);
-            state.camera.refresh_screen_rays();
-        }
     });
 }
