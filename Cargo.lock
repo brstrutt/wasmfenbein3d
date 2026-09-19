@@ -303,6 +303,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "fenbein3d"
+version = "0.0.0"
+dependencies = [
+ "image",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "find-msvc-tools"
 version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1148,9 +1157,7 @@ dependencies = [
 name = "wasmfenbein3d"
 version = "0.1.7"
 dependencies = [
- "image",
- "serde",
- "serde_json",
+ "fenbein3d",
 ]
 
 [[package]]

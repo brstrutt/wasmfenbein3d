@@ -4,7 +4,7 @@ version = "0.1.7"
 edition = "2024"
 
 [dependencies]
-wasmfenbein3d = { path = "../fenbein3d" }
+wasmfenbein3d = { path = "../wasmfenbein3d" }
 log = "0.4"
 wasm-logger = "0.2"
 console_error_panic_hook = "0.1.7"
