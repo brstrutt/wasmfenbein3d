@@ -11,10 +11,10 @@ use web_sys::{Element, Event, EventTarget, wasm_bindgen::JsCast};
 use crate::wasmutils;
 
 pub mod data_action {
-    pub const MOVE_LEFT: &str = "character_input_move_left";
-    pub const MOVE_RIGHT: &str = "character_input_move_right";
-    pub const MOVE_FORWARD: &str = "character_input_move_forward";
-    pub const MOVE_BACK: &str = "character_input_move_back";
+    pub const MOVE_LEFT: &str = "wasmfenbein3d_character_input_move_left";
+    pub const MOVE_RIGHT: &str = "wasmfenbein3d_character_input_move_right";
+    pub const MOVE_FORWARD: &str = "wasmfenbein3d_character_input_move_forward";
+    pub const MOVE_BACK: &str = "wasmfenbein3d_character_input_move_back";
 }
 
 pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
