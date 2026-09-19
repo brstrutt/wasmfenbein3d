@@ -8,3 +8,4 @@ crate-type = ["rlib"]
 
 [dependencies]
 fenbein3d = { path = "../fenbein3d" }
+web-sys = { version = "0.3.99", features = ["HtmlCanvasElement"] }
