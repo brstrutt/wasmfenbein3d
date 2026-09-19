@@ -1158,6 +1158,7 @@ name = "wasmfenbein3d"
 version = "0.1.7"
 dependencies = [
  "fenbein3d",
+ "web-sys",
 ]
 
 [[package]]

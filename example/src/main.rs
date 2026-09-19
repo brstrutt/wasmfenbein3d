@@ -4,12 +4,9 @@ mod hud;
 mod textures;
 mod web;
 
-use wasmfenbein3d::{
-    render::render_to_screen_buffer,
-    state::{State, textures::TextureLibrary, world},
-};
+use wasmfenbein3d::state::{State, textures::TextureLibrary, world};
 
-use crate::web::main_canvas;
+use crate::web::{access, main_canvas};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -30,16 +27,7 @@ fn main() {
 
     controls::setup(state.clone());
     hud::setup(state.clone());
-    web::window::run_function_every_animation_frame(move || {
-        let render_start_time = web::window::now_in_ms();
-        render_to_screen_buffer(&state);
-        let mut state = state.borrow_mut();
-        main_canvas::render_screen_buffer(&state.screen_buffer);
-        let render_end_time = web::window::now_in_ms();
-
-        state.stats.render_frame.last_duration_ms = render_end_time - render_start_time;
-        state.stats.render_frame.last_time_ms = render_start_time;
-    });
+    wasmfenbein3d::setup_render(state, access::main_canvas());
 
     timing_logger.log_time("Setup complete!");
 }
