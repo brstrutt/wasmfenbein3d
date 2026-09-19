@@ -18,12 +18,8 @@ use VScode and open the devcontainer. It provides a fully functioning dev enviro
 
 ### Development:
 
-To run a local dev server:
-```bash
-cd example
-trunk serve 
-```
-(Use `trunk serve --enable-cooldown` to stop it building twice every time you save changes)
+To run a local dev server: `trunk serve`
+(Use `trunk serve --enable-cooldown` if you want to stop it building twice every time you save changes)
 
 To run the unit tests: `cargo test`
 

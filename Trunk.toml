@@ -1,0 +1,14 @@
+version = "0.1"
+
+[build]
+target = "example/index.html"
+
+[watch]
+watch = [
+    "./example/src",
+    "./example/assets",
+    "./example/index.html",
+    "./example/styles.scss",
+    "./wasmfenbein3d",
+    "./fenbein3d",
+]
