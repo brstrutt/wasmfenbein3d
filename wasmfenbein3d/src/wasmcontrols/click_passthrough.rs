@@ -33,6 +33,19 @@ pub fn setup<Screen: ScreenBuffer + 'static>(
         let state = state.clone();
         wasmutils::add_event_listener_with_callback(
             &mut EventTarget::from(canvas.clone()),
+            "touchstart",
+            move |_e: TouchEvent| {
+                let mut state = state.borrow_mut();
+
+                state.input.touch_has_moved_camera = false;
+            },
+        );
+    }
+
+    {
+        let state = state.clone();
+        wasmutils::add_event_listener_with_callback(
+            &mut EventTarget::from(canvas.clone()),
             "touchmove",
             move |_e: TouchEvent| {
                 let mut state = state.borrow_mut();
@@ -48,20 +61,14 @@ pub fn setup<Screen: ScreenBuffer + 'static>(
             &mut EventTarget::from(canvas),
             "touchend",
             move |_e: TouchEvent| {
-                let mut state = state.borrow_mut();
+                let state = state.borrow();
 
                 if !state.input.touch_has_moved_camera {
-                    if state.input.pointer_locked {
-                        let item_ids = state.input.get_items_under_cursor(&state);
-                        for id in item_ids {
-                            on_click(id.as_str());
-                        }
-                        state.input.pointer_locked = false;
-                    } else {
-                        state.input.pointer_locked = true;
+                    let item_ids = state.input.get_items_under_cursor(&state);
+                    for id in item_ids {
+                        on_click(id.as_str());
                     }
                 }
-                state.input.touch_has_moved_camera = false;
             },
         );
     }
