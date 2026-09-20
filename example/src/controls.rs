@@ -1,46 +1,13 @@
 use std::{cell::RefCell, rc::Rc};
 
 use wasmfenbein3d::{render::screen_buffer::ScreenBuffer, state::State};
-use web_sys::{KeyboardEvent, MouseEvent, TouchEvent};
+use web_sys::{MouseEvent, TouchEvent};
 
 use crate::{textures, web};
 
 pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
-    setup_keyboard_movement(state.clone());
     setup_click_passthrough(state.clone());
     setup_camera_touch_control(state.clone());
-}
-
-fn setup_keyboard_movement<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
-    let cloned_state = state.clone();
-    web::document::add_event_listener_with_callback("keydown", move |e: KeyboardEvent| {
-        let mut state = cloned_state.borrow_mut();
-        if state.input.pointer_locked {
-            state.input.sprint = e.shift_key();
-            match e.key().as_str() {
-                "a" | "A" => state.input.move_left = true,
-                "d" | "D" => state.input.move_right = true,
-                "w" | "W" => state.input.move_forward = true,
-                "s" | "S" => state.input.move_backward = true,
-                &_ => return,
-            }
-        }
-    });
-
-    let cloned_state = state.clone();
-    web::document::add_event_listener_with_callback("keyup", move |e: KeyboardEvent| {
-        let mut state = cloned_state.borrow_mut();
-        if state.input.pointer_locked {
-            state.input.sprint = e.shift_key();
-            match e.key().as_str() {
-                "a" | "A" => state.input.move_left = false,
-                "d" | "D" => state.input.move_right = false,
-                "w" | "W" => state.input.move_forward = false,
-                "s" | "S" => state.input.move_backward = false,
-                &_ => return,
-            }
-        }
-    });
 }
 
 fn setup_click_passthrough<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {

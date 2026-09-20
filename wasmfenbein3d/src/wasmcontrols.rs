@@ -5,6 +5,7 @@ use fenbein3d::{render::screen_buffer::ScreenBuffer, state::State};
 mod mouse_keyboard_controls;
 mod phsyics_loop;
 mod screen_controls;
+mod utils;
 
 pub mod data_action {
     pub const MOVE_LEFT: &str = "wasmfenbein3d_character_input_move_left";
