@@ -2,6 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use fenbein3d::{render::screen_buffer::ScreenBuffer, state::State};
 
+mod click_passthrough;
 mod mouse_keyboard_controls;
 mod phsyics_loop;
 mod screen_controls;
@@ -17,8 +18,10 @@ pub mod data_action {
 pub fn setup<Screen: ScreenBuffer + 'static>(
     state: Rc<RefCell<State<Screen>>>,
     canvas: web_sys::HtmlCanvasElement,
+    on_click: impl Fn(&str) + Clone,
 ) {
-    screen_controls::setup(state.clone());
-    mouse_keyboard_controls::setup(state.clone(), canvas);
+    screen_controls::setup(state.clone(), canvas.clone());
+    mouse_keyboard_controls::setup(state.clone(), canvas.clone());
+    click_passthrough::setup(state.clone(), canvas, on_click);
     phsyics_loop::setup(state);
 }
