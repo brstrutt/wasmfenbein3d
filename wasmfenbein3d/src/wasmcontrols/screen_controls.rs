@@ -120,7 +120,6 @@ fn setup_camera_touch_control<Screen: ScreenBuffer + 'static>(
                 }
 
                 state.input.last_canvas_touch_point_x = Some(touch_x_position);
-                state.input.touch_has_moved_camera = true;
             }
         },
     );
