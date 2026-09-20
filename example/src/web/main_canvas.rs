@@ -1,9 +1,6 @@
-use wasm_bindgen::convert::FromWasmAbi;
 use wasmfenbein3d::render::screen_buffer_column_first::ScreenBufferColumnFirst;
-use web_sys::EventTarget;
 
 use super::access;
-use super::add_event_listener_with_callback;
 
 const CANVAS_SCALE: u32 = 2;
 
@@ -23,12 +20,4 @@ fn update_canvas_size() {
 
     element.set_width(width / CANVAS_SCALE);
     element.set_height(height / CANVAS_SCALE);
-}
-
-pub fn add_event_listener_with_callback<E: FromWasmAbi, T: FnMut(E)>(event_name: &str, run: T) {
-    add_event_listener_with_callback::add_event_listener_with_callback(
-        &mut EventTarget::from(access::main_canvas()),
-        event_name,
-        run,
-    );
 }
