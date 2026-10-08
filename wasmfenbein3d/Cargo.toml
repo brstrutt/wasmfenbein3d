@@ -8,4 +8,16 @@ crate-type = ["rlib"]
 
 [dependencies]
 fenbein3d = { path = "../fenbein3d" }
-web-sys = { version = "0.3.99", features = ["HtmlCanvasElement"] }
+web-sys = { version = "0.3.99", features = [
+    "Window",
+    "Document",
+    "HtmlCanvasElement",
+    "CanvasRenderingContext2d",
+    "KeyboardEvent",
+    "MouseEvent",
+    "TouchEvent",
+    "Touch",
+    "TouchList",
+    "Performance",
+    "ImageData",
+] }
