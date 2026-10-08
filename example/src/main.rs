@@ -26,9 +26,16 @@ fn main() {
     timing_logger.log_time("State Setup!!");
 
     wasmfenbein3d::wasmrender::setup(state.clone(), access::main_canvas());
-    wasmfenbein3d::wasmcontrols::setup(state.clone(), access::main_canvas(), |id: &str| {
-        controls::on_click(id);
-    });
+    wasmfenbein3d::wasmcontrols::setup(
+        state.clone(),
+        access::main_canvas(),
+        |id: &str| {
+            controls::on_click(id);
+        },
+        || {
+            controls::on_mouse_capture();
+        },
+    );
 
     hud::setup(state);
 
