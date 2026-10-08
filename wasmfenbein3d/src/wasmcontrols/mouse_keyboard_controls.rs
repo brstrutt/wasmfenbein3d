@@ -9,8 +9,9 @@ use crate::wasmutils;
 pub fn setup<Screen: ScreenBuffer + 'static>(
     state: Rc<RefCell<State<Screen>>>,
     canvas: web_sys::HtmlCanvasElement,
+    on_mouse_capture: impl Fn() + Clone,
 ) {
-    setup_mouse_capture_on_click(state.clone(), canvas);
+    setup_mouse_capture_on_click(state.clone(), canvas, on_mouse_capture);
     setup_camera_mouse_control(state.clone());
     setup_keyboard_movement_controls(state);
 }
@@ -18,6 +19,7 @@ pub fn setup<Screen: ScreenBuffer + 'static>(
 fn setup_mouse_capture_on_click<Screen: ScreenBuffer + 'static>(
     state: Rc<RefCell<State<Screen>>>,
     canvas: web_sys::HtmlCanvasElement,
+    on_mouse_capture: impl Fn() + Clone,
 ) {
     wasmutils::add_event_listener_with_callback(
         &mut EventTarget::from(canvas.clone()),
@@ -34,6 +36,8 @@ fn setup_mouse_capture_on_click<Screen: ScreenBuffer + 'static>(
             state.input.pointer_locked = wasmutils::document().pointer_lock_element().is_some();
             if !state.input.pointer_locked {
                 state.input.reset_movement();
+            } else {
+                on_mouse_capture();
             }
         },
     );

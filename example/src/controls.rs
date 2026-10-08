@@ -24,3 +24,7 @@ pub fn on_click(item_id: &str) {
         &_ => {}
     }
 }
+
+pub fn on_mouse_capture() {
+    web::access::popup_page().set_hidden(true);
+}
