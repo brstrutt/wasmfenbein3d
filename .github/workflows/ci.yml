@@ -1,0 +1,34 @@
+name: Build and Publish
+on:
+  push: 
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+  # Allow running workflow manually
+  workflow_dispatch:
+
+jobs:
+   check-code-healthy:
+      runs-on: ubuntu-latest
+      concurrency: ci-health-${{github.ref}}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v6
+
+        - name: Rust setup
+          uses: actions-rust-lang/setup-rust-toolchain@v1
+          with:
+            target: wasm32-unknown-unknown
+
+        - name: Check fenbein3d builds
+          run: cd fenbein3d && cargo build && cd ..
+
+        - name: Check wasmfenbein3d builds
+          run: cd wasmfenbein3d && cargo build && cd ..
+        
+        - name: Check example builds
+          run: cd example && cargo build && cd ..
