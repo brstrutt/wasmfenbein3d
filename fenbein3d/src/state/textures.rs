@@ -64,6 +64,8 @@ impl TextureLibrary {
     }
 
     pub fn get(&self, id: &str) -> &Rc<Box<dyn TexelProvider>> {
-        self.textures.get(id).unwrap()
+        self.textures
+            .get(id)
+            .expect(format!("Failed to find texture with ID: {}", id).as_str())
     }
 }
