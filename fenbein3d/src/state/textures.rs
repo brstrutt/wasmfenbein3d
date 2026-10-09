@@ -12,10 +12,10 @@ pub struct RawTexture {
 
 #[macro_export]
 macro_rules! include_texture {
-    ($name:literal) => {
+    ($directory:literal, $name:literal) => {
         RawTexture {
             id: $name,
-            bytes: include_bytes!(concat!("./textures/", $name, ".bmp")),
+            bytes: include_bytes!(concat!($directory, $name, ".bmp")),
         }
     };
 }
