@@ -56,8 +56,9 @@ impl<'a> ColumnRenderer<'a> {
         }
 
         let wall_texture = column.nearest_wall_intersection.wall.texture.as_ref();
-        let wall_texture_space_x = column.wall_x_pos * wall_texture.width_f64();
-        let wall_texture_space_y_increment = wall_space_pixel_increment * wall_texture.height_f64();
+        let wall_texture_space_x = column.wall_x_pos * wall_texture.width_f64() / WALL_HEIGHT;
+        let wall_texture_space_y_increment =
+            (wall_space_pixel_increment * wall_texture.height_f64()) / WALL_HEIGHT;
 
         let mut segment_start_y: isize = 0;
         let wall_space_y_to_screen_space_y = |wall_space_y: f64| {
@@ -72,7 +73,8 @@ impl<'a> ColumnRenderer<'a> {
             screen_space_end_y: screen_space_end_y as usize,
             texture_space_x: wall_texture_space_x,
             texture_space_start_y: screen_space_y_to_wall_space_y(screen_space_start)
-                * wall_texture.height_f64(),
+                * wall_texture.height_f64()
+                / WALL_HEIGHT,
             texture_space_y_increment: wall_texture_space_y_increment,
         };
 
