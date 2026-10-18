@@ -19,8 +19,8 @@ jobs:
 
         - name: Update version number
           run: |
-            sed -i -e 's/^version = ".*"$/version = "${{ github.ref_name }}"/g' ./Cargo.toml
-            sed -i -e 's/^version = "v\(.*\)"$/version = "\1"/g' ./Cargo.toml
+            sed -i -e 's/^version = ".*"$/version = "${{ github.ref_name }}"/g' ./wasmfenbein3d/Cargo.toml
+            sed -i -e 's/^version = "v\(.*\)"$/version = "\1"/g' ./wasmfenbein3d/Cargo.toml
 
         - name: Update wasmfenbein3d version in Cargo.lock
           run: |
