@@ -36,7 +36,6 @@ pub fn setup<Screen: ScreenBuffer + 'static>(
             "touchstart",
             move |_e: TouchEvent| {
                 let mut state = state.borrow_mut();
-
                 state.input.touch_has_moved_camera = false;
             },
         );
@@ -63,7 +62,7 @@ pub fn setup<Screen: ScreenBuffer + 'static>(
             move |_e: TouchEvent| {
                 let state = state.borrow();
 
-                if !state.input.touch_has_moved_camera {
+                if !state.input.touch_has_moved_camera && state.input.pointer_locked {
                     let item_ids = state.input.get_items_under_cursor(&state);
                     for id in item_ids {
                         on_click(id.as_str());

@@ -128,13 +128,15 @@ fn setup_camera_touch_control<Screen: ScreenBuffer + 'static>(
             e.prevent_default();
             let mut state = cloned_state.borrow_mut();
 
-            let touch_points = e.target_touches();
-            if touch_points.length() > 0 {
-                let touch_x_position = touch_points
-                    .item(0)
-                    .expect("Failed to get first touch point on the canvas")
-                    .screen_x();
-                state.input.last_canvas_touch_point_x = Some(touch_x_position);
+            if state.input.pointer_locked {
+                let touch_points = e.target_touches();
+                if touch_points.length() > 0 {
+                    let touch_x_position = touch_points
+                        .item(0)
+                        .expect("Failed to get first touch point on the canvas")
+                        .screen_x();
+                    state.input.last_canvas_touch_point_x = Some(touch_x_position);
+                }
             }
         },
     );
@@ -146,22 +148,24 @@ fn setup_camera_touch_control<Screen: ScreenBuffer + 'static>(
         move |e: TouchEvent| {
             e.prevent_default();
             let mut state = cloned_state.borrow_mut();
-            const ACCELERATION: i32 = 4;
+            if state.input.pointer_locked {
+                const ACCELERATION: i32 = 4;
 
-            let touch_points = e.target_touches();
-            if touch_points.length() > 0 {
-                let touch_x_position = touch_points
-                    .item(0)
-                    .expect("Failed to get first touch point on the canvas")
-                    .screen_x();
+                let touch_points = e.target_touches();
+                if touch_points.length() > 0 {
+                    let touch_x_position = touch_points
+                        .item(0)
+                        .expect("Failed to get first touch point on the canvas")
+                        .screen_x();
 
-                if state.input.last_canvas_touch_point_x.is_some() {
-                    state.input.camera_rotation = (state.input.last_canvas_touch_point_x.unwrap()
-                        - touch_x_position)
-                        * ACCELERATION;
+                    if state.input.last_canvas_touch_point_x.is_some() {
+                        state.input.camera_rotation =
+                            (state.input.last_canvas_touch_point_x.unwrap() - touch_x_position)
+                                * ACCELERATION;
+                    }
+
+                    state.input.last_canvas_touch_point_x = Some(touch_x_position);
                 }
-
-                state.input.last_canvas_touch_point_x = Some(touch_x_position);
             }
         },
     );
@@ -173,7 +177,9 @@ fn setup_camera_touch_control<Screen: ScreenBuffer + 'static>(
         move |e: TouchEvent| {
             e.prevent_default();
             let mut state = cloned_state.borrow_mut();
-            state.input.last_canvas_touch_point_x = None;
+            if state.input.pointer_locked {
+                state.input.last_canvas_touch_point_x = None;
+            }
         },
     );
 }

@@ -1,7 +1,7 @@
 use std::{cell::RefCell, rc::Rc};
 
 use fenbein3d::{controls::MovementEvent, render::screen_buffer::ScreenBuffer, state::State};
-use web_sys::{Event, EventTarget, KeyboardEvent, MouseEvent};
+use web_sys::{Event, EventTarget, KeyboardEvent, MouseEvent, TouchEvent};
 
 use super::utils;
 use crate::wasmutils;
@@ -21,13 +21,36 @@ fn setup_mouse_capture_on_click<Screen: ScreenBuffer + 'static>(
     canvas: web_sys::HtmlCanvasElement,
     on_mouse_capture: impl Fn() + Clone,
 ) {
-    wasmutils::add_event_listener_with_callback(
-        &mut EventTarget::from(canvas.clone()),
-        "click",
-        move |_e: Event| {
-            canvas.request_pointer_lock();
-        },
-    );
+    {
+        let canvas = canvas.clone();
+        let state = state.clone();
+        wasmutils::add_event_listener_with_callback(
+            &mut EventTarget::from(canvas.clone()),
+            "click",
+            move |_e: Event| {
+                let state = state.borrow();
+                if !state.input.pointer_locked {
+                    canvas.request_pointer_lock();
+                }
+            },
+        );
+    }
+
+    {
+        let canvas = canvas.clone();
+        let state = state.clone();
+        wasmutils::add_event_listener_with_callback(
+            &mut EventTarget::from(canvas.clone()),
+            "touchend",
+            move |_e: TouchEvent| {
+                let state = state.borrow();
+                if !state.input.pointer_locked {
+                    canvas.request_pointer_lock();
+                }
+            },
+        );
+    }
+
     wasmutils::add_event_listener_with_callback(
         &mut EventTarget::from(wasmutils::document()),
         "pointerlockchange",
