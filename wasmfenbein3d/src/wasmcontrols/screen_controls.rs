@@ -39,6 +39,16 @@ fn setup_movement_button<Screen: ScreenBuffer + 'static>(
                         .borrow_mut()
                         .input
                         .change_direction(&direction, MovementEvent::Start);
+                    event
+                        .target()
+                        .unwrap()
+                        .dyn_into::<Element>()
+                        .unwrap()
+                        .class_list()
+                        .toggle("active")
+                        .expect(
+                            "Failed to toggle the active state on one of the touchscreen buttons",
+                        );
                 }
             },
         );
@@ -56,6 +66,16 @@ fn setup_movement_button<Screen: ScreenBuffer + 'static>(
                         .borrow_mut()
                         .input
                         .change_direction(&direction, MovementEvent::Stop);
+                    event
+                        .target()
+                        .unwrap()
+                        .dyn_into::<Element>()
+                        .unwrap()
+                        .class_list()
+                        .toggle("active")
+                        .expect(
+                            "Failed to toggle the active state on one of the touchscreen buttons",
+                        );
                 }
             },
         );
