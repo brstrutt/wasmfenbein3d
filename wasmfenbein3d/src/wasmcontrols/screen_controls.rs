@@ -30,10 +30,11 @@ fn setup_movement_button<Screen: ScreenBuffer + 'static>(
         let state = state.clone();
         let direction = direction.clone();
         wasmutils::add_event_listener_with_callback(
-            &mut EventTarget::from(wasmutils::document()),
+            &mut EventTarget::from(wasmutils::window()),
             "pointerdown",
             move |event: Event| {
                 if does_event_target_have_data_action(event.target(), input_element_data_action) {
+                    event.prevent_default();
                     state
                         .borrow_mut()
                         .input
@@ -46,10 +47,11 @@ fn setup_movement_button<Screen: ScreenBuffer + 'static>(
         let state = state.clone();
         let direction = direction.clone();
         wasmutils::add_event_listener_with_callback(
-            &mut EventTarget::from(wasmutils::document()),
+            &mut EventTarget::from(wasmutils::window()),
             "pointerup",
             move |event: Event| {
                 if does_event_target_have_data_action(event.target(), input_element_data_action) {
+                    event.prevent_default();
                     state
                         .borrow_mut()
                         .input
@@ -58,6 +60,26 @@ fn setup_movement_button<Screen: ScreenBuffer + 'static>(
             },
         );
     }
+    wasmutils::add_event_listener_with_callback(
+        &mut EventTarget::from(wasmutils::window()),
+        "touchstart",
+        move |event: Event| {
+            if does_event_target_have_data_action(event.target(), input_element_data_action) {
+                event.prevent_default();
+                event.prevent_default();
+            }
+        },
+    );
+    wasmutils::add_event_listener_with_callback(
+        &mut EventTarget::from(wasmutils::window()),
+        "touchend",
+        move |event: Event| {
+            if does_event_target_have_data_action(event.target(), input_element_data_action) {
+                event.prevent_default();
+                event.prevent_default();
+            }
+        },
+    );
 }
 
 fn does_event_target_have_data_action(

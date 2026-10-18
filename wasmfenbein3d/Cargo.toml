@@ -20,4 +20,5 @@ web-sys = { version = "0.3.99", features = [
     "TouchList",
     "Performance",
     "ImageData",
+    "AddEventListenerOptions",
 ] }

@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 use web_sys::{
-    EventTarget,
+    AddEventListenerOptions, EventTarget,
     wasm_bindgen::{JsCast, closure::Closure, convert::FromWasmAbi},
 };
 
@@ -19,8 +19,14 @@ pub fn add_event_listener_with_callback<E: FromWasmAbi, T: FnMut(E)>(
     let callback = Closure::wrap(Box::new(move |e: E| {
         run(e);
     }) as Box<dyn FnMut(_)>);
+    let options: AddEventListenerOptions = Default::default();
+    options.set_passive(false);
     object
-        .add_event_listener_with_callback(event_name, callback.as_ref().unchecked_ref())
+        .add_event_listener_with_callback_and_add_event_listener_options(
+            event_name,
+            callback.as_ref().unchecked_ref(),
+            &options,
+        )
         .expect("Failed to setup event listener with custom rust lambda");
     callback.forget();
 }
