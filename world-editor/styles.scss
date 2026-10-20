@@ -47,6 +47,7 @@ h1 {
 
 .workspace-actions {
     display: flex;
+    align-items: center;
     gap: 8px;
 }
 
@@ -76,6 +77,40 @@ h1 {
 
 .add-line:hover {
     background: #245653;
+}
+
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 12px;
+}
+
+.zoom-button {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #aab5af;
+    border-radius: 3px;
+    background: #fff;
+    color: #20332c;
+    font: inherit;
+    cursor: pointer;
+}
+
+.zoom-button:hover {
+    background: #e4e9e5;
+}
+
+.zoom-button:focus-visible {
+    outline: 2px solid #d94f36;
+    outline-offset: 2px;
+}
+
+.zoom-level {
+    min-width: 42px;
+    color: #52645b;
+    font-size: 0.875rem;
+    text-align: center;
 }
 
 .add-dot:focus-visible {

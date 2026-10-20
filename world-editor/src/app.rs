@@ -2,6 +2,14 @@ use crate::dot::{Dot, WorldDot};
 use crate::line::{Line, WorldLine};
 use leptos::{ev, prelude::*};
 
+const MIN_ZOOM: f64 = 0.25;
+const MAX_ZOOM: f64 = 4.0;
+const ZOOM_STEP: f64 = 1.2;
+
+fn change_zoom(zoom: RwSignal<f64>, factor: f64) {
+    zoom.update(|zoom| *zoom = (*zoom * factor).clamp(MIN_ZOOM, MAX_ZOOM));
+}
+
 #[component]
 pub fn App() -> impl IntoView {
     let dots = RwSignal::new(vec![Dot::new(0)]);
@@ -10,32 +18,35 @@ pub fn App() -> impl IntoView {
     let next_line_id = RwSignal::new(0usize);
     let active_dot = RwSignal::new(None::<usize>);
     let active_endpoint = RwSignal::new(None::<(usize, bool)>);
+    let dot_drag_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let endpoint_drag_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
-    let grab_offset = RwSignal::new((0.0, 0.0));
     let pan_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let scene_offset = RwSignal::new((0.0, 0.0));
+    let zoom = RwSignal::new(1.0_f64);
 
     let move_listener = window_event_listener(ev::pointermove, move |event| {
         if let Some(active_id) = active_dot.get_untracked() {
-            let (grab_x, grab_y) = grab_offset.get_untracked();
-            let (pan_x, pan_y) = scene_offset.get_untracked();
-            let position = (
-                f64::from(event.client_x()) - grab_x - pan_x,
-                f64::from(event.client_y()) - grab_y - pan_y,
-            );
+            if let Some((pointer_x, pointer_y, x, y)) = dot_drag_start.get_untracked() {
+                let scale = zoom.get_untracked();
+                let position = (
+                    x + (f64::from(event.client_x()) - pointer_x) / scale,
+                    y + (f64::from(event.client_y()) - pointer_y) / scale,
+                );
 
-            dots.with_untracked(|dots| {
-                if let Some(dot) = dots.iter().find(|dot| dot.id == active_id) {
-                    dot.set_position(position);
-                }
-            });
+                dots.with_untracked(|dots| {
+                    if let Some(dot) = dots.iter().find(|dot| dot.id == active_id) {
+                        dot.set_position(position);
+                    }
+                });
+            }
         } else if let (Some((line_id, is_start)), Some((pointer_x, pointer_y, x, y))) = (
             active_endpoint.get_untracked(),
             endpoint_drag_start.get_untracked(),
         ) {
+            let scale = zoom.get_untracked();
             let position = (
-                x + f64::from(event.client_x()) - pointer_x,
-                y + f64::from(event.client_y()) - pointer_y,
+                x + (f64::from(event.client_x()) - pointer_x) / scale,
+                y + (f64::from(event.client_y()) - pointer_y) / scale,
             );
 
             lines.with_untracked(|lines| {
@@ -52,6 +63,7 @@ pub fn App() -> impl IntoView {
     });
     let stop_drag = move |_| {
         active_dot.set(None);
+        dot_drag_start.set(None);
         active_endpoint.set(None);
         endpoint_drag_start.set(None);
         pan_start.set(None);
@@ -75,6 +87,8 @@ pub fn App() -> impl IntoView {
         next_line_id.set(id + 1);
         lines.update(|lines| lines.push(Line::new(id)));
     };
+    let zoom_in = move |_| change_zoom(zoom, ZOOM_STEP);
+    let zoom_out = move |_| change_zoom(zoom, 1.0 / ZOOM_STEP);
 
     view! {
         <main class="workspace">
@@ -87,6 +101,29 @@ pub fn App() -> impl IntoView {
                     <button class="add-action add-line" type="button" on:click=add_line>
                         "+ Add line"
                     </button>
+                    <div class="zoom-controls">
+                        <button
+                            class="zoom-button"
+                            type="button"
+                            aria-label="Zoom out"
+                            title="Zoom out"
+                            on:click=zoom_out
+                        >
+                            "-"
+                        </button>
+                        <output class="zoom-level">
+                            {move || format!("{:.0}%", zoom.get() * 100.0)}
+                        </output>
+                        <button
+                            class="zoom-button"
+                            type="button"
+                            aria-label="Zoom in"
+                            title="Zoom in"
+                            on:click=zoom_in
+                        >
+                            "+"
+                        </button>
+                    </div>
                 </div>
             </header>
             <div
@@ -95,6 +132,14 @@ pub fn App() -> impl IntoView {
                 style:background-position=move || {
                     let (x, y) = scene_offset.get();
                     format!("calc(50% + {x}px) calc(50% + {y}px)")
+                }
+                style:background-size=move || {
+                    let grid_size = 32.0 * zoom.get();
+                    format!("{grid_size}px {grid_size}px")
+                }
+                on:wheel=move |event: ev::WheelEvent| {
+                    event.prevent_default();
+                    change_zoom(zoom, if event.delta_y() < 0.0 { ZOOM_STEP } else { 1.0 / ZOOM_STEP });
                 }
                 on:pointerdown=move |event: ev::PointerEvent| {
                     event.prevent_default();
@@ -114,8 +159,9 @@ pub fn App() -> impl IntoView {
                         <WorldDot
                             dot=dot
                             active_dot=active_dot
-                            grab_offset=grab_offset
+                            dot_drag_start=dot_drag_start
                             scene_offset=scene_offset
+                            zoom=zoom
                         />
                     }
                 />
@@ -128,6 +174,7 @@ pub fn App() -> impl IntoView {
                             active_endpoint=active_endpoint
                             endpoint_drag_start=endpoint_drag_start
                             scene_offset=scene_offset
+                            zoom=zoom
                         />
                     }
                 />

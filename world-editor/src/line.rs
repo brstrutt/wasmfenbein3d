@@ -32,6 +32,7 @@ pub fn WorldLine(
     active_endpoint: RwSignal<Option<(usize, bool)>>,
     endpoint_drag_start: RwSignal<Option<(f64, f64, f64, f64)>>,
     scene_offset: RwSignal<(f64, f64)>,
+    zoom: RwSignal<f64>,
 ) -> impl IntoView {
     let id = line.id;
     let start = line.start;
@@ -71,14 +72,14 @@ pub fn WorldLine(
                 style:left=move || {
                     let (x, _, _, _) = line_geometry();
                     let (pan_x, _) = scene_offset.get();
-                    format!("calc(50% + {}px)", x + pan_x)
+                    format!("calc(50% + {}px)", pan_x + x * zoom.get())
                 }
                 style:top=move || {
                     let (_, y, _, _) = line_geometry();
                     let (_, pan_y) = scene_offset.get();
-                    format!("calc(50% + {}px - 1px)", y + pan_y)
+                    format!("calc(50% + {}px - 1px)", pan_y + y * zoom.get())
                 }
-                style:width=move || format!("{}px", line_geometry().2)
+                style:width=move || format!("{}px", line_geometry().2 * zoom.get())
                 style:transform=move || format!("rotate({}deg)", line_geometry().3)
             />
             <button
@@ -89,12 +90,12 @@ pub fn WorldLine(
                 style:left=move || {
                     let (x, _, _, _) = line_geometry();
                     let (pan_x, _) = scene_offset.get();
-                    format!("calc(50% + {}px - 7px)", x + pan_x)
+                    format!("calc(50% + {}px - 7px)", pan_x + x * zoom.get())
                 }
                 style:top=move || {
                     let (_, y, _, _) = line_geometry();
                     let (_, pan_y) = scene_offset.get();
-                    format!("calc(50% + {}px - 7px)", y + pan_y)
+                    format!("calc(50% + {}px - 7px)", pan_y + y * zoom.get())
                 }
                 on:pointerdown=move |event| begin_drag(event, true)
             />
@@ -107,12 +108,12 @@ pub fn WorldLine(
                     let (_, _, _, _) = line_geometry();
                     let (x, _) = end.get();
                     let (pan_x, _) = scene_offset.get();
-                    format!("calc(50% + {}px - 7px)", x + pan_x)
+                    format!("calc(50% + {}px - 7px)", pan_x + x * zoom.get())
                 }
                 style:top=move || {
                     let (_, y) = end.get();
                     let (_, pan_y) = scene_offset.get();
-                    format!("calc(50% + {}px - 7px)", y + pan_y)
+                    format!("calc(50% + {}px - 7px)", pan_y + y * zoom.get())
                 }
                 on:pointerdown=move |event| begin_drag(event, false)
             />
