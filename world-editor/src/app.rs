@@ -5,9 +5,39 @@ use leptos::{ev, prelude::*};
 const MIN_ZOOM: f64 = 0.25;
 const MAX_ZOOM: f64 = 4.0;
 const ZOOM_STEP: f64 = 1.2;
+const SNAP_DISTANCE: f64 = 14.0;
 
 fn change_zoom(zoom: RwSignal<f64>, factor: f64) {
     zoom.update(|zoom| *zoom = (*zoom * factor).clamp(MIN_ZOOM, MAX_ZOOM));
+}
+
+fn snap_delta(
+    candidates: &[(f64, f64)],
+    lines: &[Line],
+    moving_line_id: usize,
+    zoom: f64,
+) -> Option<(f64, f64)> {
+    let mut closest: Option<(f64, f64, f64)> = None;
+    let max_distance_squared = SNAP_DISTANCE * SNAP_DISTANCE;
+
+    for &(x, y) in candidates {
+        for line in lines.iter().filter(|line| line.id != moving_line_id) {
+            let (start, end) = line.endpoints();
+            for (target_x, target_y) in [start, end] {
+                let delta_x = target_x - x;
+                let delta_y = target_y - y;
+                let distance_squared = (delta_x * delta_x + delta_y * delta_y) * zoom * zoom;
+
+                if distance_squared <= max_distance_squared
+                    && closest.map_or(true, |(_, _, distance)| distance_squared < distance)
+                {
+                    closest = Some((delta_x, delta_y, distance_squared));
+                }
+            }
+        }
+    }
+
+    closest.map(|(delta_x, delta_y, _)| (delta_x, delta_y))
 }
 
 #[component]
@@ -53,6 +83,9 @@ pub fn App() -> impl IntoView {
 
             lines.with_untracked(|lines| {
                 if let Some(line) = lines.iter().find(|line| line.id == line_id) {
+                    let delta = snap_delta(&[position], lines, line_id, scale);
+                    let position =
+                        delta.map_or(position, |(x, y)| (position.0 + x, position.1 + y));
                     line.set_endpoint(is_start, position);
                 }
             });
@@ -67,9 +100,13 @@ pub fn App() -> impl IntoView {
 
             lines.with_untracked(|lines| {
                 if let Some(line) = lines.iter().find(|line| line.id == line_id) {
+                    let start = (start_x + delta_x, start_y + delta_y);
+                    let end = (end_x + delta_x, end_y + delta_y);
+                    let delta = snap_delta(&[start, end], lines, line_id, scale);
+                    let (snap_x, snap_y) = delta.unwrap_or((0.0, 0.0));
                     line.set_endpoints(
-                        (start_x + delta_x, start_y + delta_y),
-                        (end_x + delta_x, end_y + delta_y),
+                        (start.0 + snap_x, start.1 + snap_y),
+                        (end.0 + snap_x, end.1 + snap_y),
                     );
                 }
             });
