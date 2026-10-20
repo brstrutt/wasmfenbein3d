@@ -45,18 +45,37 @@ h1 {
     justify-content: space-between;
 }
 
-.add-dot {
+.workspace-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.add-action {
     padding: 9px 13px;
-    border: 1px solid #20332c;
+    border: 1px solid;
     border-radius: 3px;
-    background: #20332c;
-    color: #f2f4f1;
     font: inherit;
     cursor: pointer;
 }
 
+.add-dot {
+    border-color: #20332c;
+    background: #20332c;
+    color: #f2f4f1;
+}
+
 .add-dot:hover {
     background: #36584b;
+}
+
+.add-line {
+    border-color: #2e6a67;
+    background: #2e6a67;
+    color: #fff;
+}
+
+.add-line:hover {
+    background: #245653;
 }
 
 .add-dot:focus-visible {
@@ -85,5 +104,41 @@ h1 {
 }
 
 .world-dot.dragging {
+    cursor: grabbing;
+}
+
+.line-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.world-line {
+    position: absolute;
+    height: 2px;
+    background: #2e6a67;
+    transform-origin: left center;
+}
+
+.line-endpoint {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    border: 2px solid #f2f4f1;
+    border-radius: 50%;
+    background: #2e6a67;
+    box-shadow: 0 1px 4px #20332c55;
+    cursor: grab;
+    pointer-events: auto;
+    touch-action: none;
+}
+
+.line-endpoint:focus-visible {
+    outline: 2px solid #20332c;
+    outline-offset: 3px;
+}
+
+.line-endpoint.dragging {
     cursor: grabbing;
 }
