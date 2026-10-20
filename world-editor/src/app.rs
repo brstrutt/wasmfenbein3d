@@ -1,4 +1,3 @@
-use crate::dot::{Dot, WorldDot};
 use crate::line::{Line, LineInspector, WorldLine};
 use leptos::{ev, prelude::*};
 
@@ -42,15 +41,11 @@ fn snap_delta(
 
 #[component]
 pub fn App() -> impl IntoView {
-    let dots = RwSignal::new(vec![Dot::new(0)]);
     let lines = RwSignal::new(Vec::<Line>::new());
-    let next_dot_id = RwSignal::new(1usize);
     let next_line_id = RwSignal::new(0usize);
-    let active_dot = RwSignal::new(None::<usize>);
     let active_endpoint = RwSignal::new(None::<(usize, bool)>);
     let active_line = RwSignal::new(None::<usize>);
     let selected_line = RwSignal::new(None::<usize>);
-    let dot_drag_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let endpoint_drag_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let line_drag_start = RwSignal::new(None::<(f64, f64, f64, f64, f64, f64)>);
     let pan_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
@@ -58,21 +53,7 @@ pub fn App() -> impl IntoView {
     let zoom = RwSignal::new(1.0_f64);
 
     let move_listener = window_event_listener(ev::pointermove, move |event| {
-        if let Some(active_id) = active_dot.get_untracked() {
-            if let Some((pointer_x, pointer_y, x, y)) = dot_drag_start.get_untracked() {
-                let scale = zoom.get_untracked();
-                let position = (
-                    x + (f64::from(event.client_x()) - pointer_x) / scale,
-                    y + (f64::from(event.client_y()) - pointer_y) / scale,
-                );
-
-                dots.with_untracked(|dots| {
-                    if let Some(dot) = dots.iter().find(|dot| dot.id == active_id) {
-                        dot.set_position(position);
-                    }
-                });
-            }
-        } else if let (Some((line_id, is_start)), Some((pointer_x, pointer_y, x, y))) = (
+        if let (Some((line_id, is_start)), Some((pointer_x, pointer_y, x, y))) = (
             active_endpoint.get_untracked(),
             endpoint_drag_start.get_untracked(),
         ) {
@@ -119,8 +100,6 @@ pub fn App() -> impl IntoView {
         }
     });
     let stop_drag = move |_| {
-        active_dot.set(None);
-        dot_drag_start.set(None);
         active_endpoint.set(None);
         endpoint_drag_start.set(None);
         active_line.set(None);
@@ -136,11 +115,6 @@ pub fn App() -> impl IntoView {
         cancel_listener.remove();
     });
 
-    let add_dot = move |_| {
-        let id = next_dot_id.get_untracked();
-        next_dot_id.set(id + 1);
-        dots.update(|dots| dots.push(Dot::new(id)));
-    };
     let add_line = move |_| {
         let id = next_line_id.get_untracked();
         next_line_id.set(id + 1);
@@ -154,9 +128,6 @@ pub fn App() -> impl IntoView {
             <header class="workspace-heading">
                 <h1>"World Editor"</h1>
                 <div class="workspace-actions">
-                    <button class="add-action add-dot" type="button" on:click=add_dot>
-                        "+ Add dot"
-                    </button>
                     <button class="add-action add-line" type="button" on:click=add_line>
                         "+ Add line"
                     </button>
@@ -211,19 +182,6 @@ pub fn App() -> impl IntoView {
                     )));
                 }
             >
-                <For
-                    each=move || dots.get()
-                    key=|dot| dot.id
-                    children=move |dot| view! {
-                        <WorldDot
-                            dot=dot
-                            active_dot=active_dot
-                            dot_drag_start=dot_drag_start
-                            scene_offset=scene_offset
-                            zoom=zoom
-                        />
-                    }
-                />
                 <For
                     each=move || lines.get()
                     key=|line| line.id

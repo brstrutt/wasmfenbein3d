@@ -59,16 +59,6 @@ h1 {
     cursor: pointer;
 }
 
-.add-dot {
-    border-color: #20332c;
-    background: #20332c;
-    color: #f2f4f1;
-}
-
-.add-dot:hover {
-    background: #36584b;
-}
-
 .add-line {
     border-color: #2e6a67;
     background: #2e6a67;
@@ -111,35 +101,6 @@ h1 {
     color: #52645b;
     font-size: 0.875rem;
     text-align: center;
-}
-
-.add-dot:focus-visible {
-    outline: 2px solid #d94f36;
-    outline-offset: 3px;
-}
-
-.world-dot {
-    position: absolute;
-    z-index: 1;
-    width: 26px;
-    height: 26px;
-    padding: 0;
-    border: 3px solid #f2f4f1;
-    border-radius: 50%;
-    background: #d94f36;
-    box-shadow: 0 1px 5px #20332c55;
-    cursor: grab;
-    touch-action: none;
-    user-select: none;
-}
-
-.world-dot:focus-visible {
-    outline: 2px solid #20332c;
-    outline-offset: 3px;
-}
-
-.world-dot.dragging {
-    cursor: grabbing;
 }
 
 .line-layer {
