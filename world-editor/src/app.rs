@@ -51,6 +51,7 @@ pub fn App() -> impl IntoView {
     let pan_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let scene_offset = RwSignal::new((0.0, 0.0));
     let zoom = RwSignal::new(1.0_f64);
+    let json_window_minimized = RwSignal::new(false);
 
     let move_listener = window_event_listener(ev::pointermove, move |event| {
         if let (Some((line_id, is_start)), Some((pointer_x, pointer_y, x, y))) = (
@@ -200,6 +201,43 @@ pub fn App() -> impl IntoView {
                 />
             </div>
             <LineInspector lines=lines selected_line=selected_line />
+            <aside class="json-window" aria-labelledby="json-window-title">
+                <header class="json-window-heading">
+                    <div>
+                        <p>"Line data"</p>
+                        <h2 id="json-window-title">"JSON"</h2>
+                    </div>
+                    <button
+                        class="json-window-toggle"
+                        type="button"
+                        aria-label=move || {
+                            if json_window_minimized.get() {
+                                "Expand JSON window"
+                            } else {
+                                "Minimize JSON window"
+                            }
+                        }
+                        title=move || {
+                            if json_window_minimized.get() {
+                                "Expand JSON window"
+                            } else {
+                                "Minimize JSON window"
+                            }
+                        }
+                        aria-expanded=move || (!json_window_minimized.get()).to_string()
+                        on:click=move |_| json_window_minimized.update(|minimized| *minimized = !*minimized)
+                    >
+                        {move || if json_window_minimized.get() { "+" } else { "-" }}
+                    </button>
+                </header>
+                <textarea
+                    class="json-textarea"
+                    aria-label="Line positions JSON"
+                    placeholder="Paste a JSON object here..."
+                    spellcheck="false"
+                    hidden=move || json_window_minimized.get()
+                />
+            </aside>
         </main>
     }
 }
