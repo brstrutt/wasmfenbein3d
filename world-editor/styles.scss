@@ -153,6 +153,21 @@ h1 {
     height: 2px;
     background: #2e6a67;
     transform-origin: left center;
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: none;
+}
+
+.world-line::before {
+    position: absolute;
+    inset: -8px 0;
+    content: "";
+    background: transparent;
+}
+
+.world-line.dragging,
+.world-line.dragging::before {
+    cursor: grabbing;
 }
 
 .line-endpoint {

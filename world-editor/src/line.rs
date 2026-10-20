@@ -24,6 +24,15 @@ impl Line {
             self.end.set(position);
         }
     }
+
+    pub fn endpoints(&self) -> ((f64, f64), (f64, f64)) {
+        (self.start.get_untracked(), self.end.get_untracked())
+    }
+
+    pub fn set_endpoints(&self, start: (f64, f64), end: (f64, f64)) {
+        self.start.set(start);
+        self.end.set(end);
+    }
 }
 
 #[component]
@@ -31,6 +40,8 @@ pub fn WorldLine(
     line: Line,
     active_endpoint: RwSignal<Option<(usize, bool)>>,
     endpoint_drag_start: RwSignal<Option<(f64, f64, f64, f64)>>,
+    active_line: RwSignal<Option<usize>>,
+    line_drag_start: RwSignal<Option<(f64, f64, f64, f64, f64, f64)>>,
     scene_offset: RwSignal<(f64, f64)>,
     zoom: RwSignal<f64>,
 ) -> impl IntoView {
@@ -69,6 +80,7 @@ pub fn WorldLine(
         <div class="line-layer">
             <div
                 class="world-line"
+                class:dragging=move || active_line.get() == Some(id)
                 style:left=move || {
                     let (x, _, _, _) = line_geometry();
                     let (pan_x, _) = scene_offset.get();
@@ -81,6 +93,20 @@ pub fn WorldLine(
                 }
                 style:width=move || format!("{}px", line_geometry().2 * zoom.get())
                 style:transform=move || format!("rotate({}deg)", line_geometry().3)
+                on:pointerdown=move |event: ev::PointerEvent| {
+                    event.prevent_default();
+                    event.stop_propagation();
+                    let ((start_x, start_y), (end_x, end_y)) = line.endpoints();
+                    line_drag_start.set(Some((
+                        f64::from(event.client_x()),
+                        f64::from(event.client_y()),
+                        start_x,
+                        start_y,
+                        end_x,
+                        end_y,
+                    )));
+                    active_line.set(Some(id));
+                }
             />
             <button
                 class="line-endpoint"

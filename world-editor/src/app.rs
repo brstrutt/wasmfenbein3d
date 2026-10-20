@@ -18,8 +18,10 @@ pub fn App() -> impl IntoView {
     let next_line_id = RwSignal::new(0usize);
     let active_dot = RwSignal::new(None::<usize>);
     let active_endpoint = RwSignal::new(None::<(usize, bool)>);
+    let active_line = RwSignal::new(None::<usize>);
     let dot_drag_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let endpoint_drag_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
+    let line_drag_start = RwSignal::new(None::<(f64, f64, f64, f64, f64, f64)>);
     let pan_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let scene_offset = RwSignal::new((0.0, 0.0));
     let zoom = RwSignal::new(1.0_f64);
@@ -54,6 +56,23 @@ pub fn App() -> impl IntoView {
                     line.set_endpoint(is_start, position);
                 }
             });
+        } else if let (
+            Some(line_id),
+            Some((pointer_x, pointer_y, start_x, start_y, end_x, end_y)),
+        ) = (active_line.get_untracked(), line_drag_start.get_untracked())
+        {
+            let scale = zoom.get_untracked();
+            let delta_x = (f64::from(event.client_x()) - pointer_x) / scale;
+            let delta_y = (f64::from(event.client_y()) - pointer_y) / scale;
+
+            lines.with_untracked(|lines| {
+                if let Some(line) = lines.iter().find(|line| line.id == line_id) {
+                    line.set_endpoints(
+                        (start_x + delta_x, start_y + delta_y),
+                        (end_x + delta_x, end_y + delta_y),
+                    );
+                }
+            });
         } else if let Some((start_x, start_y, offset_x, offset_y)) = pan_start.get_untracked() {
             scene_offset.set((
                 offset_x + f64::from(event.client_x()) - start_x,
@@ -66,6 +85,8 @@ pub fn App() -> impl IntoView {
         dot_drag_start.set(None);
         active_endpoint.set(None);
         endpoint_drag_start.set(None);
+        active_line.set(None);
+        line_drag_start.set(None);
         pan_start.set(None);
     };
     let up_listener = window_event_listener(ev::pointerup, stop_drag);
@@ -173,6 +194,8 @@ pub fn App() -> impl IntoView {
                             line=line
                             active_endpoint=active_endpoint
                             endpoint_drag_start=endpoint_drag_start
+                            active_line=active_line
+                            line_drag_start=line_drag_start
                             scene_offset=scene_offset
                             zoom=zoom
                         />
