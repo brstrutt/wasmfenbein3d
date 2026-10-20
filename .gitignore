@@ -2,5 +2,7 @@
 /dist
 /example/target
 /example/dist
+/world-editor/target
+/world-editor/dist
 /core/target
 /core/dist
