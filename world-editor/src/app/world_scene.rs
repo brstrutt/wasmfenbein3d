@@ -8,7 +8,7 @@ fn snap_delta(
     candidates: &[(f64, f64)],
     lines: &[Line],
     moving_line_id: usize,
-    zoom: f64,
+    screen_scale: f64,
 ) -> Option<(f64, f64)> {
     let mut closest: Option<(f64, f64, f64)> = None;
     let max_distance_squared = SNAP_DISTANCE * SNAP_DISTANCE;
@@ -19,7 +19,6 @@ fn snap_delta(
             for (target_x, target_y) in [start, end] {
                 let delta_x = target_x - x;
                 let delta_y = target_y - y;
-                let screen_scale = WORLD_UNIT_PX * zoom;
                 let distance_squared =
                     (delta_x * delta_x + delta_y * delta_y) * screen_scale * screen_scale;
 
@@ -155,5 +154,26 @@ pub fn WorldScene(
                 }
             />
         </div>
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::snap_delta;
+    use crate::line::{Line, WORLD_UNIT_PX};
+
+    #[test]
+    fn snapping_threshold_is_consistent_across_zoom_levels() {
+        let lines = [Line::from_endpoints(1, (0.0, 0.0), (10.0, 0.0))];
+
+        assert_eq!(
+            snap_delta(&[(0.4, 0.0)], &lines, 0, WORLD_UNIT_PX),
+            Some((-0.4, 0.0))
+        );
+        assert_eq!(snap_delta(&[(0.5, 0.0)], &lines, 0, WORLD_UNIT_PX), None);
+        assert_eq!(
+            snap_delta(&[(0.2, 0.0)], &lines, 0, WORLD_UNIT_PX * 2.0),
+            Some((-0.2, 0.0))
+        );
     }
 }
