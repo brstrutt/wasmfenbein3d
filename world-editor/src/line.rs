@@ -29,6 +29,10 @@ impl Line {
         (self.start.get(), self.end.get())
     }
 
+    pub fn endpoints_untracked(&self) -> ((f64, f64), (f64, f64)) {
+        (self.start.get_untracked(), self.end.get_untracked())
+    }
+
     pub fn set_endpoints(&self, start: (f64, f64), end: (f64, f64)) {
         self.start.set(start);
         self.end.set(end);
@@ -155,6 +159,38 @@ pub fn LineInspector(
     lines: RwSignal<Vec<Line>>,
     selected_line: RwSignal<Option<usize>>,
 ) -> impl IntoView {
+    let set_coordinate = move |is_start: bool, is_x: bool, value: String| {
+        let (Some(id), Ok(value)) = (selected_line.get_untracked(), value.parse::<f64>()) else {
+            return;
+        };
+        if !value.is_finite() {
+            return;
+        }
+
+        lines.with_untracked(|lines| {
+            if let Some(line) = lines.iter().find(|line| line.id == id) {
+                let ((mut start_x, mut start_y), (mut end_x, mut end_y)) =
+                    line.endpoints_untracked();
+                let point = if is_start {
+                    if is_x {
+                        start_x = value;
+                    } else {
+                        start_y = value;
+                    }
+                    (start_x, start_y)
+                } else {
+                    if is_x {
+                        end_x = value;
+                    } else {
+                        end_y = value;
+                    }
+                    (end_x, end_y)
+                };
+                line.set_endpoint(is_start, point);
+            }
+        });
+    };
+
     let selected = move || {
         selected_line
             .get()
@@ -182,11 +218,29 @@ pub fn LineInspector(
                 <dl>
                     <div>
                         <dt>"X"</dt>
-                        <dd><output>{move || selected().map_or_else(|| "--".to_owned(), |line| line.endpoints().0.0.to_string())}</output></dd>
+                        <dd>
+                            <input
+                                class="coordinate-input"
+                                type="number"
+                                step="any"
+                                aria-label="Start X coordinate"
+                                prop:value=move || selected().map_or_else(String::new, |line| line.endpoints().0.0.to_string())
+                                on:change=move |event| set_coordinate(true, true, event_target_value(&event))
+                            />
+                        </dd>
                     </div>
                     <div>
                         <dt>"Y"</dt>
-                        <dd><output>{move || selected().map_or_else(|| "--".to_owned(), |line| line.endpoints().0.1.to_string())}</output></dd>
+                        <dd>
+                            <input
+                                class="coordinate-input"
+                                type="number"
+                                step="any"
+                                aria-label="Start Y coordinate"
+                                prop:value=move || selected().map_or_else(String::new, |line| line.endpoints().0.1.to_string())
+                                on:change=move |event| set_coordinate(true, false, event_target_value(&event))
+                            />
+                        </dd>
                     </div>
                 </dl>
             </section>
@@ -195,11 +249,29 @@ pub fn LineInspector(
                 <dl>
                     <div>
                         <dt>"X"</dt>
-                        <dd><output>{move || selected().map_or_else(|| "--".to_owned(), |line| line.endpoints().1.0.to_string())}</output></dd>
+                        <dd>
+                            <input
+                                class="coordinate-input"
+                                type="number"
+                                step="any"
+                                aria-label="End X coordinate"
+                                prop:value=move || selected().map_or_else(String::new, |line| line.endpoints().1.0.to_string())
+                                on:change=move |event| set_coordinate(false, true, event_target_value(&event))
+                            />
+                        </dd>
                     </div>
                     <div>
                         <dt>"Y"</dt>
-                        <dd><output>{move || selected().map_or_else(|| "--".to_owned(), |line| line.endpoints().1.1.to_string())}</output></dd>
+                        <dd>
+                            <input
+                                class="coordinate-input"
+                                type="number"
+                                step="any"
+                                aria-label="End Y coordinate"
+                                prop:value=move || selected().map_or_else(String::new, |line| line.endpoints().1.1.to_string())
+                                on:change=move |event| set_coordinate(false, false, event_target_value(&event))
+                            />
+                        </dd>
                     </div>
                 </dl>
             </section>
