@@ -24,7 +24,11 @@ pub fn App() -> impl IntoView {
                 zoom=zoom
             />
             <LineInspector lines=lines selected_line=selected_line />
-            <json_window::JsonWindow />
+            <json_window::JsonWindow
+                lines=lines
+                next_line_id=next_line_id
+                selected_line=selected_line
+            />
         </main>
     }
 }

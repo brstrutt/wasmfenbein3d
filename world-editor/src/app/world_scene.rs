@@ -1,5 +1,5 @@
 use super::zoom::{ZOOM_STEP, change_zoom};
-use crate::line::{Line, WorldLine};
+use crate::line::{Line, WORLD_UNIT_PX, WorldLine};
 use leptos::{ev, prelude::*};
 
 const SNAP_DISTANCE: f64 = 14.0;
@@ -19,7 +19,9 @@ fn snap_delta(
             for (target_x, target_y) in [start, end] {
                 let delta_x = target_x - x;
                 let delta_y = target_y - y;
-                let distance_squared = (delta_x * delta_x + delta_y * delta_y) * zoom * zoom;
+                let screen_scale = WORLD_UNIT_PX * zoom;
+                let distance_squared =
+                    (delta_x * delta_x + delta_y * delta_y) * screen_scale * screen_scale;
 
                 if distance_squared <= max_distance_squared
                     && closest.map_or(true, |(_, _, distance)| distance_squared < distance)
@@ -51,7 +53,7 @@ pub fn WorldScene(
             active_endpoint.get_untracked(),
             endpoint_drag_start.get_untracked(),
         ) {
-            let scale = zoom.get_untracked();
+            let scale = WORLD_UNIT_PX * zoom.get_untracked();
             let position = (
                 x + (f64::from(event.client_x()) - pointer_x) / scale,
                 y + (f64::from(event.client_y()) - pointer_y) / scale,
@@ -70,7 +72,7 @@ pub fn WorldScene(
             Some((pointer_x, pointer_y, start_x, start_y, end_x, end_y)),
         ) = (active_line.get_untracked(), line_drag_start.get_untracked())
         {
-            let scale = zoom.get_untracked();
+            let scale = WORLD_UNIT_PX * zoom.get_untracked();
             let delta_x = (f64::from(event.client_x()) - pointer_x) / scale;
             let delta_y = (f64::from(event.client_y()) - pointer_y) / scale;
 
@@ -118,7 +120,7 @@ pub fn WorldScene(
                 format!("calc(50% + {x}px) calc(50% + {y}px)")
             }
             style:background-size=move || {
-                let grid_size = 32.0 * zoom.get();
+                let grid_size = WORLD_UNIT_PX * zoom.get();
                 format!("{grid_size}px {grid_size}px")
             }
             on:wheel=move |event: ev::WheelEvent| {

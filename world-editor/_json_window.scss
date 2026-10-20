@@ -78,6 +78,12 @@
     outline: 2px solid #2e6a6733;
 }
 
+.json-import-status {
+    margin: 0;
+    color: #65766e;
+    font-size: 0.8rem;
+}
+
 @media (max-width: 560px) {
     .json-window {
         top: auto;

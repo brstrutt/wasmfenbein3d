@@ -1,5 +1,7 @@
 use leptos::{ev, prelude::*};
 
+pub const WORLD_UNIT_PX: f64 = 32.0;
+
 #[derive(Clone, Copy)]
 pub struct Line {
     pub id: usize,
@@ -9,11 +11,15 @@ pub struct Line {
 
 impl Line {
     pub fn new(id: usize) -> Self {
-        let y = 32.0 + id as f64 * 28.0;
+        let y = 1.0 + id as f64;
+        Self::from_endpoints(id, (-1.5, y), (1.5, y))
+    }
+
+    pub fn from_endpoints(id: usize, start: (f64, f64), end: (f64, f64)) -> Self {
         Self {
             id,
-            start: RwSignal::new((-48.0, y)),
-            end: RwSignal::new((48.0, y)),
+            start: RwSignal::new(start),
+            end: RwSignal::new(end),
         }
     }
 
@@ -90,14 +96,14 @@ pub fn WorldLine(
                 style:left=move || {
                     let (x, _, _, _) = line_geometry();
                     let (pan_x, _) = scene_offset.get();
-                    format!("calc(50% + {}px)", pan_x + x * zoom.get())
+                    format!("calc(50% + {}px)", pan_x + x * WORLD_UNIT_PX * zoom.get())
                 }
                 style:top=move || {
                     let (_, y, _, _) = line_geometry();
                     let (_, pan_y) = scene_offset.get();
-                    format!("calc(50% + {}px - 1px)", pan_y + y * zoom.get())
+                    format!("calc(50% + {}px - 1px)", pan_y + y * WORLD_UNIT_PX * zoom.get())
                 }
-                style:width=move || format!("{}px", line_geometry().2 * zoom.get())
+                style:width=move || format!("{}px", line_geometry().2 * WORLD_UNIT_PX * zoom.get())
                 style:transform=move || format!("rotate({}deg)", line_geometry().3)
                 on:pointerdown=move |event: ev::PointerEvent| {
                     event.prevent_default();
@@ -123,12 +129,12 @@ pub fn WorldLine(
                 style:left=move || {
                     let (x, _, _, _) = line_geometry();
                     let (pan_x, _) = scene_offset.get();
-                    format!("calc(50% + {}px - 7px)", pan_x + x * zoom.get())
+                    format!("calc(50% + {}px - 7px)", pan_x + x * WORLD_UNIT_PX * zoom.get())
                 }
                 style:top=move || {
                     let (_, y, _, _) = line_geometry();
                     let (_, pan_y) = scene_offset.get();
-                    format!("calc(50% + {}px - 7px)", pan_y + y * zoom.get())
+                    format!("calc(50% + {}px - 7px)", pan_y + y * WORLD_UNIT_PX * zoom.get())
                 }
                 on:pointerdown=move |event| begin_drag(event, true)
             />
@@ -141,12 +147,12 @@ pub fn WorldLine(
                     let (_, _, _, _) = line_geometry();
                     let (x, _) = end.get();
                     let (pan_x, _) = scene_offset.get();
-                    format!("calc(50% + {}px - 7px)", pan_x + x * zoom.get())
+                    format!("calc(50% + {}px - 7px)", pan_x + x * WORLD_UNIT_PX * zoom.get())
                 }
                 style:top=move || {
                     let (_, y) = end.get();
                     let (_, pan_y) = scene_offset.get();
-                    format!("calc(50% + {}px - 7px)", pan_y + y * zoom.get())
+                    format!("calc(50% + {}px - 7px)", pan_y + y * WORLD_UNIT_PX * zoom.get())
                 }
                 on:pointerdown=move |event| begin_drag(event, false)
             />
