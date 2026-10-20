@@ -27,6 +27,29 @@ h1 {
     position: absolute;
     top: 28px;
     left: 32px;
+    right: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.add-dot {
+    padding: 9px 13px;
+    border: 1px solid #20332c;
+    border-radius: 3px;
+    background: #20332c;
+    color: #f2f4f1;
+    font: inherit;
+    cursor: pointer;
+}
+
+.add-dot:hover {
+    background: #36584b;
+}
+
+.add-dot:focus-visible {
+    outline: 2px solid #d94f36;
+    outline-offset: 3px;
 }
 
 .world-dot {
