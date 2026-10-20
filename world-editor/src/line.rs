@@ -26,7 +26,7 @@ impl Line {
     }
 
     pub fn endpoints(&self) -> ((f64, f64), (f64, f64)) {
-        (self.start.get_untracked(), self.end.get_untracked())
+        (self.start.get(), self.end.get())
     }
 
     pub fn set_endpoints(&self, start: (f64, f64), end: (f64, f64)) {
@@ -42,6 +42,7 @@ pub fn WorldLine(
     endpoint_drag_start: RwSignal<Option<(f64, f64, f64, f64)>>,
     active_line: RwSignal<Option<usize>>,
     line_drag_start: RwSignal<Option<(f64, f64, f64, f64, f64, f64)>>,
+    selected_line: RwSignal<Option<usize>>,
     scene_offset: RwSignal<(f64, f64)>,
     zoom: RwSignal<f64>,
 ) -> impl IntoView {
@@ -52,6 +53,7 @@ pub fn WorldLine(
     let begin_drag = move |event: ev::PointerEvent, is_start: bool| {
         event.prevent_default();
         event.stop_propagation();
+        selected_line.set(Some(id));
         let (x, y) = if is_start {
             start.get_untracked()
         } else {
@@ -96,6 +98,7 @@ pub fn WorldLine(
                 on:pointerdown=move |event: ev::PointerEvent| {
                     event.prevent_default();
                     event.stop_propagation();
+                    selected_line.set(Some(id));
                     let ((start_x, start_y), (end_x, end_y)) = line.endpoints();
                     line_drag_start.set(Some((
                         f64::from(event.client_x()),
@@ -144,5 +147,62 @@ pub fn WorldLine(
                 on:pointerdown=move |event| begin_drag(event, false)
             />
         </div>
+    }
+}
+
+#[component]
+pub fn LineInspector(
+    lines: RwSignal<Vec<Line>>,
+    selected_line: RwSignal<Option<usize>>,
+) -> impl IntoView {
+    let selected = move || {
+        selected_line
+            .get()
+            .and_then(|id| lines.with(|lines| lines.iter().find(|line| line.id == id).copied()))
+    };
+
+    view! {
+        <aside class="line-inspector" hidden=move || selected_line.get().is_none()>
+            <header class="inspector-heading">
+                <div>
+                    <p>"Selected line"</p>
+                    <h2>{move || selected().map_or_else(|| "Line".to_owned(), |line| format!("Line {}", line.id + 1))}</h2>
+                </div>
+                <button
+                    class="inspector-close"
+                    type="button"
+                    aria-label="Close line details"
+                    on:click=move |_| selected_line.set(None)
+                >
+                    "Close"
+                </button>
+            </header>
+            <section class="endpoint-details">
+                <h3>"Start"</h3>
+                <dl>
+                    <div>
+                        <dt>"X"</dt>
+                        <dd><output>{move || selected().map_or_else(|| "--".to_owned(), |line| line.endpoints().0.0.to_string())}</output></dd>
+                    </div>
+                    <div>
+                        <dt>"Y"</dt>
+                        <dd><output>{move || selected().map_or_else(|| "--".to_owned(), |line| line.endpoints().0.1.to_string())}</output></dd>
+                    </div>
+                </dl>
+            </section>
+            <section class="endpoint-details">
+                <h3>"End"</h3>
+                <dl>
+                    <div>
+                        <dt>"X"</dt>
+                        <dd><output>{move || selected().map_or_else(|| "--".to_owned(), |line| line.endpoints().1.0.to_string())}</output></dd>
+                    </div>
+                    <div>
+                        <dt>"Y"</dt>
+                        <dd><output>{move || selected().map_or_else(|| "--".to_owned(), |line| line.endpoints().1.1.to_string())}</output></dd>
+                    </div>
+                </dl>
+            </section>
+        </aside>
     }
 }

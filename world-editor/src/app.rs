@@ -1,5 +1,5 @@
 use crate::dot::{Dot, WorldDot};
-use crate::line::{Line, WorldLine};
+use crate::line::{Line, LineInspector, WorldLine};
 use leptos::{ev, prelude::*};
 
 const MIN_ZOOM: f64 = 0.25;
@@ -49,6 +49,7 @@ pub fn App() -> impl IntoView {
     let active_dot = RwSignal::new(None::<usize>);
     let active_endpoint = RwSignal::new(None::<(usize, bool)>);
     let active_line = RwSignal::new(None::<usize>);
+    let selected_line = RwSignal::new(None::<usize>);
     let dot_drag_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let endpoint_drag_start = RwSignal::new(None::<(f64, f64, f64, f64)>);
     let line_drag_start = RwSignal::new(None::<(f64, f64, f64, f64, f64, f64)>);
@@ -233,12 +234,14 @@ pub fn App() -> impl IntoView {
                             endpoint_drag_start=endpoint_drag_start
                             active_line=active_line
                             line_drag_start=line_drag_start
+                            selected_line=selected_line
                             scene_offset=scene_offset
                             zoom=zoom
                         />
                     }
                 />
             </div>
+            <LineInspector lines=lines selected_line=selected_line />
         </main>
     }
 }
