@@ -1,5 +1,6 @@
 ![GitHub Last Commit](https://img.shields.io/github/last-commit/brstrutt/wasmfenbein3d?logo=github)
 ![Build and Publish](https://github.com/brstrutt/wasmfenbein3d/actions/workflows/build-and-publish.yml/badge.svg?branch=main)
+![AI-assisted](https://img.shields.io/badge/AI--assisted-no-8250df)
 
 ## Description
 
@@ -32,3 +33,8 @@ To trigger a release build: Push a tag of the format `v1.2.3`.
 
 To trigger a development release build: Push a tag like `v1.2.3-stuff`
 
+## Related Projects:
+
+A world editor for the fenbein3d engine: [https://github.com/brstrutt/fenbein3d-world-editor](https://github.com/brstrutt/fenbein3d-world-editor)
+
+My latest personal site that uses this engine for navigating between pages: [https://github.com/brstrutt/PersonalWebsiteV3](https://github.com/brstrutt/PersonalWebsiteV3)
