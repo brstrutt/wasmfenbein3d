@@ -12,10 +12,10 @@ pub struct RawTexture {
 
 #[macro_export]
 macro_rules! include_texture {
-    ($directory:literal, $name:literal) => {
+    ($directory:literal, $name:literal, $extension:literal) => {
         RawTexture {
             id: $name,
-            bytes: include_bytes!(concat!($directory, $name, ".bmp")),
+            bytes: include_bytes!(concat!($directory, $name, $extension)),
         }
     };
 }
@@ -47,7 +47,7 @@ impl TextureLibrary {
     pub fn insert_tiling_texture(&mut self, raw_data: &RawTexture) {
         self.textures.insert(
             String::from(raw_data.id),
-            Rc::new(Box::new(TilingTexture::new_from_bmp_data(
+            Rc::new(Box::new(TilingTexture::new_from_bytes(
                 raw_data.bytes,
                 &mut self.palette,
             ))),
@@ -56,7 +56,7 @@ impl TextureLibrary {
     pub fn insert_texture(&mut self, raw_data: &RawTexture) {
         self.textures.insert(
             String::from(raw_data.id),
-            Rc::new(Box::new(Texture::new_from_bmp_data(
+            Rc::new(Box::new(Texture::new_from_bytes(
                 raw_data.bytes,
                 &mut self.palette,
             ))),

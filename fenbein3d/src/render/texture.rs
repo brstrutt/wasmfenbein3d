@@ -19,8 +19,8 @@ pub struct Texture {
 }
 
 impl Texture {
-    pub fn new_from_bmp_data(bmp_data: &[u8], palette: &mut RgbPalette) -> Self {
-        let result = ImageReader::new(Cursor::new(bmp_data))
+    pub fn new_from_bytes(bytes: &[u8], palette: &mut RgbPalette) -> Self {
+        let result = ImageReader::new(Cursor::new(bytes))
             .with_guessed_format()
             .expect("Failed to guess image format of raw data array.")
             .decode()

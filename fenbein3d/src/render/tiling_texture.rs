@@ -11,8 +11,8 @@ pub struct TilingTexture {
 }
 
 impl TilingTexture {
-    pub fn new_from_bmp_data(bmp_data: &[u8], palette: &mut RgbPalette) -> Self {
-        let texture = Texture::new_from_bmp_data(bmp_data, palette);
+    pub fn new_from_bytes(bytes: &[u8], palette: &mut RgbPalette) -> Self {
+        let texture = Texture::new_from_bytes(bytes, palette);
 
         if texture.width != texture.height {
             panic!(
