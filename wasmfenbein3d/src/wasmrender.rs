@@ -37,8 +37,8 @@ fn copy_buffer_to_canvas<Screen: ScreenBuffer>(
 fn to_imagedata<Screen: ScreenBuffer>(screen_buffer: &Screen) -> web_sys::ImageData {
     web_sys::ImageData::new_with_u8_clamped_array_and_sh(
         Clamped(&screen_buffer.get_pixels()),
-        screen_buffer.height() as u32,
         screen_buffer.width() as u32,
+        screen_buffer.height() as u32,
     )
     .expect("couldnt convert screen_buffer to ImageDats")
 }

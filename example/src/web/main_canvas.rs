@@ -1,16 +1,16 @@
-use wasmfenbein3d::render::screen_buffer_column_first::ScreenBufferColumnFirst;
+use wasmfenbein3d::render::screen_buffer_row_first::ScreenBufferRowFirst;
 
 use super::access;
 
 const CANVAS_SCALE: u32 = 2;
 
-pub fn setup_screen_buffer() -> ScreenBufferColumnFirst {
+pub fn setup_screen_buffer() -> ScreenBufferRowFirst {
     update_canvas_size();
 
-    let screen_width = access::main_canvas().height() as usize;
-    let screen_height = access::main_canvas().width() as usize;
+    let screen_width = access::main_canvas().width() as usize;
+    let screen_height = access::main_canvas().height() as usize;
 
-    ScreenBufferColumnFirst::setup(screen_width, screen_height)
+    ScreenBufferRowFirst::setup(screen_width, screen_height)
 }
 
 fn update_canvas_size() {
