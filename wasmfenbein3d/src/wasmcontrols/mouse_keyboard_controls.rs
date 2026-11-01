@@ -1,13 +1,13 @@
 use std::{cell::RefCell, rc::Rc};
 
-use fenbein3d::{controls::MovementEvent, render::screen_buffer::ScreenBuffer, state::State};
+use fenbein3d::{controls::MovementEvent, state::State};
 use web_sys::{Event, EventTarget, KeyboardEvent, MouseEvent, TouchEvent};
 
 use super::utils;
 use crate::wasmutils;
 
-pub fn setup<Screen: ScreenBuffer + 'static>(
-    state: Rc<RefCell<State<Screen>>>,
+pub fn setup(
+    state: Rc<RefCell<State>>,
     canvas: web_sys::HtmlCanvasElement,
     on_mouse_capture: impl Fn() + Clone,
 ) {
@@ -16,8 +16,8 @@ pub fn setup<Screen: ScreenBuffer + 'static>(
     setup_keyboard_movement_controls(state);
 }
 
-fn setup_mouse_capture_on_click<Screen: ScreenBuffer + 'static>(
-    state: Rc<RefCell<State<Screen>>>,
+fn setup_mouse_capture_on_click(
+    state: Rc<RefCell<State>>,
     canvas: web_sys::HtmlCanvasElement,
     on_mouse_capture: impl Fn() + Clone,
 ) {
@@ -66,7 +66,7 @@ fn setup_mouse_capture_on_click<Screen: ScreenBuffer + 'static>(
     );
 }
 
-fn setup_camera_mouse_control<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
+fn setup_camera_mouse_control(state: Rc<RefCell<State>>) {
     wasmutils::add_event_listener_with_callback(
         &mut EventTarget::from(wasmutils::document()),
         "mousemove",
@@ -80,9 +80,7 @@ fn setup_camera_mouse_control<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<
     );
 }
 
-fn setup_keyboard_movement_controls<Screen: ScreenBuffer + 'static>(
-    state: Rc<RefCell<State<Screen>>>,
-) {
+fn setup_keyboard_movement_controls(state: Rc<RefCell<State>>) {
     let cloned_state = state.clone();
     wasmutils::add_event_listener_with_callback(
         &mut EventTarget::from(wasmutils::document()),

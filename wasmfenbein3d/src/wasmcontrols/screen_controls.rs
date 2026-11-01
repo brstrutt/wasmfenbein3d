@@ -2,7 +2,6 @@ use std::{cell::RefCell, rc::Rc};
 
 use fenbein3d::{
     controls::{Direction, MovementEvent},
-    render::screen_buffer::ScreenBuffer,
     state::State,
 };
 use web_sys::{Element, Event, EventTarget, TouchEvent, wasm_bindgen::JsCast};
@@ -10,10 +9,7 @@ use web_sys::{Element, Event, EventTarget, TouchEvent, wasm_bindgen::JsCast};
 use super::data_action;
 use crate::wasmutils;
 
-pub fn setup<Screen: ScreenBuffer + 'static>(
-    state: Rc<RefCell<State<Screen>>>,
-    canvas: web_sys::HtmlCanvasElement,
-) {
+pub fn setup(state: Rc<RefCell<State>>, canvas: web_sys::HtmlCanvasElement) {
     setup_movement_button(state.clone(), data_action::MOVE_FORWARD, Direction::Forward);
     setup_movement_button(state.clone(), data_action::MOVE_BACK, Direction::Backward);
     setup_movement_button(state.clone(), data_action::MOVE_LEFT, Direction::Left);
@@ -21,8 +17,8 @@ pub fn setup<Screen: ScreenBuffer + 'static>(
     setup_camera_touch_control(state, canvas);
 }
 
-fn setup_movement_button<Screen: ScreenBuffer + 'static>(
-    state: Rc<RefCell<State<Screen>>>,
+fn setup_movement_button(
+    state: Rc<RefCell<State>>,
     input_element_data_action: &'static str,
     direction: Direction,
 ) {
@@ -116,10 +112,7 @@ fn does_event_target_have_data_action(
     false
 }
 
-fn setup_camera_touch_control<Screen: ScreenBuffer + 'static>(
-    state: Rc<RefCell<State<Screen>>>,
-    canvas: web_sys::HtmlCanvasElement,
-) {
+fn setup_camera_touch_control(state: Rc<RefCell<State>>, canvas: web_sys::HtmlCanvasElement) {
     let cloned_state = state.clone();
     wasmutils::add_event_listener_with_callback(
         &mut EventTarget::from(canvas.clone()),

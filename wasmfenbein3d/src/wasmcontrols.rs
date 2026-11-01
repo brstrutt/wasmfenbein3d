@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use fenbein3d::{render::screen_buffer::ScreenBuffer, state::State};
+use fenbein3d::state::State;
 
 mod click_passthrough;
 mod mouse_keyboard_controls;
@@ -15,8 +15,8 @@ pub mod data_action {
     pub const MOVE_BACK: &str = "wasmfenbein3d_character_input_move_back";
 }
 
-pub fn setup<Screen: ScreenBuffer + 'static>(
-    state: Rc<RefCell<State<Screen>>>,
+pub fn setup(
+    state: Rc<RefCell<State>>,
     canvas: web_sys::HtmlCanvasElement,
     on_click: impl Fn(&str) + Clone,
     on_mouse_capture: impl Fn() + Clone,

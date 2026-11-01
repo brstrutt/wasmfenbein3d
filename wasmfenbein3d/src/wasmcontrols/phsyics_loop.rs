@@ -1,13 +1,13 @@
 use crate::wasmutils;
-use fenbein3d::{motion, render::screen_buffer::ScreenBuffer, state::State};
+use fenbein3d::{motion, state::State};
 use std::{cell::RefCell, rc::Rc};
 
-pub fn setup<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
+pub fn setup(state: Rc<RefCell<State>>) {
     setup_character_motion_loop(state.clone());
     setup_camera_motion_loop(state);
 }
 
-fn setup_character_motion_loop<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
+fn setup_character_motion_loop(state: Rc<RefCell<State>>) {
     wasmutils::run_function_every_animation_frame(move || {
         let mut state = state.borrow_mut();
         let current_time = wasmutils::now_in_ms();
@@ -33,7 +33,7 @@ fn setup_character_motion_loop<Screen: ScreenBuffer + 'static>(state: Rc<RefCell
     });
 }
 
-fn setup_camera_motion_loop<Screen: ScreenBuffer + 'static>(state: Rc<RefCell<State<Screen>>>) {
+fn setup_camera_motion_loop(state: Rc<RefCell<State>>) {
     wasmutils::run_function_every_animation_frame(move || {
         let mut state = state.borrow_mut();
 

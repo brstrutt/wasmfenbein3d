@@ -24,11 +24,11 @@ struct ColumnSegment<'a> {
 }
 
 impl<'a> ColumnRenderer<'a> {
-    pub fn init<Screen: ScreenBuffer>(
+    pub fn init(
         screen_x: &'a usize,
         screen_height: &'a f64,
         column: &'a ColumnData<'a>,
-        screen_buffer: &Screen,
+        screen_buffer: &ScreenBuffer,
     ) -> Self {
         let wall_space_pixel_height = WALL_HEIGHT / column.height_pixels;
         let mut wall_space_pixel_increment = wall_space_pixel_height;
@@ -131,7 +131,7 @@ impl<'a> ColumnRenderer<'a> {
         }
     }
 
-    pub fn render_column<Screen: ScreenBuffer>(&mut self, screen_buffer: &mut Screen) {
+    pub fn render_column(&mut self, screen_buffer: &mut ScreenBuffer) {
         let mut screen_space_y = 0;
         for segment in &self.render_plan {
             let mut tex_space_y = segment.texture_space_start_y;

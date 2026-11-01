@@ -1,5 +1,5 @@
 use crate::{
-    render::{column_data::ColumnData, screen_buffer::ScreenBuffer},
+    render::column_data::ColumnData,
     state::{State, world::wall::WALL_HEIGHT},
 };
 use column_renderer::ColumnRenderer;
@@ -18,20 +18,18 @@ pub mod rgb_palette;
 pub mod rgbv;
 mod row_renderer;
 pub mod screen_buffer;
-pub mod screen_buffer_column_first;
-pub mod screen_buffer_row_first;
 pub mod texel_provider;
 pub mod texture;
 pub mod tiling_texture;
 
-pub fn render_to_screen_buffer<Screen: ScreenBuffer>(state: &RefCell<State<Screen>>) {
+pub fn render_to_screen_buffer(state: &RefCell<State>) {
     let mut state = state.borrow_mut();
     state.screen_buffer.reset_draw_history();
     render_walls(&mut state);
     render_background(&mut state);
 }
 
-fn render_background<Screen: ScreenBuffer>(state: &mut State<Screen>) {
+fn render_background(state: &mut State) {
     let screen_buffer = &state.screen_buffer;
     let camera = state.camera.clone();
     let half_screen_height = screen_buffer.height() as f64 / 2.0;
@@ -58,7 +56,7 @@ fn render_background<Screen: ScreenBuffer>(state: &mut State<Screen>) {
     }
 }
 
-fn render_walls<Screen: ScreenBuffer>(state: &mut State<Screen>) {
+fn render_walls(state: &mut State) {
     let screen_buffer = &state.screen_buffer;
     let screen_height_f64 = screen_buffer.height() as f64;
 

@@ -1,12 +1,12 @@
 use std::{cell::RefCell, rc::Rc};
 
-use fenbein3d::{render::screen_buffer::ScreenBuffer, state::State};
+use fenbein3d::state::State;
 use web_sys::{EventTarget, HtmlCanvasElement, MouseEvent, TouchEvent};
 
 use crate::wasmutils;
 
-pub fn setup<Screen: ScreenBuffer + 'static>(
-    state: Rc<RefCell<State<Screen>>>,
+pub fn setup(
+    state: Rc<RefCell<State>>,
     canvas: HtmlCanvasElement,
     on_click: impl Fn(&str) + Clone,
 ) {
